@@ -1,0 +1,5 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_1='/pentest/network/tor-browser_en-US/Lib/libz'
+let g:netrw_dirhist_2='/pentest/network/tor-browser_en-US/Data/profile'
+let g:netrw_dirhist_3='/home/alex/sandbox/hello'
