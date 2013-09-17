@@ -1,3 +1,5 @@
+Dotfiles settings ( make it happen!!! )
+=======================================
 These dotfiles are for Vim and other system settings
 
 *   for brand new vim. 
