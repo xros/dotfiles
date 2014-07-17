@@ -1,0 +1,20 @@
+build
+build/*
+*.pyc
+*.pyo
+*.swp
+*.swo
+# for python setuptools
+ez_setup.py
+*~
+back*
+local_*
+.python-eggs
+proxy.conf
+proxy_4s.py
+mobile_previous.py
+*.zdsock
+*.sock
+log.txt
+*.log
+
