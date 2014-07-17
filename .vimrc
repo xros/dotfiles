@@ -35,5 +35,20 @@ let Tlist_Auto_Open=0
 let Tlist_File_Fold_Auto_Close=1
 
 
+" my defined working IDE
+function OpenMyIDE()
+    "let cmdtype = getcmdtype()
+    "echo cmdtype
+    "if cmdtype == ':'
+    "    echo 'command from :'
+    "endif
+    exec 'TlistToggle'
+    exec 'NERDTreeToggle'
+endfunction
+" Bind key 'Ide' as command to show the IDE user interface
+command! -nargs=0 -bar Ide call OpenMyIDE()
+" Bind the key in normal usage
+"nmap ide :call OpenMyIDE()<CR>
+
 " or we can set cc=90 ( line column no more than 90 single lines)
 " set cc=90
