@@ -8,6 +8,7 @@ set softtabstop=4
 set hls
 
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+" for xml/html language programming
 iabbrev </ </<C-X><C-O>
 
 "execute pathogen#infect()
@@ -42,8 +43,10 @@ function OpenMyIDE()
     "if cmdtype == ':'
     "    echo 'command from :'
     "endif
-    exec 'TlistToggle'
+    "set number
     exec 'NERDTreeToggle'
+    exec 'TlistToggle'
+    "exec '<C-w-l>'
 endfunction
 " Bind key 'Ide' as command to show the IDE user interface
 command! -nargs=0 -bar Ide call OpenMyIDE()
@@ -52,3 +55,6 @@ command! -nargs=0 -bar Ide call OpenMyIDE()
 
 " or we can set cc=90 ( line column no more than 90 single lines)
 " set cc=90
+"
+"
+

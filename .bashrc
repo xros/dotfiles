@@ -110,3 +110,20 @@ fi
 PYTHONSTARTUP=$HOME'/.pythonstartup'
 export PYTHONSTARTUP
 
+
+# [highlight 'username' and 'hostname']
+# --All red one
+#PS1="\[\033[1;32m\][\[\033[1;31m\]\u@\h:\[\033[1;34m\]\w\[\033[1;32m\]]\[\033[1;31m\]\$\[\033[0m\]"
+# --With Tree list one
+#PS1="\[\033[0;37m\]\342\224\214\342\224\200\$([[ \$? != 0 ]] && echo \"[\[\033[0;31m\]\342\234\227\[\033[0;37m\]]\342\224\200\")[$(if [[ ${EUID} == 0 ]]; then echo '\[\033[0;31m\]\h'; else echo '\[\033[0;33m\]\u\[\033[0;37m\]@\[\033[0;96m\]\h'; fi)\[\033[0;37m\]]\342\224\200[\[\033[0;32m\]\w\[\033[0;37m\]]\n\[\033[0;37m\]\342\224\224\342\224\200\342\224\200\342\225\274 \[\033[0m\]"
+## --For regular user format 1
+#PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] \[\e[1;37m\]'
+## --For regular user format 2
+#PS1='\[\e[1;32m\][\u@\h \W]\$\[\e[0m\] '
+## --For regular user format 3 (without hostname)
+#PS1='\[\e[1;32m\]\u@\h \W\$\[\e[0m\] '
+## --For regular user format 4 (with hostname bold font)
+#PS1='\[\e[0;32m\]\u@\h\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] \[\e[1;37m\]'
+## --For regular user format 5 (with hostname regular font)
+PS1='\[\e[0;32m\]\u@\h\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] '
+
