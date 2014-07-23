@@ -4,6 +4,7 @@ echo "Copying dotfiles... Need to delete previous ones before overwriting"
 for f in $files;do
     # copy those files to the user's $HOME folder
     if [ -f $HOME/$f ];then
+        echo "Backuping previous dot files settings: "$f" ..."
         mv $HOME/$f $HOME/$f\.backup_$(date "+%Y%m%d%H%M%S")
         cp $f  $HOME/
         #true
@@ -18,6 +19,7 @@ echo "Validating dotfiles..."
 
 echo "Copying .vim/ "
 if [ -d $HOME/.vim ];then
+    echo "Backuping previous dot vim files settings... "
     mv $HOME/.vim $HOME/.vim.backup_$(date "+%Y%m%d%H%M%S")
     cp .vim/ -R $HOME/
 else

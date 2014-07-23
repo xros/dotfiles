@@ -11,6 +11,7 @@ VIM Plugins including
 *   taglist
 *   ctags
 *   ftplugin
+*   supertab
 *   vim-multiple-cursors
 *   vim-sensible
 *   and so on , just check it out. For VIM 7.3+

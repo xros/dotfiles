@@ -58,3 +58,18 @@ command! -nargs=0 -bar Ide call OpenMyIDE()
 "
 "
 
+
+
+"let g:SuperTabRetainCompletionType=2
+" 0 – 不记录上次的补全方式
+"" 1 – 记住上次的补全方式,直到用其他的补全命令改变它
+"" 2 – 记住上次的补全方式,直到按ESC退出插入模式为止
+"
+let g:SuperTabDefaultCompletionType="<C-X><C-O>"
+"" 设置按下<Tab>后默认的补全方式, 默认是<C-P>,
+"" 现在改为<C-X><C-O>. 关于<C-P>的补全方式,
+"" 还有其他的补全方式,
+"  你可以看看下面的一些帮助:
+"" :help ins-completion
+"" :help compl-omni
+"
