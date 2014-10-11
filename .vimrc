@@ -1,3 +1,4 @@
+set term=xterm-256color
 set background=dark
 " Use spaces instead of tabs
 set expandtab
@@ -73,3 +74,20 @@ let g:SuperTabDefaultCompletionType="<C-X><C-O>"
 "" :help ins-completion
 "" :help compl-omni
 "
+"
+set encoding=utf-8
+"powerline的设置
+"powerline{
+set guifont=PowerlineSymbols\ for\ Powerline
+set nocompatible
+set t_Co=256
+set laststatus=2
+set fillchars+=stl:\ ,stlnc:\
+let g:Powerline_symbols = 'unicode'
+"let Powerline_symbols='compatible'
+let g:airline_powerline_fonts = 1
+"}
+
+let g:solarized_termcolors=256
+"set background=dark
+"colorscheme solarized
