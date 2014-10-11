@@ -1,5 +1,4 @@
 set term=xterm-256color
-set background=dark
 " Use spaces instead of tabs
 set expandtab
 " 1 tab = 4 spaces set tabstop=4
@@ -17,6 +16,9 @@ call pathogen#infect()
 call pathogen#helptags()
 filetype plugin indent on
 syntax on
+let g:solarized_termcolors=256
+set background=dark
+"colorscheme solarized
 colorscheme peaksea
 
 " for indent guide lines 
@@ -88,6 +90,5 @@ let g:Powerline_symbols = 'unicode'
 let g:airline_powerline_fonts = 1
 "}
 
-let g:solarized_termcolors=256
 set background=dark
-"colorscheme solarized
+set t_ut=
