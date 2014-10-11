@@ -13,7 +13,7 @@ VIM Plugins including
 *   ftplugin
 *   supertab
 *   vim-multiple-cursors
-*   vim-sensible
+*   vim-powerline
 *   and so on , just check it out. For VIM 7.3+
 
 More help
