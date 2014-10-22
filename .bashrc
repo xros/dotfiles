@@ -134,3 +134,4 @@ export TERM=xterm-256color
 # It is recommended to add the link below to the file '/etc/rc.local'
 xinput set-prop 13 "Synaptics Two-Finger Scrolling" 1 1
 
+alias rm='rm -i'
