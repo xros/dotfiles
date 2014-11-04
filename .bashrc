@@ -132,6 +132,6 @@ export TERM=xterm-256color
 # To set two finger scrolling things for IOS things
 # This works for Thinkpad X201i
 # It is recommended to add the link below to the file '/etc/rc.local'
-xinput set-prop 13 "Synaptics Two-Finger Scrolling" 1 1
+#xinput set-prop 13 "Synaptics Two-Finger Scrolling" 1 1
 
 alias rm='rm -i'
