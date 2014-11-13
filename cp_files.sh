@@ -14,6 +14,14 @@ for f in $files;do
     #echo $f
 done
 
+elinks_conf=$HOME/.elinks/elinks.conf
+if [ -f $elinks_conf ];then
+    mv $elinks_conf $elinks_conf".backup_"$(date "+%Y%m%d%H%M%S")
+    cp ./.elinks/elinks.conf $HOME/.elinks/
+else
+    cp ./.elinks $HOME/ -R
+fi
+
 # For Vim editor with its plugin vim-powerline
 echo "Configuring and Installing Fonts for Vim Editor"
 # Try to remove fonts cache
