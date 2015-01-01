@@ -135,3 +135,8 @@ export TERM=xterm-256color
 #xinput set-prop 13 "Synaptics Two-Finger Scrolling" 1 1
 
 alias rm='rm -i'
+genpasswd() {
+        local l=$1
+        [ "$l" == "" ] && l=20
+        tr -dc A-Za-z0-9_ < /dev/urandom | head -c ${1} | xargs
+}
