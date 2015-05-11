@@ -17,9 +17,9 @@ call pathogen#helptags()
 filetype plugin indent on
 syntax on
 let g:solarized_termcolors=256
-set background=dark
+"set background=dark
 "colorscheme solarized
-colorscheme peaksea
+"colorscheme peaksea
 
 " for indent guide lines 
 let g:indent_guides_auto_colors = 1
@@ -92,5 +92,5 @@ let g:Powerline_symbols = 'unicode'
 let g:airline_powerline_fonts = 1
 "}
 
-set background=dark
+"set background=dark
 set t_ut=
