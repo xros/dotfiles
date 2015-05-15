@@ -1,0 +1,21 @@
+set from = "username@yourdomain.com"
+set realname = "YourRealName"
+set imap_user = "username@yourdomain.com"
+#set imap_pass = "yourpassword"
+set folder = "imaps://imap.yourdomain.com:993"
+set spoolfile = "+INBOX"
+set postponed ="+[Mail]/Drafts"
+set header_cache =~/.mutt/cache/headers
+set message_cachedir =~/.mutt/cache/bodies
+set certificate_file =~/.mutt/certificates
+set smtp_url = "smtp://username@yourdomain.com@smtp.yourdomain.com:587/"
+#set smtp_pass = "yourpassword"
+set move = no 
+set imap_keepalive = 900
+set editor = "vim"
+my_hdr From: YourRealName<username@yourdomain.com>
+my_hdr Reply-To: YourRealName<username@yourdomain.com>
+
+bind index G imap-fetch-mail
+
+unset user_agent
