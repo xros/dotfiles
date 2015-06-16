@@ -37,11 +37,11 @@ Parser
 Dynamic stuff
 ~~~~~~~~~~~~~
 
-.. autodata:: dynamic_arrays_instances
 .. autodata:: dynamic_array_additions
 .. autodata:: dynamic_params
 .. autodata:: dynamic_params_for_other_modules
 .. autodata:: additional_dynamic_modules
+.. autodata:: auto_import_modules
 
 
 .. _settings-recursion:
@@ -147,14 +147,9 @@ function is being reparsed.
 # dynamic stuff
 # ----------------
 
-dynamic_arrays_instances = True
-"""
-Check for `append`, etc. on array instances like list()
-"""
-
 dynamic_array_additions = True
 """
-check for `append`, etc. on arrays: [], {}, ()
+check for `append`, etc. on arrays: [], {}, () as well as list/set calls.
 """
 
 dynamic_params = True
@@ -177,6 +172,15 @@ is practical for IDEs, that want to administrate their modules themselves.
 dynamic_flow_information = True
 """
 Check for `isinstance` and other information to infer a type.
+"""
+
+auto_import_modules = [
+    'hashlib',  # setattr
+]
+"""
+Modules that are not analyzed but imported, although they contain Python code.
+This improves autocompletion for libraries that use ``setattr`` or
+``globals()`` modifications a lot.
 """
 
 # ----------------

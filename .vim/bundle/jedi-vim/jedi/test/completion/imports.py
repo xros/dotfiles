@@ -19,8 +19,6 @@ def scope_basic():
     #? str()
     import_tree.a
 
-    #? []
-    import_tree.mod1
 
 def scope_pkg():
     import import_tree.mod1
@@ -46,8 +44,8 @@ def scope_nested():
     #? ['sqrt']
     import_tree.pkg.sqrt
 
-    #? ['a', 'pkg']
-    import_tree.
+    #? ['pkg']
+    import_tree.p
 
     #? float()
     import_tree.pkg.mod1.a
@@ -64,18 +62,12 @@ def scope_nested2():
     import_tree.mod1
     #? ['pkg']
     import_tree.pkg
-    #? []
+
+    # With the latest changes this completion also works, because submodules
+    # are always included (some nested import structures lead to this,
+    # typically).
+    #? ['rename1']
     import_tree.rename1
-
-def from_names():
-    #? ['mod1']
-    from import_tree.pkg.
-    #? ['path']
-    from os.
-
-def builtin_test():
-    #? ['math']
-    import math
 
 def scope_from_import_variable():
     """
@@ -95,13 +87,49 @@ def scope_from_import_variable():
 
 def scope_from_import_variable_with_parenthesis():
     from import_tree.mod2.fake import (
-        a, c
+        a, foobarbaz
     )
 
     #? 
     a
     #? 
-    c
+    foobarbaz
+    # shouldn't complete, should still list the name though.
+    #? ['foobarbaz']
+    foobarbaz
+
+
+def as_imports():
+    from import_tree.mod1 import a as xyz
+    #? int()
+    xyz
+    import not_existant, import_tree.mod1 as foo
+    #? int()
+    foo.a
+    import import_tree.mod1 as bar
+    #? int()
+    bar.a
+
+
+def test_import_priorities():
+    """
+    It's possible to overwrite import paths in an ``__init__.py`` file, by
+    just assigining something there.
+
+    See also #536.
+    """
+    from import_tree import the_pkg, invisible_pkg
+    #? int()
+    invisible_pkg
+    # In real Python, this would be the module, but it's not, because Jedi
+    # doesn't care about most stateful issues such as __dict__, which it would
+    # need to, to do this in a correct way.
+    #? int()
+    the_pkg
+    # Importing foo is still possible, even though inivisible_pkg got changed.
+    #? float()
+    from import_tree.invisible_pkg import foo
+
 
 # -----------------
 # std lib modules
@@ -118,9 +146,6 @@ import os
 
 #? ['dirname']
 os.path.dirname
-
-#? os.path.join
-from os.path import join
 
 from os.path import (
     expanduser
@@ -172,28 +197,6 @@ def func_with_import():
 func_with_import().sleep
 
 # -----------------
-# completions within imports
-# -----------------
-
-#? ['sqlite3']
-import sqlite3
-
-#? ['classes']
-import classes
-
-#? ['timedelta']
-from datetime import timedel
-
-# should not be possible, because names can only be looked up 1 level deep.
-#? []
-from datetime.timedelta import resolution
-#? []
-from datetime.timedelta import 
-
-#? ['Cursor']
-from sqlite3 import Cursor
-
-# -----------------
 # relative imports
 # -----------------
 
@@ -229,64 +232,9 @@ from . import datetime as mod1
 #? []
 mod1.
 
-#? str()
-imp_tree.a
-
-#? ['some_variable']
-from . import some_variable
-#? ['arrays']
-from . import arrays
-#? []
-from . import import_tree as ren
-
-
-# -----------------
-# special positions -> edge cases
-# -----------------
-import datetime
-
-#? 6 datetime
-from datetime.time import time
-
-#? []
-import datetime.
-#? []
-import datetime.date
-
-#? 18 ['import']
-from import_tree. import pkg
-#? 17 ['mod1', 'mod2', 'random', 'pkg', 'rename1', 'rename2', 'recurse_class1', 'recurse_class2']
-from import_tree. import pkg
-
-#? 18 ['pkg']
-from import_tree.p import pkg
-
-#? 17 ['import_tree']
-from .import_tree import 
-#? 10 ['run']
-from ..run import 
-#? ['run']
-from .. import run
-
-#? []
-from not_a_module import 
-
 # self import
 # this can cause recursions
 from imports import *
-
-#137
-import json
-#? 23 json.dump
-from json import load, dump
-#? 17 json.load
-from json import load, dump
-# without the from clause:
-import json, datetime
-#? 7 json
-import json, datetime
-#? 13 datetime
-import json, datetime
 
 # -----------------
 # packages
@@ -317,3 +265,18 @@ else:
     a = not_existing_import
 #? 
 a
+
+# -----------------
+# module underscore descriptors
+# -----------------
+
+def underscore():
+    import keyword
+    #? ['__file__']
+    keyword.__file__
+    #? str()
+    keyword.__file__
+
+    # Does that also work for the our own module?
+    #? ['__file__']
+    __file__

@@ -56,14 +56,6 @@ a = ['']*2
 #? list()
 a
 
-a = 2*2
-#? int()
-a
-
-a = "a"*3
-#? str()
-a
-
 # -----------------
 # tuple assignments
 # -----------------
@@ -232,7 +224,7 @@ f()
 d = dict({'a':''})
 def y(a):
     return a
-#? 
+#?
 y(**d)
 
 # problem with more complicated casts
@@ -284,6 +276,17 @@ class GetItem():
 #? str()
 GetItem("")[1]
 
+class GetItemWithList():
+    def __getitem__(self, index):
+        return [1, 1.0, 's'][index]
+
+#? float()
+GetItemWithList()[1]
+
+for i in 0, 2:
+    #? int() str()
+    GetItemWithList()[i]
+
 # -----------------
 # conversions
 # -----------------
@@ -294,7 +297,7 @@ list(a)[1]
 
 #? int() str()
 list(a)[0]
-#? 
+#?
 set(a)[0]
 
 #? int() str()
@@ -335,6 +338,11 @@ tuple((1,))[0]
 #? []
 list().__iterable
 
+# With a list comprehension.
+for i in set(a for a in [1]):
+    #? int()
+    i
+
 
 # -----------------
 # Recursions
@@ -349,3 +357,11 @@ def recursion1(foo):
 
 #? int()
 recursion1([1,2])[0]
+
+# -----------------
+# Merged Arrays
+# -----------------
+
+for x in [1] + ['']:
+    #? int() str()
+    x

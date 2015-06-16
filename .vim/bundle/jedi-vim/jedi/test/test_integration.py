@@ -15,17 +15,32 @@ def assert_case_equal(case, actual, desired):
     """
     assert actual == desired, """
 Test %r failed.
-actual = %s
+actual  = %s
 desired = %s
 """ % (case, actual, desired)
 
 
-def test_integration(case, monkeypatch, pytestconfig):
+def assert_static_analysis(case, actual, desired):
+    """A nicer formatting for static analysis tests."""
+    a = set(actual)
+    d = set(desired)
+    assert actual == desired, """
+Test %r failed.
+not raised  = %s
+unspecified = %s
+""" % (case, sorted(d - a), sorted(a - d))
+
+
+def test_completion(case, monkeypatch):
     if case.skip is not None:
         pytest.skip(case.skip)
     repo_root = helpers.root_dir
     monkeypatch.chdir(os.path.join(repo_root, 'jedi'))
     case.run(assert_case_equal)
+
+
+def test_static_analysis(static_analysis_case):
+    static_analysis_case.run(assert_static_analysis)
 
 
 def test_refactor(refactor_case):

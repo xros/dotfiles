@@ -1,10 +1,15 @@
-import readline
+try:
+    import readline
+except ImportError:
+    readline = False
 
 from jedi import utils
-from .helpers import TestCase, cwd_at
+
+from .helpers import unittest, cwd_at
 
 
-class TestSetupReadline(TestCase):
+@unittest.skipIf(not readline, "readline not found")
+class TestSetupReadline(unittest.TestCase):
     class NameSpace(object):
         pass
 
@@ -46,14 +51,15 @@ class TestSetupReadline(TestCase):
         self.namespace.sys = sys
         self.namespace.os = os
 
-        assert self.completions('os.path.join') == ['os.path.join']
-        assert self.completions('os.path.join().upper') == ['os.path.join().upper']
+        try:
+            assert self.completions('os.path.join') == ['os.path.join']
+            assert self.completions('os.path.join().upper') == ['os.path.join().upper']
 
-        c = set(['os.' + d for d in dir(os) if d.startswith('ch')])
-        assert set(self.completions('os.ch')) == set(c)
-
-        del self.namespace.sys
-        del self.namespace.os
+            c = set(['os.' + d for d in dir(os) if d.startswith('ch')])
+            assert set(self.completions('os.ch')) == set(c)
+        finally:
+            del self.namespace.sys
+            del self.namespace.os
 
     def test_calls(self):
         s = 'str(bytes'

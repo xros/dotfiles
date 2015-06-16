@@ -23,18 +23,18 @@ a(0):.
 # if/else/elif
 # -----------------
 
-if 1:
+if (random.choice([0, 1])):
     1
-elif(3):
+elif(random.choice([0, 1])):
     a = 3
 else:
     a = ''
 #? int() str()
 a
 def func():
-    if 1:
+    if random.choice([0, 1]):
         1
-    elif(3):
+    elif(random.choice([0, 1])):
         a = 3
     else:
         a = ''
@@ -42,6 +42,18 @@ def func():
     return a
 #? int() str()
 func()
+
+# -----------------
+# keywords
+# -----------------
+
+#? list()
+assert []
+
+def focus_return():
+    #? list()
+    return []
+
 
 # -----------------
 # for loops
@@ -93,74 +105,19 @@ for i in b:
 #? float() str()
 a[0]
 
+for i in [1,2,3]:
+    #? int()
+    i
+else:
+    i
+
+
 # -----------------
 # range()
 # -----------------
 for i in range(10):
     #? int()
     i
-
-# -----------------
-# list comprehensions
-# -----------------
-
-# basics:
-
-a = ['' for a in [1]]
-#? str()
-a[0]
-
-a = [a for a in [1]]
-#? int()
-a[0]
-
-a = [a for a in 1,2]
-#? int()
-a[0]
-
-a = [a for a,b in [(1,'')]]
-#? int()
-a[0]
-
-arr = [1,'']
-a = [a for a in arr]
-#? int() str()
-a[0]
-
-a = [a if 1.0 else '' for a in [1] if [1.0]]
-#? int() str()
-a[0]
-
-# with a dict literal
-#? str()
-[a for a in {1:'x'}][0]
-
-##? str()
-{a-1:b for a,b in {1:'a', 3:1.0}.items()}[0]
-
-# -----------------
-# nested list comprehensions
-# -----------------
-
-b = [a for arr in [[1]] for a in arr]
-#? int()
-b[0]
-
-b = [a for arr in [[1]] if '' for a in arr if '']
-#? int()
-b[0]
-
-b = [b for arr in [[[1.0]]] for a in arr for b in a]
-#? float()
-b[0]
-
-# jedi issue #26
-#? list()
-a = [[int(v) for v in line.strip().split() if v] for line in ["123", "123", "123"] if line]
-#? list()
-a[0]
-#? int()
-a[0][0]
 
 # -----------------
 # ternary operator
@@ -186,6 +143,9 @@ ret()[0]
 with open('') as f:
     #? ['closed']
     f.closed
+    for line in f:
+        #? str()
+        line
 
 with open('') as f1, open('') as f2:
     #? ['closed']
@@ -216,7 +176,7 @@ def a():
     """
     pass
 
-#? 
+#?
 # str literals in comment """ upper
 
 # -----------------
@@ -268,10 +228,26 @@ except ImportError as i_a:
 try:
     import math
 except ImportError, i_b:
-    #? ['i_b']
+    # TODO check this only in Python2
+    ##? ['i_b']
     i_b
-    #? ImportError()
+    ##? ImportError()
     i_b
+
+
+class MyException(Exception):
+    def __init__(self, my_attr):
+        self.my_attr = my_attr
+
+try:
+    raise MyException(1)
+except MyException as e:
+    #? ['my_attr']
+    e.my_attr
+    #? 22 ['my_attr']
+    for x in e.my_attr:
+        pass
+
 
 # -----------------
 # continuations
@@ -281,3 +257,13 @@ foo = \
 1
 #? int()
 foo
+
+# -----------------
+# module attributes
+# -----------------
+
+# Don't move this to imports.py, because there's a star import.
+#? str()
+__file__
+#? ['__file__']
+__file__

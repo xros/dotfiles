@@ -26,7 +26,7 @@ Emacs:
 
 - Jedi.el_
 - elpy_
-- company-jedi_
+- anaconda-mode_
 
 Sublime Text 2/3:
 
@@ -43,8 +43,9 @@ TextMate:
 
 Kate:
 
-- Kate_ version 4.13+ supports it natively, you have to enable it, though. [`proof
-  <https://projects.kde.org/projects/kde/applications/kate/repository/show?rev=KDE%2F4.13>`_]
+- Kate_ version 4.13+ `supports it natively
+  <https://projects.kde.org/projects/kde/applications/kate/repository/entry/addons/kate/pate/src/plugins/python_autocomplete_jedi.py?rev=KDE%2F4.13>`__,
+  you have to enable it, though.
 
 
 .. _other-software:
@@ -78,9 +79,10 @@ Using a custom ``$HOME/.pythonrc.py``
 .. _youcompleteme: http://valloric.github.io/YouCompleteMe/
 .. _Jedi.el: https://github.com/tkf/emacs-jedi
 .. _elpy: https://github.com/jorgenschaefer/elpy
-.. _company-jedi: https://github.com/proofit404/company-jedi
+.. _anaconda-mode: https://github.com/proofit404/anaconda-mode
 .. _sublimejedi: https://github.com/srusskih/SublimeJEDI
 .. _anaconda: https://github.com/DamnWidget/anaconda
 .. _SynJedi: http://uvviewsoft.com/synjedi/
 .. _wdb: https://github.com/Kozea/wdb
 .. _TextMate: https://github.com/lawrenceakka/python-jedi.tmbundle
+.. _kate: http://kate-editor.org/

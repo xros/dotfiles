@@ -1,10 +1,13 @@
 import os
+import subprocess
 import urllib
 import zipfile
-import subprocess
 
+import pytest
+
+VSPEC_URL = 'https://github.com/kana/vim-vspec/archive/1.4.1.zip'
 CACHE_FOLDER = '.cache'
-VSPEC_FOLDER = os.path.join(CACHE_FOLDER, 'vim-vspec-master')
+VSPEC_FOLDER = os.path.join(CACHE_FOLDER, 'vim-vspec-1.4.1')
 VSPEC_RUNNER = os.path.join(VSPEC_FOLDER, 'bin/vspec')
 TEST_DIR = 'test'
 
@@ -14,14 +17,15 @@ class IntegrationTestFile(object):
         self.path = path
 
     def run(self):
-        output = subprocess.check_output([VSPEC_RUNNER, '.', VSPEC_FOLDER, self.path])
+        output = subprocess.check_output(
+            [VSPEC_RUNNER, '.', VSPEC_FOLDER, self.path])
         for line in output.splitlines():
             if line.startswith(b'not ok') or line.startswith(b'Error'):
-                print(output)
-                assert False
+                pytest.fail("{} failed:\n{}".format(
+                    self.path, output.decode('utf-8')), pytrace=False)
 
     def __repr__(self):
-        return "<%s: %s>"  % (type(self), self.path)
+        return "<%s: %s>" % (type(self), self.path)
 
 
 def pytest_configure(config):
@@ -29,14 +33,13 @@ def pytest_configure(config):
         os.mkdir(CACHE_FOLDER)
 
     if not os.path.exists(VSPEC_FOLDER):
-        url = 'https://github.com/kana/vim-vspec/archive/master.zip'
-        name, hdrs = urllib.urlretrieve(url)
+        name, hdrs = urllib.urlretrieve(VSPEC_URL)
         z = zipfile.ZipFile(name)
         for n in z.namelist():
             dest = os.path.join(CACHE_FOLDER, n)
             destdir = os.path.dirname(dest)
             if not os.path.isdir(destdir):
-              os.makedirs(destdir)
+                os.makedirs(destdir)
             data = z.read(n)
             if not os.path.isdir(dest):
                 with open(dest, 'w') as f:
