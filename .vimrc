@@ -94,3 +94,6 @@ let g:airline_powerline_fonts = 1
 
 "set background=dark
 set t_ut=
+
+
+au BufNewFile,BufRead *.html,*.htm,*.shtml,*.stm set ft=jinja
