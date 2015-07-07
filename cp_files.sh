@@ -78,8 +78,10 @@ else
     cp .vim/ -R $HOME/
 fi
 
+echo "Copying rtorrent settings..."
+mkdir -p $HOME/Downloads/torrents/{rtorrent_sessions,rtorrent_temp,rtorrent_watch}
 
-echo "You may restart X service to see the cumtom symbols in Vim editor"
+echo "You may restart a SHELL to see the cumtom symbols in Vim editor"
 
 echo "Copying finished!"
 echo "Try your new environment! :-)"

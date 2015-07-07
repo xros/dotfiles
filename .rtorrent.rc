@@ -1,0 +1,42 @@
+# Directory to manage temporary downloads to
+directory = ~/Downloads/torrents/rtorrent_temp/
+
+# Torrent sessions, to save and resume
+session = ~/Downloads/torrents/rtorrent_sessions/
+
+# Default upload,download rate
+upload_rate = 30
+download_rate = 200
+peer_exchange = yes
+
+# DHT enabled
+dht = auto
+
+# custom throttles
+throttle_up = low,10
+throttle_down = low,10
+throttle_up = med,20
+throttle_down = med,20
+
+# Watch a directory for new torrents, restart torrents that have been
+# copied back and stop those that have been deleted.
+
+schedule = watch_directory,0,10,load_start=~/Downloads/torrents/rtorrent_watch/*.torrent
+schedule = tied_directory,10,10,start_tied=
+schedule = untied_directory,10,10,close_untied=
+
+# Enable the default ratio group
+ratio.enable=
+
+# Change the limits, the defaults should be sufficient.
+ratio.min.set=50
+ratio.max.set=150
+ratio.upload.set=20M
+
+# Changing the command triggered when the ratio is reached.
+system.method.set = group.seeding.ratio.command, d.close=, d.erase=
+
+# Move finished torrents to completed
+system.method.set_key = event.download.finished,rm_torrent,"execute=rm,$d.get_tied_to_file="
+system.method.set_key = event.download.finished,move_complete,"execute=mv,-u,$d.get_base_path=,/home/ankur/Downloads/torrents/rtorrent_completed/ ;d.set_directory=/home/ankur/Downloads/torrents/rtorrent_completed/"
+
