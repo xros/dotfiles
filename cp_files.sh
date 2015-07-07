@@ -37,10 +37,10 @@ if [ -f $HOME/.fonts/PowerlineSymbols.otf ];then
     echo "-----Removing Previous Fonts files"
     rm -f $HOME/.fonts/PowerlineSymbols.otf
     echo "-----Installing Fonts"
-    cp ./.vim/bundle/vim-powerline2/fontpatcher/PowerlineSymbols.otf $HOME/.fonts
+    cp ./.vim/bundle/vim-powerline/fontpatcher/PowerlineSymbols.otf $HOME/.fonts
 else
     echo "-----Installing Fonts"
-    cp ./.vim/bundle/vim-powerline2/fontpatcher/PowerlineSymbols.otf $HOME/.fonts
+    cp ./.vim/bundle/vim-powerline/fontpatcher/PowerlineSymbols.otf $HOME/.fonts
 fi
 
 echo "[ Updating Fonts Cache ]"
@@ -58,10 +58,10 @@ if [ -f $HOME/.config/fontconfig/conf.d/10-powerline-symbols.conf ];then
     echo "-----Removing Previous Fonts configuring files"
     rm -f $HOME/.config/fontconfig/conf.d/10-powerline-symbols.conf
     echo "-----Processing Fonts configuring files"
-    cp ./.vim/bundle/vim-powerline2/fontpatcher/10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d
+    cp ./.vim/bundle/vim-powerline/fontpatcher/10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d
 else
     echo "-----Processing Fonts configuring files"
-    cp ./.vim/bundle/vim-powerline2/fontpatcher/10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d
+    cp ./.vim/bundle/vim-powerline/fontpatcher/10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d
 fi
 
 
