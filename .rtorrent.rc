@@ -38,5 +38,4 @@ system.method.set = group.seeding.ratio.command, d.close=, d.erase=
 
 # Move finished torrents to completed
 system.method.set_key = event.download.finished,rm_torrent,"execute=rm,$d.get_tied_to_file="
-system.method.set_key = event.download.finished,move_complete,"execute=mv,-u,$d.get_base_path=,/home/ankur/Downloads/torrents/rtorrent_completed/ ;d.set_directory=/home/ankur/Downloads/torrents/rtorrent_completed/"
-
+system.method.set_key = event.download.finish~plete,"execute=mv,-u,$d.get_base_path=,/Downloads/torrents/rtorrent_completed/ ;d.set_directory=/Downloads/torrents/rtorrent_completed/"

@@ -79,7 +79,7 @@ else
 fi
 
 echo "Copying rtorrent settings..."
-mkdir -p $HOME/Downloads/torrents/{rtorrent_sessions,rtorrent_temp,rtorrent_watch}
+mkdir -p $HOME/Downloads/torrents/{rtorrent_sessions,rtorrent_temp,rtorrent_watch,rtorrent_completed}
 
 echo "You may restart a SHELL to see the cumtom symbols in Vim editor"
 
