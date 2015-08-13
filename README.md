@@ -25,7 +25,7 @@ More help
 ```init.sh``` is compatible with debian7/ubuntu12.04. It's not compatible with ubuntu14.04 due to that ubuntu14.04 has changed some packages. The ```cp_files.sh``` will copy those dotfiles to the system user's home folder.
 * There's a Python IDE in there. Type *:Ide* in the Vim prompt console.
 For example.
-[Vim IDE](static/snapshot36.png)
+![Vim IDE](static/snapshot36.png)
 
 
 #### Have Fun ####
