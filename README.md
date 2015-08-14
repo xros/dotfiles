@@ -28,11 +28,14 @@ More help
 For example
 ![Vim IDE](static/snapshot36.png)
 
-For csv/dat file editing
+For csv/dat file editing using csv.vim
 ![Vim csv](static/snapshot37.png)
 
 Demo here:
 ![Vim csv demo](static/csv.gif)
+
+Explaination:
+> If your csv file is too big, please do not edit it using Vim, it would be slow. Libreoffice is your friend.
 
 
 
