@@ -14,6 +14,7 @@ VIM Plugins including
 *   supertab
 *   vim-multiple-cursors
 *   vim-powerline
+*   csv.vim
 *   and so on , just check it out. For VIM 7.3+
 
 More help
@@ -26,6 +27,13 @@ More help
 * There's a Python IDE inside. Type **:Ide** in the Vim prompt console.
 For example
 ![Vim IDE](static/snapshot36.png)
+
+For csv/dat file editing
+![Vim csv](static/snapshot37.png)
+
+Demo here:
+![Vim csv demo](static/csv.gif)
+
 
 
 #### Have Fun ####

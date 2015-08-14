@@ -97,3 +97,15 @@ set t_ut=
 
 
 au BufNewFile,BufRead *.html,*.htm,*.shtml,*.stm set ft=jinja
+
+
+" To use csv.vim
+" For more information please visit https://github.com/chrisbra/csv.vim
+
+if exists("did_load_csvfiletype")
+  finish
+endif
+let did_load_csvfiletype=1
+augroup filetypedetect
+  au! BufRead,BufNewFile *.csv,*.dat	setfiletype csv
+augroup END
