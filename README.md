@@ -31,11 +31,11 @@ For example
 For csv/dat file editing using csv.vim
 ![Vim csv](static/snapshot37.png)
 
-Demo here:
+The demo of CSV file editing:
 ![Vim csv demo](static/csv.gif)
 
-Explaination:
-> If your csv file is too big, please do not edit it using Vim, it would be slow. Libreoffice is your friend.
+Notice:
+> If your csv file is very big, please do not edit it using Vim. It would be slow. Libreoffice is your friend. But viewing csv files in this manner makes me feel great.
 
 
 
