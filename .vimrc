@@ -1,4 +1,6 @@
 set term=xterm-256color
+" Use smartindent
+set smartindent
 " Use spaces instead of tabs
 set expandtab
 " 1 tab = 4 spaces set tabstop=4
@@ -109,3 +111,9 @@ let did_load_csvfiletype=1
 augroup filetypedetect
   au! BufRead,BufNewFile *.csv,*.dat	setfiletype csv
 augroup END
+
+
+" Fix pasting with indent wrong
+" Or you can do this to get rid of it      :set paste     after pasting then
+" do :set nopaste  
+set pastetoggle=<F2>
