@@ -179,3 +179,13 @@ else
     true
 fi
 
+#######################################################################
+# Set binary path for Go-Lanugage                                     #
+# In this case, the golang-go will not work if installed from apt-get #
+#######################################################################
+if [ -d "/usr/local/go" ] ; then
+    export PATH=$PATH:/usr/local/go/bin
+else
+    true
+fi
+
