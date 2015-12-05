@@ -1,8 +1,8 @@
 Dot files
 ===
-   Dot files of Bash, Zsh, Vim, Elinks, Mutt, Python, Rtorrent.
-   A Python IDE for Vim is built in.
-                         --- Created by xros
+    Dot files for Bash, Zsh, Vim, Elinks, Mutt, Python, Rtorrent.
+    A Python IDE for Vim is built in.
+                          --- Created by xros
 VIM Plugins including
 ---
 *   ctags
@@ -22,9 +22,7 @@ Usage
 * These settings are shipped with configuration files for some common tools, including `Elinks, Vim, Mutt, Python(2/3), Zsh, Rtorrent, Golang-go, Ardupilot and etc.`
 * The bash scheme looks like this by default.
 * The bash scheme looks like this by default.
-    > 
-    > ![console schema](static/snapshot111.png)
-    > 
+    ![console schema](static/snapshot111.png)
 
 
 Explanation
@@ -41,11 +39,11 @@ Explanation
 
 #### CSV editor
 * For csv/dat file editing using csv.vim
-> ![Vim csv](static/snapshot37.png)
-> 
-> The demo of CSV file editing:
-> ![Vim csv demo](static/csv.gif)
->
+    ![Vim csv](static/snapshot37.png)
+    
+    The demo of CSV file editing:
+    ![Vim csv demo](static/csv.gif)
+    
 
 ##### Notice:
 > If your csv file is very big, please do not edit it using Vim. It would be slow. Libreoffice is your friend. But viewing csv files in this manner makes me feel great.
