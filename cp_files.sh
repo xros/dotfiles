@@ -66,20 +66,23 @@ fi
 
 
 
-echo "Validating dotfiles..."
+echo "-----Validating dotfiles..."
 . $HOME/.bashrc
 
-echo "Copying .vim/ "
+echo "-----Copying .vim/ "
 if [ -d $HOME/.vim ];then
-    echo "Backuping previous dot vim files settings... "
+    echo "-----Backuping previous dot vim files settings... "
     mv $HOME/.vim $HOME/.vim.backup_$(date "+%Y%m%d%H%M%S")
     cp .vim/ -R $HOME/
 else
     cp .vim/ -R $HOME/
 fi
 
-echo "Copying rtorrent settings..."
+echo "-----Copying rtorrent settings..."
 mkdir -p $HOME/Downloads/torrents/{rtorrent_sessions,rtorrent_temp,rtorrent_watch,rtorrent_completed}
+
+echo "-----Creating directory for Go Language projects in $HOME/goworks/ ..."
+mkdir $HOME/goworks/ -p
 
 echo "You may restart a SHELL to see the cumtom symbols in Vim editor"
 

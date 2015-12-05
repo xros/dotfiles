@@ -170,3 +170,12 @@ else
     true
 fi
 
+#########################################
+# Set $GOPATH for Go-Lanugage projects  #
+#########################################
+if [ -d "$HOME/goworks" ] ; then
+    export GOPATH=$HOME/goworks
+else
+    true
+fi
+
