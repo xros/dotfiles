@@ -1,43 +1,57 @@
 Dot files
 ===
-   Vim dot files 
-   Mainly for python highlighting
-   The default colorscheme is peaksea.
-                        --- Packed by xros
+   Dot files of Bash, Zsh, Vim, Elinks, Mutt, Python, Rtorrent.
+   A Python IDE for Vim is built in.
+                         --- Created by xros
 VIM Plugins including
 ---
-*   NERDTree
-*   jedi
-*   taglist
 *   ctags
+*   jedi
+*   csv.vim
+*   taglist
+*   NERDTree
 *   ftplugin
 *   supertab
-*   vim-multiple-cursors
 *   vim-powerline
-*   csv.vim
+*   vim-multiple-cursors
 *   and so on , just check it out. For VIM 7.3+
 
-More help
+Usage
 ----
-* This is very neat for new PC initialization. Mostly for debian/ubuntu or its derived destros.
+* Use the script ```cp_files.sh``` to **backup** previous files and **replace** them within files in this project. The ```cp_files.sh``` will copy those dotfiles to the system user's home folder.
+* These settings are shipped with configuration files for some common tools, including `Elinks, Vim, Mutt, Python(2/3), Zsh, Rtorrent, Golang-go, Ardupilot and etc.`
+* The bash scheme looks like this by default.
+* The bash scheme looks like this by default.
+    > 
+    > ![console schema](static/snapshot111.png)
+    > 
+
+
+Explanation
+----
+* This is very neat for new PC initialization. Mostly for Debian/Ubuntu or its derived destros. This is friendly compaitble with Ubuntu12.04+/Linuxmint13+/Debian6+ and more their derived destros.
 
 * Notice that: For some vim users to use taglist/ctags, they would need to install the package "ctags". For example on debian/ubuntu ```sudo apt-get install ctags``` , or on centOS/Fedora/RHEL ```sudo yum install ctags```, or on archlinux ```pacman -S ctags```
-* The ```init.sh``` and the ```cp_files.sh``` are very neat for new users both on ubuntu12.04 and ubuntu14.04.
-```init.sh``` is compatible with debian7/ubuntu12.04. It's not compatible with ubuntu14.04 due to that ubuntu14.04 has changed some packages. The ```cp_files.sh``` will copy those dotfiles to the system user's home folder.
+* The ```init_*.sh``` and the ```cp_files.sh``` are very neat for new users both on ubuntu12.04 and ubuntu14.04.
+```init_ubuntu_12.04.sh``` is compatible with Debian7/Ubuntu12.04 while ```init_ubuntu_14.04.sh``` is for Ubuntu14.04.
+
+#### Python IDE
 * There's a Python IDE inside. Type **:Ide** in the Vim prompt console.
-For example
 ![Vim IDE](static/snapshot36.png)
 
-For csv/dat file editing using csv.vim
-![Vim csv](static/snapshot37.png)
+#### CSV editor
+* For csv/dat file editing using csv.vim
+> ![Vim csv](static/snapshot37.png)
+> 
+> The demo of CSV file editing:
+> ![Vim csv demo](static/csv.gif)
+>
 
-The demo of CSV file editing:
-![Vim csv demo](static/csv.gif)
-
-Notice:
+##### Notice:
 > If your csv file is very big, please do not edit it using Vim. It would be slow. Libreoffice is your friend. But viewing csv files in this manner makes me feel great.
 
 
 
 #### Have Fun ####
+By [xros](https://github.com/xros)
 
