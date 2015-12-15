@@ -32,7 +32,7 @@ rm /tmp/Powerline.cache -f
 #    mkdir $HOME/.fonts -p
 mkdir $HOME/.fonts -p
 
-echo "[ Configuring Fonts ]"
+echo "[ Configuring Fonts for Powerline Symbols]"
 if [ -f $HOME/.fonts/PowerlineSymbols.otf ];then
     echo "-----Removing Previous Fonts files"
     rm -f $HOME/.fonts/PowerlineSymbols.otf
@@ -41,6 +41,18 @@ if [ -f $HOME/.fonts/PowerlineSymbols.otf ];then
 else
     echo "-----Installing Fonts"
     cp ./.vim/bundle/vim-powerline/fontpatcher/PowerlineSymbols.otf $HOME/.fonts
+fi
+
+# Installing Symbola fonts
+echo "[ Configuring Fonts for Symbola fonts]"
+if [ -f $HOME/.fonts/Symbola.otf ];then
+    echo "-----Removing Previous Fonts files"
+    rm -f $HOME/.fonts/Symbola.otf
+    echo "-----Installing Fonts"
+    cp ./fonts/Symbola.otf $HOME/.fonts
+else
+    echo "-----Installing Fonts"
+    cp ./fonts/Symbola.otf $HOME/.fonts
 fi
 
 echo "[ Updating Fonts Cache ]"
