@@ -117,3 +117,6 @@ augroup END
 " Or you can do this to get rid of it      :set paste     after pasting then
 " do :set nopaste  
 set pastetoggle=<F2>
+
+" Set Vim visual selection background color to be gray
+hi Visual gui=NONE guibg=White guifg=Black
