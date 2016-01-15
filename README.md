@@ -14,6 +14,7 @@ VIM Plugins including
 *   supertab
 *   vim-powerline
 *   vim-multiple-cursors
+*   vim-python-pep8-indent
 *   and so on , just check it out. For VIM 7.3+
 
 Usage
