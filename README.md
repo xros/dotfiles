@@ -16,11 +16,13 @@ VIM Plugins including
 *   vim-multiple-cursors
 *   vim-python-pep8-indent
 *   and so on , just check it out. For VIM 7.3+
+*   Default Vim colorscheme is molokayo
 
 Usage
 ----
 * Use the script ```cp_files.sh``` to **backup** previous files and **replace** them within files in this project. The ```cp_files.sh``` will copy those dotfiles to the system user's home folder.
 * These settings are shipped with configuration files for some common tools, including `Elinks, Vim, Mutt, Python(2/3), Zsh, Rtorrent, Golang-go, Ardupilot and etc.`
+* Default Vim colorscheme is molokayo
 * The bash scheme looks like this by default.
     ![console schema](static/snapshot111.png)
 

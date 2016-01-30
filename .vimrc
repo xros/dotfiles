@@ -22,6 +22,7 @@ let g:solarized_termcolors=256
 "set background=dark
 "colorscheme solarized
 "colorscheme peaksea
+colorscheme molokayo
 
 " for indent guide lines 
 let g:indent_guides_auto_colors = 1
