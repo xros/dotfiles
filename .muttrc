@@ -1,8 +1,7 @@
 set from = "username@yourdomain.com"
 set realname = "YourRealName"
 set imap_user = "username@yourdomain.com"
-#set imap_pass = "yourpassword"
-set folder = "imaps://imap.yourdomain.com:993"
+#set imap_pass = "yourpassword" set folder = "imaps://imap.yourdomain.com:993"
 set spoolfile = "+INBOX"
 set postponed ="+[Mail]/Drafts"
 set header_cache =~/.mutt/cache/headers
@@ -22,15 +21,15 @@ unset user_agent
 
 # SSL hardening
 # Knowledge from [GPG / Mutt / Gmail](https://gist.github.com/bnagy/8914f712f689cc01c267)
-set ssl_force_tls=yes
-set ssl_starttls=yes
-set ssl_use_sslv2=no
-set ssl_use_sslv3=no
-set ssl_use_tlsv1=no
-set ssl_use_tlsv1_1=no
-set ssl_use_tlsv1_2=yes
-set ssl_verify_dates=yes
-set ssl_verify_host=yes
+#set ssl_force_tls=yes
+#set ssl_starttls=yes
+#set ssl_use_sslv2=no
+#set ssl_use_sslv3=no
+#set ssl_use_tlsv1=no
+#set ssl_use_tlsv1_1=no
+#set ssl_use_tlsv1_2=yes
+#set ssl_verify_dates=yes
+#set ssl_verify_host=yes
 
 # using gpg for mutt 
 source $HOME/.gpg.rc
