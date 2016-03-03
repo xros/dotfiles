@@ -1,6 +1,3 @@
-# using gpg for mutt 
-source $HOME/.gpg.rc
-
 set from = "username@yourdomain.com"
 set realname = "YourRealName"
 set imap_user = "username@yourdomain.com"
@@ -34,3 +31,7 @@ set ssl_use_tlsv1_1=no
 set ssl_use_tlsv1_2=yes
 set ssl_verify_dates=yes
 set ssl_verify_host=yes
+
+# using gpg for mutt 
+source $HOME/.gpg.rc
+
