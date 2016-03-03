@@ -22,3 +22,15 @@ my_hdr Reply-To: YourRealName<username@yourdomain.com>
 bind index G imap-fetch-mail
 
 unset user_agent
+
+# SSL hardening
+# Knowledge from [GPG / Mutt / Gmail](https://gist.github.com/bnagy/8914f712f689cc01c267)
+set ssl_force_tls=yes
+set ssl_starttls=yes
+set ssl_use_sslv2=no
+set ssl_use_sslv3=no
+set ssl_use_tlsv1=no
+set ssl_use_tlsv1_1=no
+set ssl_use_tlsv1_2=yes
+set ssl_verify_dates=yes
+set ssl_verify_host=yes
