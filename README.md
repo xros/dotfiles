@@ -12,6 +12,7 @@ VIM Plugins including
 *   NERDTree
 *   ftplugin
 *   supertab
+*   nerdcommenter
 *   vim-powerline
 *   vim-multiple-cursors
 *   vim-python-pep8-indent
