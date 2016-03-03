@@ -1,6 +1,6 @@
 Dot files
 ===
-    Dot files for Bash, Zsh, Vim, Elinks, Mutt, Python, Rtorrent.
+    Dot files for Bash, Zsh, Vim, Elinks, Mutt, Gnupg, Python, Rtorrent.
     A Python IDE for Vim is built in.
                           --- Created by xros
 VIM Plugins including
