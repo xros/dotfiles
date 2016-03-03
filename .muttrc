@@ -1,3 +1,6 @@
+# using gpg for mutt 
+source $HOME/.gpg.rc
+
 set from = "username@yourdomain.com"
 set realname = "YourRealName"
 set imap_user = "username@yourdomain.com"

@@ -1,5 +1,5 @@
 #!/bin/bash
-files=".bashrc .pythonstartup .tmux.conf .vimrc .zshrc .muttrc .rtorrent.rc"
+files=".bashrc .pythonstartup .tmux.conf .vimrc .zshrc .muttrc .gpg.rc .rtorrent.rc"
 echo "Copying dotfiles... Need to backup previous ones before overwriting"
 for f in $files;do
     # copy those files to the user's $HOME folder
