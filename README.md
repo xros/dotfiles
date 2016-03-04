@@ -12,6 +12,7 @@ VIM Plugins including
 *   NERDTree
 *   ftplugin
 *   supertab
+*   emmit-vim
 *   nerdcommenter
 *   vim-powerline
 *   vim-multiple-cursors
@@ -38,7 +39,13 @@ Explanation
 
 #### Python IDE
 * There's a Python IDE inside. Type **:Ide** in the Vim prompt console.
-![Vim IDE](static/snapshot150.png)
+    ![Vim IDE](static/snapshot150.png)
+
+#### HTML IDE
+* There's a HTML IDE inside. It was detrived from [emmit-vim](https://github.com/mattn/emmet-vim).
+    ![Coding in HTML](static/emmit-vim-screenshot.gif)
+
+* More info about this tool can be found at [emmit-vim](https://github.com/mattn/emmet-vim).
 
 #### CSV editor
 * For csv/dat file editing using csv.vim
