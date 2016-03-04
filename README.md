@@ -12,7 +12,7 @@ VIM Plugins including
 *   NERDTree
 *   ftplugin
 *   supertab
-*   emmit-vim
+*   emmet-vim
 *   nerdcommenter
 *   vim-powerline
 *   vim-multiple-cursors
@@ -42,10 +42,10 @@ Explanation
     ![Vim IDE](static/snapshot150.png)
 
 #### HTML IDE
-* There's a HTML IDE inside. It was detrived from [emmit-vim](https://github.com/mattn/emmet-vim).
-    ![Coding in HTML](static/emmit-vim-screenshot.gif)
+* There's a HTML IDE inside. It was detrived from [emmet-vim](https://github.com/mattn/emmet-vim).
+    ![Coding in HTML](static/emmet-vim-screenshot.gif)
 
-* More info about this tool can be found at [emmit-vim](https://github.com/mattn/emmet-vim).
+* More info about this tool can be found at [emmet-vim](https://github.com/mattn/emmet-vim).
 
 #### CSV editor
 * For csv/dat file editing using csv.vim
