@@ -43,7 +43,43 @@ Explanation
 
 #### HTML IDE
 * There's a HTML IDE inside. It was detrived from [emmet-vim](https://github.com/mattn/emmet-vim).
+
+## Quick Tutorial
+
+Open or create a New File:
+
+    vim index.html
+
+Type something ( Notice: "\_" is the cursor position):
+
+    html:5_
+
+Then type `<c-y>,` (<kbd>Ctrl</kbd><kbd>y</kbd><kbd>,</kbd>), and you should see:
+
+```html
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <title></title>
+</head>
+<body>
+        _
+</body>
+</html>
+```
+
+Type
+    test1
+    test2
+    test3
+
+Then select these 3 lines using Vim Visualblocks keys -- <kbd>Shift</kbd><kbd>v</kbd>. Then press keys <kbd>Ctrl</kbd><kbd>y</kbd><kbd>,</kbd>, you will see what it shows as the followings. Please try it.
+
     ![Coding in HTML](static/emmet-vim-screenshot.gif)
+
+
+[More Tutorials](https://raw.github.com/mattn/emmet-vim/master/TUTORIAL)
 
 * More info about this tool can be found at [emmet-vim](https://github.com/mattn/emmet-vim).
 
