@@ -44,9 +44,9 @@ Explanation
 #### HTML IDE
 * There's a HTML IDE inside. It was detrived from [emmet-vim](https://github.com/mattn/emmet-vim).
 
-## Quick Tutorial
+##### Quick Tutorial
 
-Open or create a New File:
+Open or create a New HTML File:
 
     vim index.html
 
@@ -80,12 +80,12 @@ test3
 Then select these 3 lines using Vim Visualblocks keys -- <kbd>Shift</kbd><kbd>v</kbd>. Then press keys <kbd>Ctrl</kbd><kbd>y</kbd><kbd>,</kbd>, you will see what it shows as the followings. Please try it.
 
 
-    ![Coding in HTML](static/emmet-vim-screenshot.gif)
+![Coding in HTML](static/emmet-vim-screenshot.gif)
 
 
-[More Tutorials](https://raw.github.com/mattn/emmet-vim/master/TUTORIAL)
 
-* More info about this tool can be found at [emmet-vim](https://github.com/mattn/emmet-vim).
+
+* More info about this tool can be found at [emmet-vim](https://github.com/mattn/emmet-vim) and [More Tutorials](https://raw.github.com/mattn/emmet-vim/master/TUTORIAL).
 
 #### CSV editor
 * For csv/dat file editing using csv.vim
