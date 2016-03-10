@@ -80,12 +80,12 @@ test3
 Then select these 3 lines using Vim Visualblocks keys <kbd>Shift</kbd><kbd>v</kbd>. Then press keys <kbd>Ctrl</kbd><kbd>y</kbd><kbd>,</kbd>, you will see what it shows as the followings. Please try it.
 
 
-    ![Coding in HTML](static/emmet-vim-screenshot.gif)
+   ![Coding in HTML](static/emmet-vim-screenshot.gif)
 
 
 
 
-* More info about this tool can be found at [emmet-vim](https://github.com/mattn/emmet-vim) and [more Tutorials](https://raw.github.com/mattn/emmet-vim/master/TUTORIAL).
+* More info about this tool can be found at [emmet-vim](https://github.com/mattn/emmet-vim) and [more tutorials](https://raw.github.com/mattn/emmet-vim/master/TUTORIAL).
 
 #### CSV editor
 * For csv/dat file editing using csv.vim
