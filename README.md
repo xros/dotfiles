@@ -77,10 +77,10 @@ test2
 test3
 ```
 
-Then select these 3 lines using Vim Visualblocks keys <kbd>Shift</kbd><kbd>v</kbd>. Then press keys <kbd>Ctrl</kbd><kbd>y</kbd><kbd>,</kbd>, you will see what it shows as the followings. Please try it.
+Then select these 3 lines using Vim visual line keys <kbd>Shift</kbd><kbd>v</kbd>. Then press keys <kbd>Ctrl</kbd><kbd>y</kbd><kbd>,</kbd>, you will see what it shows as the followings. Please try it.
 
 
-   ![Coding in HTML](static/emmet-vim-screenshot.gif)
+![Coding in HTML](static/emmet-vim-screenshot.gif)
 
 
 
