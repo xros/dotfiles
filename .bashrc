@@ -1,6 +1,5 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc) # for examples
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -85,6 +84,9 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+# Add alias for github/bitbucket/other gits pushing
+# pushing from origin to master without --tags
+alias gitpom='git push -uv origin master'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
