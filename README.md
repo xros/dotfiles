@@ -15,6 +15,7 @@ VIM Plugins including
 *   supertab
 *   emmet-vim
 *   nerdcommenter
+*   vim-fugitive
 *   vim-powerline
 *   vim-indent-guides
 *   vim-multiple-cursors
