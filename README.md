@@ -15,6 +15,7 @@ VIM Plugins including
 *   emmet-vim
 *   nerdcommenter
 *   vim-powerline
+*   vim-indent-guides
 *   vim-multiple-cursors
 *   vim-python-pep8-indent
 *   and so on , just check it out. For VIM 7.3+
