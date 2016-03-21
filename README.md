@@ -41,6 +41,7 @@ Explanation
 
 #### Python IDE
 * There's a Python IDE inside. Type **:Ide** in the Vim prompt console.
+* Press <kbd>F9</kbd> to enter Python IDE
     ![Vim IDE](static/snapshot206.png)
 
 #### HTML IDE

@@ -59,6 +59,10 @@ endfunction
 command! -nargs=0 -bar Ide call OpenMyIDE()
 " Bind the key in normal usage
 "nmap ide :call OpenMyIDE()<CR>
+"
+" Map key F9 to start Tagbar 
+nmap <F9> :Ide<CR>
+
 
 " Map key F8 to start Tagbar 
 nmap <F8> :TagbarToggle<CR>
@@ -88,6 +92,13 @@ let g:SuperTabDefaultCompletionType="<C-X><C-O>"
 set encoding=utf-8
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set termencoding=utf-8
+
+" airline settings
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+
+
 "powerline的设置
 "powerline{
 set guifont=PowerlineSymbols\ for\ Powerline
@@ -99,6 +110,8 @@ let g:Powerline_symbols = 'unicode'
 "let Powerline_symbols='compatible'
 let g:airline_powerline_fonts = 1
 "}
+
+
 
 "set background=dark
 set t_ut=
