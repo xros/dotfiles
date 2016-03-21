@@ -5,10 +5,11 @@ Dot files
                           --- Created by xros
 VIM Plugins including
 ---
-*   ctags
 *   jedi
-*   csv.vim
+*   ctags
+*   tagbar
 *   taglist
+*   csv.vim
 *   NERDTree
 *   ftplugin
 *   supertab
@@ -18,8 +19,8 @@ VIM Plugins including
 *   vim-indent-guides
 *   vim-multiple-cursors
 *   vim-python-pep8-indent
-*   and so on , just check it out. For VIM 7.3+
 *   Default Vim colorscheme is molokayo
+*   and so on , just check it out. For VIM 7.3+
 
 Usage
 ----

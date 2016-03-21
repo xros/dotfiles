@@ -60,6 +60,10 @@ command! -nargs=0 -bar Ide call OpenMyIDE()
 " Bind the key in normal usage
 "nmap ide :call OpenMyIDE()<CR>
 
+" Map key F8 to start Tagbar 
+nmap <F8> :TagbarToggle<CR>
+
+
 " or we can set cc=90 ( line column no more than 90 single lines)
 " set cc=90
 "
