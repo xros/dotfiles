@@ -70,10 +70,10 @@ if [ -f $HOME/.config/fontconfig/conf.d/10-powerline-symbols.conf ];then
     echo "-----Removing Previous Fonts configuring files"
     rm -f $HOME/.config/fontconfig/conf.d/10-powerline-symbols.conf
     echo "-----Processing Fonts configuring files"
-    cp ./.vim/bundle/powerline/fontpatcher/10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d
+    cp ./.vim/bundle/powerline/font/10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d
 else
     echo "-----Processing Fonts configuring files"
-    cp ./.vim/bundle/powerline/fontpatcher/10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d
+    cp ./.vim/bundle/powerline/font/10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d
 fi
 
 
