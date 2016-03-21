@@ -41,7 +41,7 @@ Explanation
 
 #### Python IDE
 * There's a Python IDE inside. Type **:Ide** in the Vim prompt console.
-    ![Vim IDE](static/snapshot150.png)
+    ![Vim IDE](static/snapshot206.png)
 
 #### HTML IDE
 * There's a HTML IDE inside. It was detrived from [emmet-vim](https://github.com/mattn/emmet-vim).
