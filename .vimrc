@@ -51,7 +51,8 @@ function OpenMyIDE()
     "endif
     "set number
     exec 'NERDTreeToggle'
-    exec 'TlistToggle'
+    "exec 'TlistToggle'
+    exec 'TagbarToggle'
     "exec '<C-w-l>'
 endfunction
 " Bind key 'Ide' as command to show the IDE user interface
