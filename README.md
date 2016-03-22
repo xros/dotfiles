@@ -44,7 +44,7 @@ Explanation
 * There's a Python IDE inside. Type **:Ide** in the Vim prompt console.
 * Press <kbd>F9</kbd> to enter Python IDE
 * Using ```:b [your_file_name]``` to switch between different buffers windows in Vim
-    ![Vim IDE](static/snapshot206.png)
+    ![Vim IDE](static/snapshot211.png)
 
 #### HTML IDE
 * There's a HTML IDE inside. It was detrived from [emmet-vim](https://github.com/mattn/emmet-vim).
