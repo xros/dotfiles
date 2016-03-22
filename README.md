@@ -14,6 +14,7 @@ VIM Plugins including
 *   ftplugin
 *   supertab
 *   emmet-vim
+*   ctrlp.vim
 *   nerdcommenter
 *   vim-airline
 *   vim-airline-themes
