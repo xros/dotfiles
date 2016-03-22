@@ -17,7 +17,6 @@ iabbrev </ </<C-X><C-O>
 call pathogen#infect()
 call pathogen#helptags()
 filetype plugin indent on
-syntax on
 let g:solarized_termcolors=256
 "set background=dark
 "colorscheme solarized
@@ -157,3 +156,49 @@ set pastetoggle=<F2>
 
 " Set Vim visual selection background color to be gray
 hi Visual gui=NONE guibg=White guifg=Black
+
+
+" ctrlp settings
+let [s:lcmap, s:prtmaps] = ['nn <buffer> <silent>', {                                                                                                                                              
+    \ 'PrtBS()':              ['<bs>', '<c-]>'],                                                                                                                                               
+    \ 'PrtDelete()':          ['<del>'],                                                                                                                                                       
+    \ 'PrtDeleteWord()':      ['<c-w>'],                                                                                                                                                       
+    \ 'PrtClear()':           ['<c-u>'],                                                                                                                                                       
+    \ 'PrtSelectMove("j")':   ['<c-j>', '<down>'],                                                                                                                                             
+    \ 'PrtSelectMove("k")':   ['<c-k>', '<up>'],                                                                                                                                               
+    \ 'PrtSelectMove("t")':   ['<Home>', '<kHome>'],                                                                                                                                           
+    \ 'PrtSelectMove("b")':   ['<End>', '<kEnd>'],                                                                                                                                             
+    \ 'PrtSelectMove("u")':   ['<PageUp>', '<kPageUp>'],                                                                                                                                       
+    \ 'PrtSelectMove("d")':   ['<PageDown>', '<kPageDown>'],                                                                                                                                   
+    \ 'PrtHistory(-1)':       ['<c-n>'],                                                                                                                                                       
+    \ 'PrtHistory(1)':        ['<c-p>'],                                                                                                                                                       
+    \ 'AcceptSelection("e")': ['<cr>', '<2-LeftMouse>'],                                                                                                                                       
+    \ 'AcceptSelection("h")': ['<c-x>', '<c-cr>', '<c-s>'],                                                                                                                                    
+    \ 'AcceptSelection("t")': ['<c-t>'],                                                                                                                                                       
+    \ 'AcceptSelection("v")': ['<c-v>', '<RightMouse>'],                                                                                                                                       
+    \ 'ToggleFocus()':        ['<s-tab>'],                                                                                                                                                     
+    \ 'ToggleRegex()':        ['<c-r>'],                                                                                                                                                       
+    \ 'ToggleByFname()':      ['<c-d>'],                                                                                                                                                       
+    \ 'ToggleType(1)':        ['<c-f>', '<c-up>'],                                                                                                                                             
+    \ 'ToggleType(-1)':       ['<c-b>', '<c-down>'],                                                                                                                                           
+    \ 'PrtExpandDir()':       ['<tab>'],                                                                                                                                                       
+    \ 'PrtInsert("c")':       ['<MiddleMouse>', '<insert>'],                                                                                                                                   
+    \ 'PrtInsert()':          ['<c-\>'],                                                                                                                                                       
+    \ 'PrtCurStart()':        ['<c-a>'],                                                                                                                                                       
+    \ 'PrtCurEnd()':          ['<c-e>'],                                                                                                                                                       
+    \ 'PrtCurLeft()':         ['<c-h>', '<left>', '<c-^>'],                                                                                                                                    
+    \ 'PrtCurRight()':        ['<c-l>', '<right>'],                                                                                                                                            
+    \ 'PrtClearCache()':      ['<F5>'],                                                                                                                                                        
+    \ 'PrtDeleteEnt()':       ['<F7>'],                                                                                                                                                        
+    \ 'CreateNewFile()':      ['<c-y>'],                                                                                                                                                       
+    \ 'MarkToOpen()':         ['<c-z>'],                                                                                                                                                       
+    \ 'OpenMulti()':          ['<c-o>'],                                                                                                                                                       
+    \ 'PrtExit()':            ['<esc>', '<c-c>', '<c-g>'],                                                                                                                                     
+    \ }]                                                                                                                                                                                       
+
+let g:ctrlp_map = '<c-p>'                                                                                                                                                                          
+let g:ctrlp_cmd = 'CtrlP'                                                                                                                                                                                                                                                                                                                                                                   
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux                                                                                                                                        
+set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows  
+
+syntax on
