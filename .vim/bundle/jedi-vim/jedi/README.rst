@@ -33,12 +33,13 @@ It's really easy.
 Jedi can currently be used with the following editors:
 
 - Vim (jedi-vim_, YouCompleteMe_)
-- Emacs (Jedi.el_, elpy_, anaconda-mode_, ycmd_)
+- Emacs (Jedi.el_, company-mode_, elpy_, anaconda-mode_, ycmd_)
 - Sublime Text (SublimeJEDI_ [ST2 + ST3], anaconda_ [only ST3])
 - SynWrite_
 - TextMate_ (Not sure if it's actually working)
 - Kate_ version 4.13+ supports it natively, you have to enable it, though. [`proof
   <https://projects.kde.org/projects/kde/applications/kate/repository/show?rev=KDE%2F4.13>`_]
+- Atom_ (autocomplete-python_)
 
 And it powers the following projects:
 
@@ -138,10 +139,9 @@ understand ``AttributeError`` and other code issues.
 Refactoring
 -----------
 
-Jedi would in theory support refactoring, but we have never publicized it,
-because it's not production ready. If you're interested in helping out here,
-let me know. With the latest parser changes, it should be very easy to actually
-make it work.
+Jedi's parser would support refactoring, but there's no API to use it right
+now.  If you're interested in helping out here, let me know. With the latest
+parser changes, it should be very easy to actually make it work.
 
 
 Development
@@ -177,6 +177,7 @@ For more detailed information visit the `testing documentation
 .. _jedi-vim: https://github.com/davidhalter/jedi-vim
 .. _youcompleteme: http://valloric.github.io/YouCompleteMe/
 .. _Jedi.el: https://github.com/tkf/emacs-jedi
+.. _company-mode: https://github.com/syohex/emacs-company-jedi
 .. _elpy: https://github.com/jorgenschaefer/elpy
 .. _anaconda-mode: https://github.com/proofit404/anaconda-mode
 .. _ycmd: https://github.com/abingham/emacs-ycmd
@@ -186,3 +187,5 @@ For more detailed information visit the `testing documentation
 .. _wdb: https://github.com/Kozea/wdb
 .. _TextMate: https://github.com/lawrenceakka/python-jedi.tmbundle
 .. _Kate: http://kate-editor.org
+.. _Atom: https://atom.io/
+.. _autocomplete-python: https://atom.io/packages/autocomplete-python

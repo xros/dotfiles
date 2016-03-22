@@ -15,7 +15,8 @@ VIM Plugins including
 *   supertab
 *   emmet-vim
 *   nerdcommenter
-*   vim-powerline
+*   vim-airline
+*   vim-fugitive
 *   vim-indent-guides
 *   vim-multiple-cursors
 *   vim-python-pep8-indent
@@ -41,7 +42,9 @@ Explanation
 
 #### Python IDE
 * There's a Python IDE inside. Type **:Ide** in the Vim prompt console.
-    ![Vim IDE](static/snapshot206.png)
+* Press <kbd>F9</kbd> to enter Python IDE
+* Using ```:b [your_file_name]``` to switch between different buffers windows in Vim
+    ![Vim IDE](static/snapshot211.png)
 
 #### HTML IDE
 * There's a HTML IDE inside. It was detrived from [emmet-vim](https://github.com/mattn/emmet-vim).

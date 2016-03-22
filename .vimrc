@@ -59,6 +59,10 @@ endfunction
 command! -nargs=0 -bar Ide call OpenMyIDE()
 " Bind the key in normal usage
 "nmap ide :call OpenMyIDE()<CR>
+"
+" Map key F9 to start Tagbar 
+nmap <F9> :Ide<CR>
+
 
 " Map key F8 to start Tagbar 
 nmap <F8> :TagbarToggle<CR>
@@ -88,6 +92,24 @@ let g:SuperTabDefaultCompletionType="<C-X><C-O>"
 set encoding=utf-8
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set termencoding=utf-8
+
+" jedi settings
+"let g:jedi#use_tabs_not_buffers = 1
+"let g:jedi#auto_vim_configuration = 0
+"let g:jedi#use_splits_not_buffers = "left"
+"let g:jedi#popup_select_first = 1
+
+"let g:jedi#show_call_signatures = "2"
+
+" airline settings
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#left_sep = ' '
+let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline_powerline_fonts = 1
+let g:airline_exclude_preview=1
+
+
+
 "powerline的设置
 "powerline{
 set guifont=PowerlineSymbols\ for\ Powerline
@@ -97,8 +119,15 @@ set laststatus=2
 set fillchars+=stl:\ ,stlnc:\
 let g:Powerline_symbols = 'unicode'
 "let Powerline_symbols='compatible'
-let g:airline_powerline_fonts = 1
 "}
+
+" indentLine https://github.com/Yggdroot/indentLine
+" Vim
+let g:indentLine_color_term = 239
+
+let g:indentLine_char = 'c'
+let g:indentLine_enabled = 1
+
 
 "set background=dark
 set t_ut=
