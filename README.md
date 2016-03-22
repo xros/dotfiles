@@ -16,6 +16,7 @@ VIM Plugins including
 *   emmet-vim
 *   nerdcommenter
 *   vim-airline
+*   vim-airline-themes
 *   vim-fugitive
 *   vim-indent-guides
 *   vim-multiple-cursors
