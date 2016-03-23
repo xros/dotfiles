@@ -7,7 +7,7 @@ VIM Plugins including
 ---
 *   jedi
 *   ctags
-*   taglist
+*   tagbar
 *   csv.vim
 *   NERDTree
 *   ftplugin
