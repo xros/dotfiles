@@ -24,6 +24,9 @@ VIM Plugins including
 *   Default Vim colorscheme is molokai
 *   and so on , just check it out. For VIM 7.3+
 
+##### An Easter egg
+* Try <kbd>\<kbd><kbd>r</kbd> to see what's gonna happen in your Vim :) Hit <kbd>Ctrl</kdb><kbd>c</kdb> to escape.
+
 Usage
 ----
 * Use the script ```cp_files.sh``` to **backup** previous files and **replace** them within files in this project. The ```cp_files.sh``` will copy those dotfiles to the system user's home folder.
