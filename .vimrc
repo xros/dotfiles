@@ -17,11 +17,6 @@ iabbrev </ </<C-X><C-O>
 call pathogen#infect()
 call pathogen#helptags()
 filetype plugin indent on
-let g:solarized_termcolors=256
-"set background=dark
-"colorscheme solarized
-"colorscheme peaksea
-colorscheme molokayo
 
 " for indent guide lines 
 let g:indent_guides_auto_colors = 1
@@ -159,6 +154,8 @@ hi Visual gui=NONE guibg=White guifg=Black
 
 
 " ctrlp settings
+set runtimepath^=~/.vim/bundle/ctrlp.vim
+
 let [s:lcmap, s:prtmaps] = ['nn <buffer> <silent>', {                                                                                                                                              
     \ 'PrtBS()':              ['<bs>', '<c-]>'],                                                                                                                                               
     \ 'PrtDelete()':          ['<del>'],                                                                                                                                                       
@@ -201,4 +198,15 @@ let g:ctrlp_cmd = 'CtrlP'
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux                                                                                                                                        
 set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows  
 
-syntax on
+"syntax on
+syntax enable
+
+let g:solarized_termcolors=256
+"set background=dark
+"colorscheme solarized
+"colorscheme peaksea
+" Notice: theme molokayo will not show CtrlP even if it works very well.
+"colorscheme molokayo
+colorscheme molokai
+
+
