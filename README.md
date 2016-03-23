@@ -21,7 +21,7 @@ VIM Plugins including
 *   vim-indent-guides
 *   vim-multiple-cursors
 *   vim-python-pep8-indent
-*   Default Vim colorscheme is molokayo
+*   Default Vim colorscheme is molokai
 *   and so on , just check it out. For VIM 7.3+
 
 Usage
@@ -32,7 +32,7 @@ Usage
 
     ![backup and install](static/snapshot214.png)
     
-* Default Vim colorscheme is molokayo
+* Default Vim colorscheme is molokai
 * The bash scheme looks like this by default.
 
     ![console schema](static/snapshot111.png)
