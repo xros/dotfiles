@@ -209,4 +209,6 @@ let g:solarized_termcolors=256
 "colorscheme molokayo
 colorscheme molokai
 
+" Want to hide .pyc files? Then add the following line:
+let NERDTreeIgnore=['\.pyc$', '\~$', '\.pyo$'] "ignore files in NERDTree
 
