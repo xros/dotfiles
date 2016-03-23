@@ -25,7 +25,7 @@ VIM Plugins including
 *   and so on , just check it out. For VIM 7.3+
 
 ##### An Easter egg
-* Try <kbd>\\</kbd><kbd>r</kbd> to see what's gonna happen in your Vim :) Hit <kbd>Ctrl</kdb><kbd>c</kdb> to escape.
+* Try <kbd>\\</kbd><kbd>r</kbd> to see what's gonna happen in your Vim :) Hit <kbd>Ctrl</kbd><kbd>c</kbd> to escape.
 
 Usage
 ----
