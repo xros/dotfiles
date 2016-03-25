@@ -1,0 +1,61 @@
+snippet license "FTE License snippet"
+"""
+			    __________________
+			   / ____/_  __/ ____/
+			  / /_    / / / __/
+			 / __/   / / / /___
+			/_/     /_/ /_____/
+
+
+		FREER THAN EVER PUBLIC LICENSE
+
+			Version 1, March 2016
+
+	Copyright (C) 2016 Alexander Liu <alex(at)nervey.com>
+
+If there exists a most free license, this will be freer than it.
+Everyone is permitted to copy, distribute or modifiy anything under this license.
+
+		FREER THAN EVER PUBLIC LICENSE
+	TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
+
+0. You are freer than ever to copy, distribute and modifiy anything under this license.
+"""
+
+endsnippet
+
+snippet class "A simple Python class"
+class ${1:MyClass}(${2:Object}):
+    """Doc string for $1"""
+
+    def __init__(self,${3:a}, ${4:b}):
+        """
+        :$3: @todo
+        :$4: @todo
+        """
+        $2.__init__(self)
+        
+endsnippet
+
+snippet if_ "Usually the tail of a script"
+if __name__ == "__main__":
+    ${1:my_function}(${2:param})
+    
+endsnippet
+
+snippet #! "Init a Python script"
+#!/usr/bin/env python
+
+endsnippet
+
+snippet #encoding "encoding by default utf-8"
+# encoding: utf-8
+
+endsnippet
+
+
+snippet while "While condition loop"
+while (${1:condition}):
+    ${2:do_something}
+
+endsnippet

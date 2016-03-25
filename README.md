@@ -14,6 +14,7 @@ VIM Plugins including
 *   supertab
 *   emmet-vim
 *   ctrlp.vim
+*   ultisnips
 *   nerdcommenter
 *   vim-airline
 *   vim-airline-themes
@@ -54,6 +55,14 @@ Explanation
 * Press <kbd>F9</kbd> to enter Python IDE
 * Using ```:b [your_file_name]``` to switch between different buffers windows in Vim
     ![Vim IDE](static/snapshot211.png)
+
+    Snippets can be found at [.vim/UltiSnips/]().
+    Ultisnips open key trigger: <kbd>\\</kbd><kbd>s</kbd>
+    Ultisnips jump forward trigger: <kbd>\\</kbd><kbd>f</kbd>
+    Ultisnips jump backward trigger: <kbd>\\</kbd><kbd>b</kbd>
+    Notice: ```<leader>``` in ```.vimrc``` represents <kbd>\\<kbd> 
+
+
 
 #### HTML IDE
 * There's a HTML IDE inside. It was detrived from [emmet-vim](https://github.com/mattn/emmet-vim).
