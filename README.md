@@ -56,11 +56,15 @@ Explanation
 * Using ```:b [your_file_name]``` to switch between different buffers windows in Vim
     ![Vim IDE](static/snapshot211.png)
 
-    Snippets can be found at [.vim/UltiSnips/]().
+    Snippets can be found at ```.vim/UltiSnips/```
+
     Ultisnips open key trigger: <kbd>\\</kbd><kbd>s</kbd>
+
     Ultisnips jump forward trigger: <kbd>\\</kbd><kbd>f</kbd>
+
     Ultisnips jump backward trigger: <kbd>\\</kbd><kbd>b</kbd>
-    Notice: ```<leader>``` in ```.vimrc``` represents <kbd>\\<kbd> 
+
+    *Notice*: ```<leader>``` in ```.vimrc``` represents <kbd>\\</kbd> 
 
 
 
