@@ -15,6 +15,7 @@ VIM Plugins including
 *   emmet-vim
 *   ctrlp.vim
 *   ultisnips
+*   numbers.vim
 *   nerdcommenter
 *   vim-airline
 *   vim-airline-themes
@@ -54,7 +55,13 @@ Explanation
 * There's a Python IDE inside. Type **:Ide** in the Vim prompt console.
 * Press <kbd>F9</kbd> to enter Python IDE
 * Using ```:b [your_file_name]``` to switch between different buffers windows in Vim
-    ![Vim IDE](static/snapshot211.png)
+    ![Vim IDE](static/snapshot229.png)
+
+    Paste mode toggle: <kbd>F2</kbd>
+
+    numbers.vim toggle: <kbd>F3</kbd>
+
+    Re-fresh CtrlP fuzzy search cache switch: <kbd>F5</kbd>
 
     Snippets can be found at ```.vim/UltiSnips/```
 

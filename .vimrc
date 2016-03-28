@@ -149,6 +149,9 @@ augroup END
 " do :set nopaste  
 set pastetoggle=<F2>
 
+" set numbers.vim toggle on F3 between old ones
+nnoremap <F3> :NumbersToggle<CR>
+
 " Set Vim visual selection background color to be gray
 hi Visual gui=NONE guibg=White guifg=Black
 
