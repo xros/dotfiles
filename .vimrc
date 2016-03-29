@@ -226,3 +226,7 @@ let g:UltiSnipsJumpBackwardTrigger="<leader>b"
 
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
+
+" this fixes backspace not erasing in Vim
+set backspace=indent,eol,start " backspace over everything in insert mode
+
