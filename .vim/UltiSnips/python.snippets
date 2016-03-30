@@ -53,12 +53,11 @@ snippet class "A simple Python class"
 class ${1:MyClass}(${2:object}):
     """Doc string for $1"""
 
-    def __init__(self,${3:a}, ${4:b}):
+    def __init__(self):
         """
-        :$3: @todo
-        :$4: @todo
+	::    @todo
         """
-        $2.__init__(self)
+        super($1, self).__init__()
         
 endsnippet
 
