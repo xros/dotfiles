@@ -1,4 +1,4 @@
-snippet license "FTE License snippet"
+snippet fte "FTE License snippet"
 """
                           __________________
                          / ____/_  __/ ____/
@@ -23,16 +23,41 @@ Everyone is permitted to copy, distribute or modifiy anything under this license
 
 endsnippet
 
+snippet ste "Strict Public License snippet"
+"""
+                          ____ _____ _____
+                         / ___|_   _| ____|
+                         \___ \ | | |  _|
+                          ___) || | | |___
+                         |____/ |_| |_____|
+
+                   STRICTER THAN EVER PUBLIC LICENSE
+
+                        Version 1, March 2016
+
+             Copyright (C) 2016 Alexander Liu <alex(at)nervey.com>
+
+If there exists a most strict license, this will be stricter than it.
+Without permission of the author, everyone is not permitted to copy, distribute 
+or modifiy anything under this license.
+
+                   STRICTER THAN EVER PUBLIC LICENSE
+    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
+
+0. Ask the author to copy, distribute and modifiy anything under this license.
+"""
+
+endsnippet
+
 snippet class "A simple Python class"
-class ${1:MyClass}(${2:Object}):
+class ${1:MyClass}(${2:object}):
     """Doc string for $1"""
 
-    def __init__(self,${3:a}, ${4:b}):
+    def __init__(self):
         """
-        :$3: @todo
-        :$4: @todo
+        ::    @todo
         """
-        $2.__init__(self)
+        super($1, self).__init__()
         
 endsnippet
 
@@ -43,7 +68,7 @@ if __name__ == "__main__":
 endsnippet
 
 snippet #! "Init a Python script"
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 endsnippet
 

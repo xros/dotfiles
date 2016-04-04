@@ -191,7 +191,23 @@ else
     true
 fi
 
+#######################################################################
+# Set anaconda Python3 path for machine learning  ( No Python2 )      #
+# we need to set it in front of the path to make it work              #
+# [!] Important, if you don't do statistics, comment this section!    # 
+#     or your previous projects may not function, due to packages     #
+#     missing or version wrong.                                       #
+#######################################################################
+if [ -d "/usr/local/anaconda3" ] ; then
+    export PATH=/usr/local/anaconda3/bin:$PATH
+else
+    true
+fi
+
 #########################################
 # Unset TMUX var for new session        #
 #########################################
 unset TMUX
+
+
+
