@@ -1,10 +1,10 @@
 #!/bin/bash
 files=".bashrc .pythonstartup .tmux.conf .vimrc .zshrc .muttrc .gpg.rc .rtorrent.rc"
-echo "Copying dotfiles... Need to backup previous ones before overwriting"
+echo "[+] Copying dotfiles... Need to backup previous ones before overwriting"
 for f in $files;do
     # copy those files to the user's $HOME folder
     if [ -f $HOME/$f ];then
-        echo "Backuping previous dot files settings: "$f" ..."
+        echo "[+] Backuping previous dot files settings: "$f" ..."
         mv $HOME/$f $HOME/$f\.backup_$(date "+%Y%m%d%H%M%S")
         cp $f  $HOME/
         #true
@@ -23,7 +23,7 @@ else
 fi
 
 # For Vim editor with its plugin powerline
-echo "Configuring and Installing Fonts for Vim Editor"
+echo "[+] Configuring and Installing Fonts for Vim Editor"
 # Try to remove fonts cache
 rm /tmp/Powerline.cache -f
 #if [ -d $HOME/.fonts ];then
@@ -34,28 +34,28 @@ mkdir $HOME/.fonts -p
 
 #echo "[ Configuring Fonts for Powerline Symbols]"
 #if [ -f $HOME/.fonts/PowerlineSymbols.otf ];then
-    #echo "-----Removing Previous Fonts files"
+    #echo "[+] Removing Previous Fonts files"
     #rm -f $HOME/.fonts/PowerlineSymbols.otf
-    #echo "-----Installing Fonts"
+    #echo "[+] Installing Fonts"
     #cp ./.vim/bundle/powerline/font/PowerlineSymbols.otf $HOME/.fonts
 #else
-    #echo "-----Installing Fonts"
+    #echo "[+] Installing Fonts"
     #cp ./.vim/bundle/powerline/font/PowerlineSymbols.otf $HOME/.fonts
 #fi
 
 # Installing Symbola fonts
-echo "[ Configuring Fonts for Symbola fonts]"
+echo "[+] Configuring Fonts for Symbola fonts"
 if [ -f $HOME/.fonts/Symbola.otf ];then
-    echo "-----Removing Previous Fonts files"
+    echo "[+] Removing Previous Fonts files"
     rm -f $HOME/.fonts/Symbola.otf
-    echo "-----Installing Fonts"
+    echo "[+] Installing Fonts"
     cp ./fonts/Symbola.otf $HOME/.fonts
 else
-    echo "-----Installing Fonts"
+    echo "[+] Installing Fonts"
     cp ./fonts/Symbola.otf $HOME/.fonts
 fi
 
-echo "[ Updating Fonts Cache ]"
+echo "[+] Updating Fonts Cache"
 
 fc-cache -vf $HOME/.fonts/
 
@@ -67,37 +67,45 @@ fi
 
 #echo "[ Validating Fonts configuring files ]"
 #if [ -f $HOME/.config/fontconfig/conf.d/10-powerline-symbols.conf ];then
-    #echo "-----Removing Previous Fonts configuring files"
+    #echo "[+] Removing Previous Fonts configuring files"
     #rm -f $HOME/.config/fontconfig/conf.d/10-powerline-symbols.conf
-    #echo "-----Processing Fonts configuring files"
+    #echo "[+] Processing Fonts configuring files"
     #cp ./.vim/bundle/powerline/font/10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d
 #else
-    #echo "-----Processing Fonts configuring files"
+    #echo "[+] Processing Fonts configuring files"
     #cp ./.vim/bundle/powerline/font/10-powerline-symbols.conf $HOME/.config/fontconfig/conf.d
 #fi
 
 
 
-echo "-----Validating dotfiles..."
+echo "[+] Validating dotfiles..."
 . $HOME/.bashrc
 
-echo "-----Copying .vim/ "
+echo "[+] Copying .vim/ "
 if [ -d $HOME/.vim ];then
-    echo "-----Backuping previous dot vim files settings... "
+    echo "[+] Backuping previous dot vim files settings... "
     mv $HOME/.vim $HOME/.vim.backup_$(date "+%Y%m%d%H%M%S")
     cp .vim/ -R $HOME/
 else
     cp .vim/ -R $HOME/
 fi
 
-echo "-----Copying rtorrent settings..."
+echo "[+] Copying rtorrent settings..."
 mkdir -p $HOME/Downloads/torrents/{rtorrent_sessions,rtorrent_temp,rtorrent_watch,rtorrent_completed}
 
-echo "-----Creating directory for Go Language projects in $HOME/goworks/ ..."
+echo "[+] Copying .xdotool_mouse_key_bindings/ "
+if [ -d $HOME/.xdotool_mouse_key_bindings ];then
+    echo "[+] Backuping previous dot vim files settings... "
+    mv $HOME/.xdotool_mouse_key_bindings $HOME/.xdotool_mouse_key_bindings.backup_$(date "+%Y%m%d%H%M%S")
+    cp .xdotool_mouse_key_bindings/ -R $HOME/
+else
+    cp .xdotool_mouse_key_bindings/ -R $HOME/
+fi
+
+echo "[+] Creating directory for Go Language projects in $HOME/goworks/ ..."
 mkdir $HOME/goworks/ -p
 
-echo "You may restart a SHELL to see the cumtom symbols in Vim editor"
+echo "[+] You may restart a SHELL to see the cumtom symbols in Vim editor"
 
-echo "Copying finished!"
-echo "Try your new environment! :-)"
+echo "[+] Finished! Try your new environment! By Alexander Liu :-)"
 exit 0
