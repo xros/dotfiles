@@ -35,7 +35,7 @@ Usage
 * These settings are shipped with configuration files for some common tools, including `Elinks, Vim, Mutt, Python(2/3), Zsh, Rtorrent, Golang-go, Ardupilot and etc.`
 * Usage:
 
-    ![backup and install](static/snapshot214.png)
+    ![backup and install](static/snapshot273.png)
     
 * Default Vim colorscheme is molokai
 * The bash scheme looks like this by default.
