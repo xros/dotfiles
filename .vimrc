@@ -1,3 +1,5 @@
+" set number line indication, `set nonu` to disable it
+set nu
 set term=xterm-256color
 " Use smartindent
 set smartindent
