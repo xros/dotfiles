@@ -1,8 +1,8 @@
 Dot files
 ===
-    Dot files for Bash, Zsh, Vim, Elinks, Mutt, Gnupg, Python, Rtorrent.
-    A Python IDE for Vim is built in.
-                          --- Created by xros
+    Dot files for Bash, Zsh, Vim, Elinks, Mutt, Gnupg, Python, Java, Rtorrent.
+    A Java/Python/HTML IDE for Vim is built in.
+                          --- Created by Alexander Liu
 VIM Plugins including
 ---
 *   jedi
@@ -160,5 +160,5 @@ Then select these 3 lines using Vim visual line keys <kbd>Shift</kbd><kbd>v</kbd
 
 
 #### Have Fun ####
-By [xros](https://github.com/xros)
+By Alexander Liu A.K.A. [xros](https://github.com/xros)
 
