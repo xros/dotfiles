@@ -206,10 +206,7 @@ fi
 
 #######################################################################
 # Set JAVA JDK 8 path if installed                                    #
-# we need to set it in front of the path to make it work              #
-# [!] Important, if you don't do statistics, comment this section!    # 
-#     or your previous projects may not function, due to packages     #
-#     missing or version wrong.                                       #
+# Comment these lines if you want to use openjdk                      #
 #######################################################################
 if [ -d "/opt/jdk1.8.0_45" ] ; then
     export JAVA_HOME=/opt/jdk1.8.0_45/
