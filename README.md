@@ -49,7 +49,19 @@ Explanation
 
 * Notice that: For some vim users to use tagbar/ctags, they would need to install the package "ctags". For example on debian/ubuntu ```sudo apt-get install ctags``` , or on centOS/Fedora/RHEL ```sudo yum install ctags```, or on archlinux ```pacman -S ctags```
 * The ```init_*.sh``` and the ```cp_files.sh``` are very neat for new users both on ubuntu12.04 and ubuntu14.04.
-```init_ubuntu_12.04.sh``` is compatible with Debian7/Ubuntu12.04 while ```init_ubuntu_14.04.sh``` is for Ubuntu14.04. The default Vim provided on Ubuntu 16.04 is not pre-compiled with `Python` support. To use these Vim settings, you should install Vim with Python support. See [here](https://github.com/Valloric/YouCompleteMe/wiki/Building-Vim-from-source) for info about compiling it, or [here for x86_64](https://drive.google.com/open?id=0BzL1CwVspEkiS2lwUURsQUMtYUU), and [here for ARM 7L Raspberry Pi and so on](https://drive.google.com/open?id=0BzL1CwVspEkiSGZOZ0J1VkNZQWs) to download a Vim deb package pre-compiled with `Python` support.
+```init_ubuntu_12.04.sh``` is compatible with Debian7/Ubuntu12.04 while ```init_ubuntu_14.04.sh``` is for Ubuntu14.04. The default Vim provided on Ubuntu 16.04 is not pre-compiled with `Python` support. To use these Vim settings, you should install Vim with Python support. See [here](https://github.com/Valloric/YouCompleteMe/wiki/Building-Vim-from-source) for info about compiling it
+
+Pre-compiled Vim Downloads
+-------------------------
+I compiled Vim on serveral platforms to make sure you can use my dotfiles without a problem.
+
+Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` support.
+
+[ Debian8/Ubuntu16.04 x86_64](https://drive.google.com/open?id=0BzL1CwVspEkiS2lwUURsQUMtYUU), 
+
+[ Debian7/Ubuntu14.04 x86_64](https://drive.google.com/open?id=0BzL1CwVspEkiS2lwUURsQUMtYUU), 
+
+[ Debian8 for ARM 7L Raspberry Pi and NanoPi/NanoPC Computers](https://drive.google.com/open?id=0BzL1CwVspEkiSGZOZ0J1VkNZQWs) 
 
 #### Python IDE
 * There's a Python IDE inside. Type **:Ide** in the Vim prompt console.
