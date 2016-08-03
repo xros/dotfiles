@@ -88,7 +88,8 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 
 #### JAVA IDE
 
-By default it uses JDK 8+. If you want to set your personal JDK, please change the `JAVA_HOME`/`JRE_HOME`/`PATH` in file `.bashrc`
+By default it works with JDK 8 at least. If you want to set your personal JDK, please change the `JAVA_HOME`/`JRE_HOME`/`PATH` in file `.bashrc`
+Check this [tutorial](http://www.tecmint.com/install-java-jdk-jre-in-linux/) for switching to JDK8 for Ubuntu destro.
 
 ##### Demo
 ![Vim Java 1](.vim/bundle/vim-javacomplete2/doc/demo.gif)
