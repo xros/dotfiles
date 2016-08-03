@@ -204,6 +204,18 @@ else
     true
 fi
 
+#######################################################################
+# Set JAVA JDK 8 path if installed                                    #
+# Comment these lines if you want to use openjdk                      #
+#######################################################################
+if [ -d "/opt/jdk1.8.0_45" ] ; then
+    export JAVA_HOME=/opt/jdk1.8.0_45/
+    export JRE_HOME=/opt/jdk1.8.0._45/jre 	
+    export PATH=$PATH:/opt/jdk1.8.0_45/bin:/opt/jdk1.8.0_45/jre/bin
+else
+    true
+fi
+
 #########################################
 # Unset TMUX var for new session        #
 #########################################

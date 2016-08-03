@@ -1,8 +1,8 @@
 Dot files
 ===
-    Dot files for Bash, Zsh, Vim, Elinks, Mutt, Gnupg, Python, Rtorrent.
-    A Python IDE for Vim is built in.
-                          --- Created by xros
+    Dot files for Bash, Zsh, Vim, Elinks, Mutt, Gnupg, Python, Java, Rtorrent.
+    A Java/Python/HTML IDE for Vim is built in.
+                          --- Created by Alexander Liu
 VIM Plugins including
 ---
 *   jedi
@@ -22,6 +22,7 @@ VIM Plugins including
 *   vim-fugitive
 *   vim-indent-guides
 *   vim-multiple-cursors
+*   vim-javacomplete2
 *   vim-python-pep8-indent
 *   Default Vim colorscheme is molokai
 *   and so on , just check it out. For VIM 7.3+
@@ -85,6 +86,18 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 
     *Notice*: ```<leader>``` in ```.vimrc``` represents <kbd>\\</kbd> 
 
+#### JAVA IDE
+
+By default it uses JDK 8+. If you want to set your personal JDK, please change the `JAVA_HOME`/`JRE_HOME`/`PATH` in file `.bashrc`
+
+##### Demo
+![Vim Java 1](.vim/bundle/vim-javacomplete2/doc/demo.gif)
+
+
+##### Generics demo
+![Vim Java 2](.vim/bundle/vim-javacomplete2/doc/generics_demo.gif)
+
+For more info and settings, please visit [here](https://github.com/artur-shaik/vim-javacomplete2) for help.
 
 
 #### HTML IDE
@@ -147,5 +160,5 @@ Then select these 3 lines using Vim visual line keys <kbd>Shift</kbd><kbd>v</kbd
 
 
 #### Have Fun ####
-By [xros](https://github.com/xros)
+By Alexander Liu A.K.A. [xros](https://github.com/xros)
 
