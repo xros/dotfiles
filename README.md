@@ -59,7 +59,7 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 
 [ Debian8/Ubuntu16.04 x86_64](https://drive.google.com/open?id=0BzL1CwVspEkiS2lwUURsQUMtYUU), 
 
-[ Debian7/Ubuntu14.04 x86_64](https://drive.google.com/open?id=0BzL1CwVspEkiS2lwUURsQUMtYUU), 
+[ Debian7/Ubuntu14.04 x86_64](https://drive.google.com/open?id=0BzL1CwVspEkiR2FIZU5GZ0E0bzA), 
 
 [ Debian8 for ARM 7L Raspberry Pi and NanoPi/NanoPC Computers](https://drive.google.com/open?id=0BzL1CwVspEkiSGZOZ0J1VkNZQWs) 
 
