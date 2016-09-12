@@ -36,12 +36,12 @@ Usage
 * These settings are shipped with configuration files for some common tools, including `Elinks, Vim, Mutt, Python(2/3), Zsh, Rtorrent, Golang-go, Ardupilot and etc.`
 * Usage:
 
-    ![backup and install](static/snapshot273.png)
+    ![backup and install](https://github.com/xros/dotfiles/raw/master/static/snapshot273.png)
     
 * Default Vim colorscheme is molokai
 * The bash scheme looks like this by default.
 
-    ![console schema](static/snapshot111.png)
+    ![console schema](https://github.com/xros/dotfiles/raw/master/static/snapshot111.png)
 
 
 Explanation
@@ -68,7 +68,7 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 * There's a Python IDE inside. Type **:Ide** in the Vim prompt console.
 * Press <kbd>F9</kbd> to enter Python IDE
 * Using ```:b [your_file_name]``` to switch between different buffers windows in Vim
-    ![Vim IDE](static/snapshot229.png)
+    ![Vim IDE](https://github.com/xros/dotfiles/raw/master/static/snapshot229.png)
 
     Paste mode toggle: <kbd>F2</kbd>
 
@@ -140,7 +140,7 @@ test3
 Then select these 3 lines using Vim visual line keys <kbd>Shift</kbd><kbd>v</kbd>. Then press keys <kbd>Ctrl</kbd><kbd>y</kbd><kbd>,</kbd>, you will see what it shows as the followings. Please try it.
 
 
-![Coding in HTML](static/emmet-vim-screenshot.gif)
+![Coding in HTML](https://github.com/xros/dotfiles/raw/master/static/emmet-vim-screenshot.gif)
 
 
 
@@ -149,10 +149,10 @@ Then select these 3 lines using Vim visual line keys <kbd>Shift</kbd><kbd>v</kbd
 
 #### CSV editor
 * For csv/dat file editing using csv.vim
-    ![Vim csv](static/snapshot37.png)
+    ![Vim csv](https://github.com/xros/dotfiles/raw/master/static/snapshot37.png)
     
     The demo of CSV file editing:
-    ![Vim csv demo](static/csv.gif)
+    ![Vim csv demo](https://github.com/xros/dotfiles/raw/master/static/csv.gif)
     
 
 ##### Notice:
