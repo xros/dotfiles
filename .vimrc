@@ -232,3 +232,7 @@ let g:UltiSnipsEditSplit="vertical"
 " this fixes backspace not erasing in Vim
 set backspace=indent,eol,start " backspace over everything in insert mode
 
+
+
+""""""""" Enabling plugin vim-javacomplete2
+autocmd FileType java setlocal omnifunc=javacomplete#Complete

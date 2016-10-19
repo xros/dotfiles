@@ -12,6 +12,7 @@ VIM Plugins including
 *   NERDTree
 *   ftplugin
 *   supertab
+*   vim-clang
 *   emmet-vim
 *   ctrlp.vim
 *   ultisnips
@@ -85,6 +86,13 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
     Ultisnips jump backward trigger: <kbd>\\</kbd><kbd>b</kbd>
 
     *Notice*: ```<leader>``` in ```.vimrc``` represents <kbd>\\</kbd> 
+
+#### C/C++ IDE
+* Type **:Ide** in the Vim prompt console.
+
+![clang IDE in Vim](static/vim-clang.png)
+
+For more info, please visit [vim-clang](https://github.com/justmao945/vim-clang)
 
 #### JAVA IDE
 
