@@ -123,7 +123,11 @@ let g:Powerline_symbols = 'unicode'
 " Vim
 let g:indentLine_color_term = 239
 
-let g:indentLine_char = 'c'
+"let g:indentLine_char = 'c'
+"let g:indentLine_char = '|'
+"let g:indentLine_char = '│'
+"let g:indentLine_char = '┆'
+let g:indentLine_char = '¦'
 let g:indentLine_enabled = 1
 
 
