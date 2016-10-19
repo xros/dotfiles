@@ -4,8 +4,9 @@ echo "[+] Copying dotfiles... Need to backup previous ones before overwriting"
 for f in $files;do
     # copy those files to the user's $HOME folder
     if [ -f $HOME/$f ];then
-        echo "[+] Backuping previous dot files settings: "$f" ..."
-        mv $HOME/$f $HOME/$f\.backup_$(date "+%Y%m%d%H%M%S")
+        bak_file_loc=$HOME/$f\.backup_$(date "+%Y%m%d%H%M%S")
+        echo "[+] Backing up previous dot files settings: "$f" ... to $bak_file_loc"
+        mv $HOME/$f $bak_file_loc
         cp $f  $HOME/
         #true
     else
@@ -57,7 +58,7 @@ fi
 
 echo "[+] Updating Fonts Cache"
 
-fc-cache -vf $HOME/.fonts/
+fc-cache -vf $HOME/.fonts/ &>/dev/null
 
 if [ -d $HOME/.config/fontconfig/conf.d ];then
     true
@@ -83,8 +84,9 @@ echo "[+] Validating dotfiles..."
 
 echo "[+] Copying .vim/ "
 if [ -d $HOME/.vim ];then
-    echo "[+] Backuping previous dot vim files settings... "
-    mv $HOME/.vim $HOME/.vim.backup_$(date "+%Y%m%d%H%M%S")
+    bak_file_loc=$HOME/.vim.backup_$(date "+%Y%m%d%H%M%S")
+    echo "[+] Backing up previous dot vim files settings to $bak_file_loc "
+    mv $HOME/.vim $bak_file_loc
     cp .vim/ -R $HOME/
 else
     cp .vim/ -R $HOME/
@@ -95,8 +97,9 @@ mkdir -p $HOME/Downloads/torrents/{rtorrent_sessions,rtorrent_temp,rtorrent_watc
 
 echo "[+] Copying .xdotool_mouse_key_bindings/ "
 if [ -d $HOME/.xdotool_mouse_key_bindings ];then
-    echo "[+] Backuping previous dot vim files settings... "
-    mv $HOME/.xdotool_mouse_key_bindings $HOME/.xdotool_mouse_key_bindings.backup_$(date "+%Y%m%d%H%M%S")
+    bak_file_loc=$HOME/.xdotool_mouse_key_bindings.backup_$(date "+%Y%m%d%H%M%S")
+    echo "[+] Backing up previous dot vim files settings to $bak_file_loc "
+    mv $HOME/.xdotool_mouse_key_bindings $bak_file_loc
     cp .xdotool_mouse_key_bindings/ -R $HOME/
 else
     cp .xdotool_mouse_key_bindings/ -R $HOME/
@@ -105,7 +108,7 @@ fi
 echo "[+] Creating directory for Go Language projects in $HOME/goworks/ ..."
 mkdir $HOME/goworks/ -p
 
-echo "[+] You may restart a SHELL to see the cumtom symbols in Vim editor"
+echo "[+] You may restart a Shell and see the cumtom layouts in your Vim editor"
 
 echo "[+] Finished! Try your new environment! By Alexander Liu :-)"
 exit 0
