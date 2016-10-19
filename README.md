@@ -16,6 +16,7 @@ VIM Plugins including
 *   emmet-vim
 *   ctrlp.vim
 *   ultisnips
+*   indentLine
 *   numbers.vim
 *   nerdcommenter
 *   vim-airline
@@ -25,7 +26,7 @@ VIM Plugins including
 *   vim-multiple-cursors
 *   vim-javacomplete2
 *   vim-python-pep8-indent
-*   Default Vim colorscheme is molokai
+*   Default Vim colorscheme is molokayo
 *   and so on , just check it out. For VIM 7.3+
 
 ##### An Easter egg
@@ -76,6 +77,8 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
     numbers.vim toggle: <kbd>F3</kbd>
 
     Re-fresh CtrlP fuzzy search cache switch: <kbd>F5</kbd>
+
+    indentLine.vim toggle: <kbd>F6</kbd>
 
     Snippets can be found at ```.vim/UltiSnips/```
 

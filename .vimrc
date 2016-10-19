@@ -123,8 +123,15 @@ let g:Powerline_symbols = 'unicode'
 " Vim
 let g:indentLine_color_term = 239
 
-let g:indentLine_char = 'c'
-let g:indentLine_enabled = 1
+"let g:indentLine_char = 'c'
+"let g:indentLine_char = '|'
+"let g:indentLine_char = '│'
+"let g:indentLine_char = '┆'
+let g:indentLine_char = '¦'
+let g:indentLine_enabled = 0
+
+" map <F6> be indentLine.vim toggle
+nnoremap <F6> :IndentLinesToggle<CR>
 
 
 "set background=dark
@@ -211,8 +218,8 @@ let g:solarized_termcolors=256
 "colorscheme solarized
 "colorscheme peaksea
 " Notice: theme molokayo will not show CtrlP even if it works very well.
-"colorscheme molokayo
-colorscheme molokai
+colorscheme molokayo
+"colorscheme molokai
 
 " Want to hide .pyc files? Then add the following line:
 let NERDTreeIgnore=['\.pyc$', '\~$', '\.pyo$'] "ignore files in NERDTree
