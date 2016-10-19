@@ -1,7 +1,7 @@
 Dot files
 ===
     Dot files for Bash, Zsh, Vim, Elinks, Mutt, Gnupg, Python, Java, Rtorrent.
-    A Java/Python/HTML IDE for Vim is built in.
+    A C/C++/Java/Python/HTML IDE for Vim is built in.
                           --- Created by Alexander Liu
 VIM Plugins including
 ---
