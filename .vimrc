@@ -211,8 +211,8 @@ let g:solarized_termcolors=256
 "colorscheme solarized
 "colorscheme peaksea
 " Notice: theme molokayo will not show CtrlP even if it works very well.
-"colorscheme molokayo
-colorscheme molokai
+colorscheme molokayo
+"colorscheme molokai
 
 " Want to hide .pyc files? Then add the following line:
 let NERDTreeIgnore=['\.pyc$', '\~$', '\.pyo$'] "ignore files in NERDTree
