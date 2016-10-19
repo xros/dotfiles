@@ -128,7 +128,10 @@ let g:indentLine_color_term = 239
 "let g:indentLine_char = '│'
 "let g:indentLine_char = '┆'
 let g:indentLine_char = '¦'
-let g:indentLine_enabled = 1
+let g:indentLine_enabled = 0
+
+" map <F6> be indentLine.vim toggle
+nnoremap <F6> :IndentLinesToggle<CR>
 
 
 "set background=dark
