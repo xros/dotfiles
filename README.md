@@ -87,6 +87,13 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 
     *Notice*: ```<leader>``` in ```.vimrc``` represents <kbd>\\</kbd> 
 
+#### C/C++ IDE
+* Type **:Ide** in the Vim prompt console.
+
+![clang IDE in Vim](static/vim-clang.png)
+
+For more info, please visit [vim-clang](https://github.com/justmao945/vim-clang)
+
 #### JAVA IDE
 
 By default it works with JDK 8 at least. If you want to set your personal JDK, please change the `JAVA_HOME`/`JRE_HOME`/`PATH` in file `.bashrc`
