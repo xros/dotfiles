@@ -5,7 +5,7 @@ for f in $files;do
     # copy those files to the user's $HOME folder
     if [ -f $HOME/$f ];then
         bak_file_loc=$HOME/$f\.backup_$(date "+%Y%m%d%H%M%S")
-        echo "[+] Backing up previous dot files settings: "$f" ... to $bak_file_loc"
+        echo "[+] Backing up previous dot files settings: from "$f" to $bak_file_loc"
         mv $HOME/$f $bak_file_loc
         cp $f  $HOME/
         #true
