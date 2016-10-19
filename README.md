@@ -12,6 +12,7 @@ VIM Plugins including
 *   NERDTree
 *   ftplugin
 *   supertab
+*   vim-clang
 *   emmet-vim
 *   ctrlp.vim
 *   ultisnips
