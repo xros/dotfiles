@@ -26,7 +26,7 @@ VIM Plugins including
 *   vim-multiple-cursors
 *   vim-javacomplete2
 *   vim-python-pep8-indent
-*   Default Vim colorscheme is molokai
+*   Default Vim colorscheme is molokayo
 *   and so on , just check it out. For VIM 7.3+
 
 ##### An Easter egg
