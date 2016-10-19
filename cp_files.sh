@@ -1,6 +1,6 @@
 #!/bin/bash
 files=".bashrc .pythonstartup .tmux.conf .vimrc .zshrc .muttrc .gpg.rc .rtorrent.rc"
-echo "[+] Copying dotfiles... Need to backup previous ones before overwriting"
+echo "[+] Copying dotfiles... Need to back up previous ones before overwriting"
 for f in $files;do
     # copy those files to the user's $HOME folder
     if [ -f $HOME/$f ];then
