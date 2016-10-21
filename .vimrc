@@ -20,6 +20,10 @@ call pathogen#infect()
 call pathogen#helptags()
 filetype plugin indent on
 
+" for colorizer -- which shows RGB colors like #ff2311 in your vim editor
+" Disable it on startup -- 0
+let g:colorizer_startup = 0
+
 " for indent guide lines 
 let g:indent_guides_auto_colors = 1
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=3
@@ -218,7 +222,8 @@ let g:solarized_termcolors=256
 "colorscheme solarized
 "colorscheme peaksea
 " Notice: theme molokayo will not show CtrlP even if it works very well.
-colorscheme molokayo
+colorscheme raincode
+"colorscheme molokayo
 "colorscheme molokai
 
 " Want to hide .pyc files? Then add the following line:
