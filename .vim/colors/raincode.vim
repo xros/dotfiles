@@ -81,7 +81,8 @@ hi Define guifg=#008faf guibg=NONE guisp=NONE gui=NONE ctermfg=31 ctermbg=NONE c
 hi Function guifg=#ffff99 guibg=NONE guisp=NONE gui=NONE ctermfg=228 ctermbg=NONE cterm=NONE
 hi FoldColumn guifg=#ff99ff guibg=#000000 guisp=#000000 gui=NONE ctermfg=213 ctermbg=NONE cterm=NONE
 hi PreProc guifg=#008faf guibg=NONE guisp=NONE gui=NONE ctermfg=31 ctermbg=NONE cterm=NONE
-hi Visual guifg=NONE guibg=#000000 guisp=#000000 gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+"hi Visual guifg=NONE guibg=#000000 guisp=#000000 gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+hi Visual term=reverse cterm=reverse guibg=Grey
 hi VertSplit guifg=#1c1c1c guibg=#1c1c1c guisp=#1c1c1c gui=NONE ctermfg=234 ctermbg=234 cterm=NONE
 hi Exception guifg=#ffff99 guibg=NONE guisp=NONE gui=NONE ctermfg=228 ctermbg=NONE cterm=NONE
 hi Keyword guifg=#8ac6f2 guibg=NONE guisp=NONE gui=NONE ctermfg=117 ctermbg=NONE cterm=NONE
