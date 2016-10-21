@@ -20,6 +20,10 @@ call pathogen#infect()
 call pathogen#helptags()
 filetype plugin indent on
 
+" for colorizer -- which shows RGB colors like #ff2311 in your vim editor
+" Disable it on startup -- 0
+let g:colorizer_startup = 0
+
 " for indent guide lines 
 let g:indent_guides_auto_colors = 1
 autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=3
