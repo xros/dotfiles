@@ -15,6 +15,7 @@ VIM Plugins including
 *   vim-clang
 *   emmet-vim
 *   ctrlp.vim
+*   colorizer
 *   ultisnips
 *   indentLine
 *   numbers.vim
@@ -26,7 +27,7 @@ VIM Plugins including
 *   vim-multiple-cursors
 *   vim-javacomplete2
 *   vim-python-pep8-indent
-*   Default Vim colorscheme is molokayo
+*   Default Vim colorscheme is **raincode**
 *   and so on , just check it out. For VIM 7.3+
 
 ##### An Easter egg
@@ -87,6 +88,8 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
     Ultisnips jump forward trigger: <kbd>\\</kbd><kbd>f</kbd>
 
     Ultisnips jump backward trigger: <kbd>\\</kbd><kbd>b</kbd>
+
+    [Colorizer Plugin](https://github.com/lilydjwg/colorizer) toggle: <kbd>\\</kbd><kbd>t</kbd><kbd>c</kbd>
 
     *Notice*: ```<leader>``` in ```.vimrc``` represents <kbd>\\</kbd> 
 
