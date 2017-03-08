@@ -45,7 +45,7 @@ mkdir $HOME/.fonts -p
 #fi
 
 # Installing Symbola fonts
-echo "[+] Configuring Fonts for Symbola fonts"
+echo "[+] Configuring Fonts for Symbola fonts for marks"
 if [ -f $HOME/.fonts/Symbola.otf ];then
     echo "[+] Removing Previous Fonts files"
     rm -f $HOME/.fonts/Symbola.otf
@@ -54,6 +54,18 @@ if [ -f $HOME/.fonts/Symbola.otf ];then
 else
     echo "[+] Installing Fonts"
     cp ./fonts/Symbola.otf $HOME/.fonts
+fi
+
+# Installing Input-Mono fonts
+echo "[+] Configuring Fonts for Input-Mono fonts for coding"
+if [ -f $HOME/.fonts/Input-Mono-Regular.ttf ];then
+    echo "[+] Removing Previous Fonts files"
+    rm -f $HOME/.fonts/Input-Mono-Regular.ttf
+    echo "[+] Installing Fonts"
+    cp ./fonts/Input-Mono-Regular.ttf $HOME/.fonts
+else
+    echo "[+] Installing Fonts"
+    cp ./fonts/Input-Mono-Regular.ttf $HOME/.fonts
 fi
 
 echo "[+] Updating Fonts Cache"
