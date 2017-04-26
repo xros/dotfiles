@@ -21,9 +21,10 @@ VIM Plugins including
 *   numbers.vim
 *   nerdcommenter
 *   vim-airline
-*   vim-airline-themes
+*   vim-crosshairs
 *   vim-fugitive
 *   vim-indent-guides
+*   vim-airline-themes
 *   vim-multiple-cursors
 *   vim-javacomplete2
 *   vim-python-pep8-indent
