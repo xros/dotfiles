@@ -98,6 +98,10 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 
 ![clang IDE in Vim](static/vim-clang.png)
 
+I used `clang` to show some variable name predictions in this setting.
+
+The C/C++ IDE ablity is based on `global`.
+
 For more info, please visit [vim-clang](https://github.com/justmao945/vim-clang)
 
 #### JAVA IDE
