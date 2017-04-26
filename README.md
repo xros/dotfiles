@@ -81,6 +81,8 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 
     indentLine.vim toggle: <kbd>F6</kbd>
 
+    `make` command shortcut: <kbd>F7</kbd>
+
     Snippets can be found at ```.vim/UltiSnips/```
 
     Ultisnips open key trigger: <kbd>\\</kbd><kbd>s</kbd>

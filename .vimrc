@@ -248,3 +248,8 @@ set backspace=indent,eol,start " backspace over everything in insert mode
 
 """"""""" Enabling plugin vim-javacomplete2
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
+
+""""""""" For C/C++ project building
+" set makeprg=make\ -C\ ../build\ -j9
+set makeprg=make\ -j9
+nnoremap <F7> :make!<cr>
