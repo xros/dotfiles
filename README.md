@@ -108,6 +108,9 @@ The C/C++ IDE ablity is based on `global`.
 
 For more info, please visit [vim-clang](https://github.com/justmao945/vim-clang)
 
+[Reference of snippets for C/C++](https://github.com/yangyangwithgnu/use_vim_as_ide#52-模板补全)
+    *Notice*: Use keys <kbd>\\</kbd><kbd>s</kbd>, <kbd>\\</kbd><kbd>f</kbd>, <kbd>\\</kbd><kbd>b</kbd> to start, jump forward and jump backward with the snippets.
+
 #### JAVA IDE
 
 By default it works with JDK 8 at least. If you want to set your personal JDK, please change the `JAVA_HOME`/`JRE_HOME`/`PATH` in file `.bashrc`
