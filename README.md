@@ -29,7 +29,7 @@ VIM Plugins including
 *   vim-multiple-cursors
 *   vim-javacomplete2
 *   vim-python-pep8-indent
-*   Default Vim colorscheme is [**raincode**](https://https://github.com/xros/dotfiles/blob/master/.vim/colors/raincode.vim)
+*   Default Vim colorscheme is [**raincode**](https://github.com/xros/dotfiles/blob/master/.vim/colors/raincode.vim)
 *   and so on , just check it out. For VIM 7.3+
 
 ##### An Easter egg
@@ -95,7 +95,7 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 
     [Colorizer Plugin](https://github.com/lilydjwg/colorizer) toggle: <kbd>\\</kbd><kbd>t</kbd><kbd>c</kbd>
 
-    *Notice*: ```<leader>``` in ```.vimrc``` represents <kbd>\\</kbd> 
+    *Notice*: ```<leader>``` in file ```.vimrc``` represents <kbd>\\</kbd> 
 
 #### C/C++ IDE
 * Type **:Ide** in the Vim prompt console.
