@@ -13,6 +13,7 @@ VIM Plugins including
 *   ftplugin
 *   supertab
 *   vim-clang
+*   Conque GDB
 *   emmet-vim
 *   ctrlp.vim
 *   colorizer
@@ -28,7 +29,7 @@ VIM Plugins including
 *   vim-multiple-cursors
 *   vim-javacomplete2
 *   vim-python-pep8-indent
-*   Default Vim colorscheme is **raincode**
+*   Default Vim colorscheme is [**raincode**](https://https://github.com/xros/dotfiles/blob/master/.vim/colors/raincode.vim)
 *   and so on , just check it out. For VIM 7.3+
 
 ##### An Easter egg
