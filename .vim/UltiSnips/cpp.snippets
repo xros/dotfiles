@@ -1,0 +1,178 @@
+#================================= 
+#预处理 
+# Snippet from : https://github.com/yangyangwithgnu/use_vim_as_ide#5.2
+#================================= 
+# #include "..." 
+snippet INC 
+#include "${1:TODO}"${2} 
+endsnippet 
+# #include <...> 
+snippet inc 
+#include <${1:TODO}>${2} 
+endsnippet 
+#================================= 
+#结构语句 
+#================================= 
+# if 
+snippet if 
+if (${1:/* condition */}) { 
+    ${2:TODO} 
+} 
+endsnippet 
+# else if 
+snippet ei 
+else if (${1:/* condition */}) { 
+    ${2:TODO} 
+} 
+endsnippet 
+# else 
+snippet el 
+else { 
+    ${1:TODO} 
+} 
+endsnippet 
+# return 
+snippet re 
+return(${1:/* condition */}); 
+endsnippet 
+# Do While Loop 
+snippet do 
+do { 
+    ${2:TODO} 
+} while (${1:/* condition */}); 
+endsnippet 
+# While Loop 
+snippet wh 
+while (${1:/* condition */}) { 
+    ${2:TODO} 
+} 
+endsnippet 
+# switch 
+snippet sw 
+switch (${1:/* condition */}) { 
+    case ${2:c}: { 
+    } 
+    break; 
+
+    default: { 
+    } 
+    break; 
+} 
+endsnippet 
+# 通过迭代器遍历容器（可读写） 
+snippet for 
+for (auto ${2:iter} = ${1:c}.begin(); ${3:$2} != $1.end(); ${4:++iter}) {
+    ${5:TODO} 
+} 
+endsnippet 
+# 通过迭代器遍历容器（只读） 
+snippet cfor 
+for (auto ${2:citer} = ${1:c}.cbegin(); ${3:$2} != $1.cend(); ${4:++citer}) { 
+    ${5:TODO} 
+} 
+endsnippet 
+# 通过下标遍历容器 
+snippet For 
+for (decltype($1.size()) ${2:i} = 0; $2 != ${1}.size(); ${3:++}$2) { 
+    ${4:TODO} 
+} 
+endsnippet 
+# C++11风格for循环遍历（可读写） 
+snippet F 
+for (auto& e : ${1:c}) { 
+} 
+endsnippet 
+# C++11风格for循环遍历（只读） 
+snippet CF 
+for (const auto& e : ${1:c}) { 
+} 
+endsnippet 
+# For Loop 
+snippet FOR 
+for (unsigned ${2:i} = 0; $2 < ${1:count}; ${3:++}$2) { 
+    ${4:TODO} 
+} 
+endsnippet 
+# try-catch 
+snippet try 
+try { 
+} catch (${1:/* condition */}) { 
+} 
+endsnippet 
+snippet ca 
+catch (${1:/* condition */}) { 
+} 
+endsnippet 
+snippet throw 
+th (${1:/* condition */}); 
+endsnippet 
+#================================= 
+#容器 
+#================================= 
+# std::vector 
+snippet vec 
+vector<${1:char}>	v${2}; 
+endsnippet 
+# std::list 
+snippet lst 
+list<${1:char}>	l${2}; 
+endsnippet 
+# std::set 
+snippet set 
+set<${1:key}>	s${2}; 
+endsnippet 
+# std::map 
+snippet map 
+map<${1:key}, ${2:value}>	m${3}; 
+endsnippet 
+#================================= 
+#语言扩展 
+#================================= 
+# Class 
+snippet cl 
+class ${1:`Filename('$1_t', 'name')`} 
+{ 
+    public: 
+        $1 (); 
+        virtual ~$1 (); 
+         
+    private: 
+}; 
+endsnippet 
+#================================= 
+#结对符 
+#================================= 
+ # 括号 bracket 
+snippet b "bracket" i 
+(${1})${2} 
+endsnippet 
+# 方括号 square bracket，设定为 st 而非 sb，避免与 b 冲突
+snippet st "square bracket" i 
+[${1}]${2} 
+endsnippet 
+# 大括号 brace 
+snippet br "brace" i 
+{ 
+    ${1} 
+}${2} 
+endsnippet 
+# 单引号 single quote，设定为 se 而非 sq，避免与 q 冲突
+snippet se "single quote" I
+'${1}'${2}
+endsnippet
+# 双引号 quote
+snippet q "quote" I
+"${1}"${2}
+endsnippet
+# 指针符号 arrow 
+snippet ar "arrow" i 
+->${1} 
+endsnippet 
+# dot 
+snippet d "dot" i 
+.${1} 
+endsnippet 
+# 作用域 scope 
+snippet s "scope" i 
+::${1} 
+endsnippet

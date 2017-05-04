@@ -248,3 +248,16 @@ set backspace=indent,eol,start " backspace over everything in insert mode
 
 """"""""" Enabling plugin vim-javacomplete2
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
+
+""""""""" For C/C++ project building
+" set makeprg=make\ -C\ ../build\ -j9
+set makeprg=make\ -j9
+nnoremap <F7> :make!<cr>
+
+""""""""" crosshair plugin
+" from: https://github.com/bronson/vim-crosshairs
+set cursorline    " enable the horizontal line
+set cursorcolumn  " enable the vertical line
+" for settings its color
+"highlight CursorLine   cterm=NONE ctermbg=black ctermfg=NONE guibg=black guifg=NON 
+"highlight CursorColumn cterm=NONE ctermbg=black ctermfg=NONE guibg=black guifg=NONE

@@ -13,6 +13,7 @@ VIM Plugins including
 *   ftplugin
 *   supertab
 *   vim-clang
+*   Conque GDB
 *   emmet-vim
 *   ctrlp.vim
 *   colorizer
@@ -21,13 +22,14 @@ VIM Plugins including
 *   numbers.vim
 *   nerdcommenter
 *   vim-airline
-*   vim-airline-themes
+*   vim-crosshairs
 *   vim-fugitive
 *   vim-indent-guides
+*   vim-airline-themes
 *   vim-multiple-cursors
 *   vim-javacomplete2
 *   vim-python-pep8-indent
-*   Default Vim colorscheme is **raincode**
+*   Default Vim colorscheme is [**raincode**](https://https://github.com/xros/dotfiles/blob/master/.vim/colors/raincode.vim)
 *   and so on , just check it out. For VIM 7.3+
 
 ##### An Easter egg
@@ -81,6 +83,8 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 
     indentLine.vim toggle: <kbd>F6</kbd>
 
+    `make` command shortcut: <kbd>F7</kbd>
+
     Snippets can be found at ```.vim/UltiSnips/```
 
     Ultisnips open key trigger: <kbd>\\</kbd><kbd>s</kbd>
@@ -97,6 +101,10 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 * Type **:Ide** in the Vim prompt console.
 
 ![clang IDE in Vim](static/vim-clang.png)
+
+I used `clang` to show some variable name predictions in this setting.
+
+The C/C++ IDE ablity is based on `global`.
 
 For more info, please visit [vim-clang](https://github.com/justmao945/vim-clang)
 
