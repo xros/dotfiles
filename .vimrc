@@ -222,7 +222,8 @@ let g:solarized_termcolors=256
 "colorscheme solarized
 "colorscheme peaksea
 " Notice: theme molokayo will not show CtrlP even if it works very well.
-colorscheme raincode
+colorscheme corporation
+"colorscheme raincode
 "colorscheme molokayo
 "colorscheme molokai
 
