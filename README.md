@@ -2,6 +2,7 @@ Dot files
 ===
     Dot files for Bash, Zsh, Vim, Elinks, Mutt, Gnupg, Python, Java, Rtorrent.
     A C/C++/Java/Python/HTML IDE for Vim is built in.
+    Machine Learning Settings for TensorFlow 1.4 and Cuda 8.0
                           --- Created by Alexander Liu
 VIM Plugins including
 ---
@@ -184,6 +185,9 @@ Then select these 3 lines using Vim visual line keys <kbd>Shift</kbd><kbd>v</kbd
 > If your csv file is very big, please do not edit it using Vim. It would be slow. Libreoffice is your friend. But viewing csv files in this manner makes me feel great.
 
 
+#### Machine Learning Settings
+* Includes machine learning settings for TensorFlow 1.4 and Cuda 8.0 . This is written in file `.bashrc`. It adds cuda bin files to system `PATH` and cuda libs for TensorFlow to use later on. *NOTE* Strongly hooked up with TensorFlow 1.4 and Cuda 8.0 , Cuda 9.0 will not be supported by the time of writting. Changes can be found [here](https://github.com/xros/dotfiles/pull/35/commits/82e3d929b5d241fe1fc244596e03d9878ae1427d)
+    
 
 #### Have Fun ####
 By Alexander Liu A.K.A. [xros](https://github.com/xros)
