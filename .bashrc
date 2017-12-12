@@ -223,3 +223,14 @@ unset TMUX
 
 
 
+#######################################################################
+# Set CUDA 8.0 Lib path if installed                                  #
+# Cuda 8.0 works with Tensorflow 1.4 for machine learning             #
+#######################################################################
+if [ -d "/usr/local/cuda-8.0" ] ; then
+    export PATH="/usr/local/cuda-8.0/bin":$PATH
+    export LD_LIBRARY_PATH="/usr/local/cuda-8.0/lib64":$LD_LIBRARY_PATH
+else
+    true
+fi
+
