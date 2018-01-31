@@ -1,8 +1,8 @@
 Dot files
 ===
-    Dot files for Bash, Zsh, Vim, Elinks, Mutt, Gnupg, Python, Java, Rtorrent.
+    Dot files for Bash, Tmux, Zsh, Vim, Elinks, Mutt, Gnupg, Python, Java, Rtorrent.
     A C/C++/Java/Python/HTML IDE for Vim is built in.
-    Machine Learning Settings for TensorFlow 1.4 and Cuda 8.0
+    With Machine Learning Settings for TensorFlow 1.4 and Cuda 8.0
                           --- Created by Alexander Liu
 VIM Plugins including
 ---
@@ -172,6 +172,28 @@ Then select these 3 lines using Vim visual line keys <kbd>Shift</kbd><kbd>v</kbd
 
 
 * More info about this tool can be found at [emmet-vim](https://github.com/mattn/emmet-vim) and [more tutorials](https://raw.github.com/mattn/emmet-vim/master/TUTORIAL).
+
+#### Tmux operation in brief
+* In tmux, use key binding to move cursors for copying, pasting anything in terminal. (Add support for tmux version after 2.6 and before 2.6 on old servers/workstations)
+
+Enter copy and paste mode (Vi bindings)
+    <kbd>Ctrl</kbd><kbd>b</kbd><kbd>[</kbd>
+
+In copy/paste mode for cursor moving 
+
+| Direction | Key | 
+| down | <kbd>j</kbd> |
+| up | <kbd>k</kbd> |
+| left | <kbd>h</kbd> |
+| right | <kbd>l</kbd> |
+
+To select <kbd>v</kbd> 
+
+To copy/yank selection <kbd>y</kbd>
+
+To quit copy/paste mode, <kbd>q</kbd> or <kbd>Ctrl</kbd><kbd>[</kbd>
+
+To paste your selection, <kbd>Ctrl</kbd><kbd>b</kbd><kbd>]</kbd>
 
 #### CSV editor
 * For csv/dat file editing using csv.vim
