@@ -17,6 +17,7 @@ done
 
 # update Tmux settings since Tmux v2.6 upgraded its key binding syntax
 tmux_conf=".tmux.conf"
+echo "[+] NOTICE: for tmux versioning installation, you need install UNIX tool bc firstly."
 if [ -f $HOME/$tmux_conf ];then
    bak_file_loc=$HOME/$tmux_conf\.backup_$(date "+%Y%m%d%H%M%S")
    echo "[+] Backing up previous dot files settings: from "$tmux_conf" to $bak_file_loc"
