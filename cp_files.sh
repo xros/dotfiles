@@ -1,5 +1,5 @@
 #!/bin/bash
-files=".bashrc .pythonstartup .tmux.conf .vimrc .zshrc .muttrc .gpg.rc .rtorrent.rc"
+files=".bashrc .pythonstartup .vimrc .zshrc .muttrc .gpg.rc .rtorrent.rc"
 echo "[+] Copying dotfiles... Need to back up previous ones before overwriting"
 for f in $files;do
     # copy those files to the user's $HOME folder
@@ -14,6 +14,35 @@ for f in $files;do
     fi
     #echo $f
 done
+
+# update Tmux settings since Tmux v2.6 upgraded its key binding syntax
+tmux_conf=".tmux.conf"
+echo "[+] NOTICE: for tmux versioning installation, you need install UNIX tool bc firstly."
+if [ -f $HOME/$tmux_conf ];then
+   bak_file_loc=$HOME/$tmux_conf\.backup_$(date "+%Y%m%d%H%M%S")
+   echo "[+] Backing up previous dot files settings: from "$tmux_conf" to $bak_file_loc"
+   mv $HOME/$tmux_conf $bak_file_loc
+   tv=`tmux -V | awk '{print $2}'`
+   
+   threshold='2.6'
+   #echo $tv
+   
+   # $tv is a double digit, bash only compares integer
+   #if [ "$tv" -gt "2.6" ]; then
+   # version before 2.6
+   if [ `echo $tv\<$threshold | bc` -eq 1 ]; then 
+       echo "[+] Tmux verion < 2.6"
+       echo "[+] Updating tmux settings for version less than 2.6"
+       cp "$tmux_conf".old $HOME/.tmux.conf -f
+       #echo 'xiaoyu'
+   else
+   # version after 2.6
+       echo "[+] Tmux verion >= 2.6"
+       echo "[+] Updating tmux settings for version great equal than 2.6"
+       cp $tmux_conf  $HOME/
+       #echo 'dayu'
+   fi
+fi
 
 elinks_conf=$HOME/.elinks/elinks.conf
 if [ -f $elinks_conf ];then

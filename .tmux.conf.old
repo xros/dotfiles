@@ -1,8 +1,7 @@
 # General tmux settings
-# Tmux settings after v2.6
-# Created by Alexander Liu
-# This is tested on Linux/OSX/BSD
-
+# This setting fits Tmux version before 2.6 not included
+# Tmux has changed its key binding syntax
+# For old systems. Created by Alexander Liu
 #set-option -g default-shell /bin/bash
 set -g default-terminal "screen-256color"
 # Automatically set window title
@@ -109,13 +108,9 @@ set -g status-right $tm_itunes' '$tm_date' '$tm_host
 
 # Vim bindings for Tmux
 set-window-option -g mode-keys vi
-bind-key -Tcopy-mode-vi 'v' send -X begin-selection 
-bind-key -Tcopy-mode-vi 'y' send -X copy-selection
-bind-key -Tcopy-mode-vi 'C-['  send -X cancel
-
-#bind-key -Tcopy-mode-vi 'v' begin-selection
-#bind-key -Tcopy-mode-vi 'y' copy-selection
-#bind-key -Tcopy-mode-vi 'C-[' cancel
+bind -t vi-copy 'v' begin-selection
+bind -t vi-copy 'y' copy-selection
+bind -t vi-copy 'C-[' cancel
 #unbind [
 #bind Escape copy-mode
 #unbind p
