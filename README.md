@@ -182,7 +182,7 @@ Enter copy and paste mode (Vi bindings)
 In copy/paste mode for cursor moving 
 
 | Direction | Key | 
-| -------:|: ----:|
+| ------- | ----:|
 | down | <kbd>j</kbd> |
 | up | <kbd>k</kbd> |
 | left | <kbd>h</kbd> |
@@ -192,7 +192,7 @@ To select <kbd>v</kbd>
 
 To copy/yank selection <kbd>y</kbd>
 
-To quit copy/paste mode, <kbd>q</kbd> or <kbd>Ctrl</kbd><kbd>[</kbd>
+To quit copy/paste mode, <kbd>q</kbd>
 
 To paste your selection, <kbd>Ctrl</kbd><kbd>b</kbd><kbd>]</kbd>
 
