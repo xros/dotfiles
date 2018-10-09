@@ -42,6 +42,9 @@ if [ -f $HOME/$tmux_conf ];then
        cp $tmux_conf  $HOME/
        #echo 'dayu'
    fi
+else
+    # copy a new .tmux.conf is there isn't any by default
+    cp $tmux_conf  $HOME/
 fi
 
 elinks_conf=$HOME/.elinks/elinks.conf
