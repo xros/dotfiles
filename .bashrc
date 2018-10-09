@@ -237,16 +237,13 @@ fi
 #########################################
 unset TMUX
 
-
-
-#######################################################################
-# Set CUDA 8.0 Lib path if installed                                  #
-# Cuda 8.0 works with Tensorflow 1.4 for machine learning             #
-#######################################################################
-if [ -d "/usr/local/cuda-8.0" ] ; then
-    export PATH="/usr/local/cuda-8.0/bin":$PATH
-    export LD_LIBRARY_PATH="/usr/local/cuda-8.0/lib64":$LD_LIBRARY_PATH
+########################################
+# NODE Version Manager: nvm            #
+########################################
+if [ -d "$HOME/.nvm" ]; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 else
     true
 fi
-

@@ -209,7 +209,7 @@ To paste your selection, <kbd>Ctrl</kbd><kbd>b</kbd><kbd>]</kbd>
 
 
 #### Machine Learning Settings
-* Includes machine learning settings for TensorFlow 1.4 and Cuda 8.0 . This is written in file `.bashrc`. It adds cuda bin files to system `PATH` and cuda libs for TensorFlow to use later on. *NOTE* Strongly hooked up with TensorFlow 1.4 and Cuda 8.0 , Cuda 9.0 will not be supported by the time of writting. Changes can be found [here](https://github.com/xros/dotfiles/pull/35/commits/82e3d929b5d241fe1fc244596e03d9878ae1427d)
+* Not like before, I switched to docker rather than an actual machine for machine learning tasks starting from Tensorflow v1.10, which is simple. To take the most advantage of Nvidia graphic cards, the only thing we need to do is to install a latest Nvidia Graphic Driver for the host Linux PC and download the Pre-assembled nvidia docker from [here](https://github.com/NVIDIA/nvidia-docker). Then follow the tutorial. I deleted all the settings for *Tensorflow* in the file `.bashrc`. The Nvidia docker comes with all elements that the framework *tensorflow* needs for acceleration. And the docker even comes with Jupyter which is easier for people to try algorithms in web browser.
     
 
 #### Have Fun ####
