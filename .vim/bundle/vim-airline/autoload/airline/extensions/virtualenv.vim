@@ -1,5 +1,7 @@
-" MIT License. Copyright (c) 2013-2016 Bailey Ling.
+" MIT License. Copyright (c) 2013-2019 Bailey Ling et al.
 " vim: et ts=2 sts=2 sw=2
+
+scriptencoding utf-8
 
 let s:spc = g:airline_symbols.space
 
