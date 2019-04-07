@@ -64,6 +64,10 @@ Use `:diffthis` when opening multiple files to run `:diffthis` on the first 4 fi
 
     If more than one mode is specified, they will be tried in order until a directory is located.
 
+* If a file is already open, open it again in a new pane instead of switching to the existing pane
+
+    `let g:ctrlp_switch_buffer = 'et'`
+
 * Exclude files and directories using Vim's `wildignore` and CtrlP's own `g:ctrlp_custom_ignore`. If a custom listing command is being used, exclusions are ignored:
 
     ```vim
@@ -96,6 +100,10 @@ Check `:help ctrlp-options` for other options.
 ## Installation
 Use your favorite method or check the homepage for a [quick installation guide][3].
 
+## License
+CtrlP is distributed under Vim's [license][4].
+
 [1]: http://i.imgur.com/aOcwHwt.png
 [2]: https://github.com/ctrlpvim/ctrlp.vim/tree/extensions
 [3]: http://ctrlpvim.github.com/ctrlp.vim#installation
+[4]: http://vimdoc.sourceforge.net/htmldoc/uganda.html
