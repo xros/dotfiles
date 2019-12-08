@@ -1,4 +1,5 @@
 " MIT License. Copyright (c) 2013-2019 Bjorn Neergaard, w0rp et al.
+" Plugin: https://github.com/dense-analysis/ale
 " vim: et ts=2 sts=2 sw=2
 
 scriptencoding utf-8
@@ -124,6 +125,6 @@ endfunction
 
 function! s:ale_refresh()
   if get(g:, 'airline_skip_empty_sections', 0)
-    exe ':AirlineRefresh'
+    exe ':AirlineRefresh!'
   endif
 endfunction
