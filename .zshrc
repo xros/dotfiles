@@ -86,3 +86,6 @@ genpasswd() {
         [ "$l" == "" ] && l=20
         tr -dc A-Za-z0-9_ < /dev/urandom | head -c ${1} | xargs
 }
+
+# install powerlevel9k zsh theme !
+source  ~/.zsh/powerlevel9k/powerlevel9k.zsh-theme
