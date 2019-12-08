@@ -136,6 +136,16 @@ else
     cp .vim/ -R $HOME/
 fi
 
+echo "[+] Copying .zsh/ "
+if [ -d $HOME/.zsh ];then
+    bak_file_loc=$HOME/.zsh.backup_$(date "+%Y%m%d%H%M%S")
+    echo "[+] Backing up previous dot zsh files settings to $bak_file_loc "
+    mv $HOME/.zsh $bak_file_loc
+    cp .zsh/ -R $HOME/
+else
+    cp .zsh/ -R $HOME/
+fi
+
 echo "[+] Copying rtorrent settings..."
 mkdir -p $HOME/Downloads/torrents/{rtorrent_sessions,rtorrent_temp,rtorrent_watch,rtorrent_completed}
 
