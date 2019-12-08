@@ -1,4 +1,4 @@
-# vim-airline-themes
+# vim-airline-themes [![Build Status](https://travis-ci.org/vim-airline/vim-airline-themes.svg?branch=master)](https://travis-ci.org/vim-airline/vim-airline-themes)
 
 This is the official theme repository for [vim-airline][11]
 
@@ -45,7 +45,7 @@ If you are interested in becoming the official maintainer of this project, pleas
 
 # License
 
-MIT License. Copyright (c) 2013-2017 Bailey Ling & Contributors.
+MIT License. Copyright (c) 2013-2019 Bailey Ling & Contributors.
 
 
 [1]: https://github.com/bling

@@ -6,6 +6,9 @@ scriptencoding utf-8
 " get wordcount {{{1
 if exists('*wordcount')
   function! s:get_wordcount(visual_mode_active)
+    if get(g:, 'actual_curbuf', '') != bufnr('')
+      return
+    endif
     let query = a:visual_mode_active ? 'visual_words' : 'words'
     return get(wordcount(), query, 0)
   endfunction
@@ -41,7 +44,7 @@ endfunction
 " check user-defined formatter exists with appropriate functions, otherwise
 " fall back to default
 if s:formatter !=# 'default'
-  execute 'runtime! autoload/airline/extensions/wordcount/formatters/'.s:formatter
+  execute 'runtime! autoload/airline/extensions/wordcount/formatters/'.s:formatter.'.vim'
   if !exists('*airline#extensions#wordcount#formatters#{s:formatter}#to_string')
     if !exists('*airline#extensions#wordcount#formatters#{s:formatter}#format')
       let s:formatter = 'default'

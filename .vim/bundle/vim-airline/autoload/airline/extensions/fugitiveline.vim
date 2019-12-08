@@ -1,4 +1,5 @@
 " MIT License. Copyright (c) 2017-2019 Cimbali et al
+" Plugin: https://github.com/tpope/vim-fugitive
 " vim: et ts=2 sts=2 sw=2
 
 scriptencoding utf-8
@@ -17,7 +18,11 @@ function! airline#extensions#fugitiveline#bufname()
     try
       if bufname('%') =~? '^fugitive:' && exists('*FugitiveReal')
         let b:fugitive_name = FugitiveReal(bufname('%'))
-      elseif exists('b:git_dir')
+      elseif exists('b:git_dir') && exists('*fugitive#repo')
+        if get(b:, 'fugitive_type', '') is# 'blob'
+          let b:fugitive_name = fugitive#repo().translate(FugitivePath(@%, ''))
+        endif
+      elseif exists('b:git_dir') && !exists('*fugitive#repo')
         let buffer = fugitive#buffer()
         if buffer.type('blob')
           let b:fugitive_name = buffer.repo().translate(buffer.path('/'))
