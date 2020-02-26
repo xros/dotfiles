@@ -22,7 +22,7 @@ if [ -f $HOME/$tmux_conf ];then
    bak_file_loc=$HOME/$tmux_conf\.backup_$(date "+%Y%m%d%H%M%S")
    echo "[+] Backing up previous dot files settings: from "$tmux_conf" to $bak_file_loc"
    mv $HOME/$tmux_conf $bak_file_loc
-   tv=`tmux -V | awk '{print $2}'`
+   tv=`tmux -V | awk '{print $2}' | sed 's/[[:alpha:]]//g' `
    
    # for old tmux (still working on old/dated server...)
    threshold='2.6'
