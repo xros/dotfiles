@@ -24,23 +24,35 @@ if [ -f $HOME/$tmux_conf ];then
    mv $HOME/$tmux_conf $bak_file_loc
    tv=`tmux -V | awk '{print $2}'`
    
+   # for old tmux (still working on old/dated server...)
    threshold='2.6'
+
+   # big upgrade for tmux since version 2.9
+   threshold_2='2.9'
    #echo $tv
    
    # $tv is a double digit, bash only compares integer
    #if [ "$tv" -gt "2.6" ]; then
    # version before 2.6
    if [ `echo $tv\<$threshold | bc` -eq 1 ]; then 
-       echo "[+] Tmux verion < 2.6"
+       echo "[+] Found Tmux verion < 2.6"
        echo "[+] Updating tmux settings for version less than 2.6"
        cp "$tmux_conf".old $HOME/.tmux.conf -f
        #echo 'xiaoyu'
    else
-   # version after 2.6
-       echo "[+] Tmux verion >= 2.6"
-       echo "[+] Updating tmux settings for version great equal than 2.6"
-       cp $tmux_conf  $HOME/
-       #echo 'dayu'
+   # if 2.9>version>=2.6 
+       if [ `echo $tv\<$threshold_2 | bc` -eq 1 ]; then 
+           echo "[+] Found Tmux verion >= 2.6"
+           echo "[+] Updating tmux settings for version great equal than 2.6, less than 2.9"
+           cp $tmux_conf  $HOME/
+           #echo 'dayu'
+   # if version>=2.9 
+       else
+           echo "[+] Found Tmux verion >= 2.9"
+           echo "[+] Updating tmux settings for version great equal than 2.9"
+           cp "$tmux_conf".ge_2.9  $HOME/.tmux.conf -f
+       fi
+
    fi
 else
     # copy a new .tmux.conf is there isn't any by default
