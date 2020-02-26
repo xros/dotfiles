@@ -174,7 +174,7 @@ Then select these 3 lines using Vim visual line keys <kbd>Shift</kbd><kbd>v</kbd
 * More info about this tool can be found at [emmet-vim](https://github.com/mattn/emmet-vim) and [more tutorials](https://raw.github.com/mattn/emmet-vim/master/TUTORIAL).
 
 #### Tmux operation in brief
-* In tmux, use key bindings to move cursors for copying, pasting anything in terminal. (Add support for tmux version after 2.6 and before 2.6 on old servers/workstations)
+* In tmux, use key bindings to move cursors for copying, pasting anything in terminal. (Add support for tmux version after 2.6 and before 2.6 on old servers/workstations. Now it also supports latest tmux version greater equal than 2.9 and the system will automatically set and back up settings for you)
 
 Enter copy and paste mode (Vi bindings)
     <kbd>Ctrl</kbd><kbd>b</kbd><kbd>[</kbd>
