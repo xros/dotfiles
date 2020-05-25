@@ -2,11 +2,12 @@ package kg.ash.javavi.actions;
 
 import kg.ash.javavi.Daemon;
 import kg.ash.javavi.Javavi;
+import kg.ash.javavi.apache.logging.log4j.LogManager;
+import kg.ash.javavi.apache.logging.log4j.Logger;
 
 public class ExecuteDaemonAction implements Action {
 
-    private Integer daemonPort = null;
-    private Integer timeoutSeconds = -1;
+    public static final Logger logger = LogManager.getLogger();
 
     @Override
     public String perform(String[] args) {
@@ -14,31 +15,15 @@ public class ExecuteDaemonAction implements Action {
             return "";
         }
 
-        parseArgs(args);
-        if (daemonPort == null) {
+        Integer daemonPort = Integer.valueOf(System.getProperty("daemon.port", "0"));
+        if (daemonPort == 0) {
             return "Error: daemonPort is null";
         }
 
-        Javavi.debug("Starting daemon mode");
-        Javavi.daemon = new Daemon(daemonPort, timeoutSeconds);
+        logger.debug("starting daemon mode");
+        Javavi.daemon = new Daemon(daemonPort, -1);
         Javavi.daemon.start();
 
         return "";
     }
-
-    private void parseArgs(String[] args) {
-        for (int i = 0; i < args.length; i++) {
-            switch (args[i]) {
-                case "-D": {
-                    daemonPort = Integer.parseInt(args[i+1]);
-                    break;
-                }
-                case "-t": {
-                    timeoutSeconds = Integer.parseInt(args[i+1]);
-                    break;
-                }
-            }
-        }
-    }
-    
 }

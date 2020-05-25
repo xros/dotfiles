@@ -228,10 +228,24 @@ values):
   heavily) >
   let g:airline_exclude_preview = 0
 <
-* disable the Airline customization for selected windows (this is a
+* disable the Airline statusline customization for selected windows (this is a
   window-local variable so you can disable it per-window) >
-  let w:airline_disabled = 1
+  let w:airline_disable_statusline = 1
+<
+  Old deprecated name: `w:airline_disabled`
 
+  See also the following options, for disabling setting the statusline
+  globally or per-buffer
+* Disable setting the statusline option: >
+  " disable globally
+  let g:airline_disable_statusline = 1
+
+  " disable per-buffer
+  let b:airline_disable_statusline = 1
+
+< This setting disables setting the 'statusline' option. This allows to use
+ e.g. the tabline extension (|airline-tabline|) but keep the 'statusline'
+ option totally configurable by a custom configuration.
 * Do not draw separators for empty sections (only for the active window) >
   let g:airline_skip_empty_sections = 1
 <
@@ -341,7 +355,7 @@ its contents. >
   let g:airline_symbols.readonly = ''
   let g:airline_symbols.linenr = '☰'
   let g:airline_symbols.maxlinenr = ''
-  let g:airline_symbols.dirty=⚡
+  let g:airline_symbols.dirty='⚡'
 
   " old vim-powerline symbols
   let g:airline_left_sep = '⮀'
@@ -465,12 +479,19 @@ vim-airline will display the branch-indicator together with the branch name
 in the statusline, if one of the following plugins is installed:
 
 fugitive.vim <https://github.com/tpope/vim-fugitive>
+gina.vim     <https://github.com/lambdalisue/gina.vim>
 lawrencium   <https://bitbucket.org/ludovicchabant/vim-lawrencium>
 vcscommand   <http://www.vim.org/scripts/script.php?script_id=90>
 
 If a file is edited, that is not yet in the repository, the
 notexists symbol will be displayed after the branch name. If the repository
 is not clean, the dirty symbol will be displayed after the branch name.
+
+* notexists symbol means you are editing a file, that has not been commited yet
+  default: '?'
+
+* the dirty symbol basically means your working directory is dirty
+  default: '!'
 
 Note: the branch extension will be disabled for windows smaller than 80
 characters.
@@ -552,6 +573,9 @@ vim-capslock <https://github.com/tpope/vim-capslock>
 
 * enable/disable vim-capslock integration >
   let g:airline#extensions#capslock#enabled = 1
+
+* change vim-capslock symbol >
+  let g:airline#extensions#capslock#symbol = 'CAPS' (default)
 
 -------------------------------------                    *airline-coc*
 coc <https://github.com/neoclide/coc.nvim>
@@ -699,6 +723,10 @@ gina.vim <https://github.com/lambdalisue/gina.vim>
 Airline displays the gina.vim specific statusline.
 (for details, see the help of gina.vim)
 
+* enable/disable bufferline integration >
+  let g:airline#extensions#gina#enabled = 1
+<  default: 1
+
 -------------------------------------                     *airline-grepper*
 vim-grepper <https://github.com/mhinz/vim-grepper>
 
@@ -716,6 +744,7 @@ vim-gitgutter <https://github.com/airblade/vim-gitgutter>
 vim-signify <https://github.com/mhinz/vim-signify>
 changesPlugin <https://github.com/chrisbra/changesPlugin>
 quickfixsigns <https://github.com/tomtom/quickfixsigns_vim>
+coc-git <https://github.com/neoclide/coc-git>
 
 You can use `airline#extensions#hunks#get_raw_hunks()` to get the full hunks,
 without shortening. This allows for advanced customization, or a quick way of
@@ -729,6 +758,11 @@ querying how many changes you got. It will return something like '+4 ~2 -1'.
 <
 * set hunk count symbols. >
   let g:airline#extensions#hunks#hunk_symbols = ['+', '~', '-']
+
+* enable coc-git extension.
+  If not set to 1, vim-airline will not consider to use coc-git for the hunks
+  extension. Make sure to have the coc-git extension enabled. >
+  let g:airline#extensions#hunks#coc_git = 1
 <
 -------------------------------------                     *airline-keymap*
 vim-keymap
@@ -766,6 +800,27 @@ localsearch <https://github.com/mox-mox/localsearch>
 * enable/disable localsearch indicator integration >
   let g:airline#extensions#localsearch#enabled = 1
 
+-------------------------------------                    *airline-lsp*
+lsp <https://github.com/prabirshrestha/vim-lsp>
+
+* enable/disable lsp integration >
+  let g:airline#extensions#lsp#enabled = 1
+
+* lsp error_symbol >
+  let airline#extensions#lsp#error_symbol = 'E:'
+<
+* lsp warning >
+  let airline#extensions#lsp#warning_symbol = 'W:'
+
+* lsp show_line_numbers >
+  let airline#extensions#lsp#show_line_numbers = 1
+<
+* lsp open_lnum_symbol >
+  let airline#extensions#lsp#open_lnum_symbol = '(L'
+<
+* lsp close_lnum_symbol >
+  let airline#extensions#lsp#close_lnum_symbol = ')'
+
 -------------------------------------                    *airline-neomake*
 neomake <https://github.com/neomake/neomake>
 
@@ -779,7 +834,7 @@ neomake <https://github.com/neomake/neomake>
   let airline#extensions#neomake#warning_symbol = 'W:'
 <
 -------------------------------------                   *airline-nerdtree*
-NerdTree <https://github.com/scrooloose/nerdtree.git>
+NerdTree <https://github.com/preservim/nerdtree.git>
 
 Airline displays the Nerdtree specific statusline (which can be configured
 using the |'NerdTreeStatusline'| variable (for details, see the help of
@@ -819,6 +874,12 @@ files with the 'filetype' "po".
 * truncate width names to a fixed length >
   let g:airline#extensions#po#displayed_limit = 0
 
+-------------------------------------                   *airline-poetv*
+poetv <https://github.com/petobens/poet-v>
+
+* enable/disable poetv integration >
+  let g:airline#extensions#poetv#enabled = 1
+<
 -------------------------------------                   *airline-promptline*
 promptline <https://github.com/edkolev/promptline.vim>
 
@@ -906,6 +967,11 @@ with the middle mouse button to delete that buffer.
 
 * enable/disable displaying number of tabs in the right side (c) >
   let g:airline#extensions#tabline#show_tab_count = 1
+
+Note: Not displayed if the number of tabs is less than 1
+
+* always displaying number of tabs in the right side (c) >
+  let g:airline#extensions#tabline#show_tab_count = 2
 <
 * configure filename match rules to exclude from the tabline. >
   let g:airline#extensions#tabline#excludes = []
@@ -956,7 +1022,7 @@ with the middle mouse button to delete that buffer.
 
 * enable/disable displaying index of the buffer.
 
-  `buffer_idx_mode` allows 2 different modes to access buffers from the
+  `buffer_idx_mode` allows 3 different modes to access buffers from the
   tabline. When enabled, numbers will be displayed in the tabline and
   mappings will be exposed to allow you to select a buffer directly.
   In default mode, when the variable is 1 Up to 11 mappings will be
@@ -975,9 +1041,7 @@ with the middle mouse button to delete that buffer.
   nmap <leader>- <Plug>AirlineSelectPrevTab
   nmap <leader>+ <Plug>AirlineSelectNextTab
 <
-  In mode 2, (when the variable is 2) 89 mappings will be exposed
-  (Note: To avoid ambiguity, there won't be <Plug>AirlineSelectTab1
-  - <Plug>AirlineSelectTab9 maps): >
+  In mode 2, (when the variable is 2) 89 mappings will be exposed: >
 
   let g:airline#extensions#tabline#buffer_idx_mode = 2
   nmap <Leader>10 <Plug>AirlineSelectTab10
@@ -989,6 +1053,22 @@ with the middle mouse button to delete that buffer.
 <
   The <Plug>AirlineSelect<Prev/Next>Tab mapping handles counts as well,
   so one can handle arbirtrarily number of buffers/tabs.
+
+  Mode 3 is exactly the same as mode 2, except the indexing start at 01,
+  exposing 99 mappings: >
+
+  let g:airline#extensions#tabline#buffer_idx_mode = 3
+  nmap <Leader>01 <Plug>AirlineSelectTab01
+  nmap <Leader>02 <Plug>AirlineSelectTab02
+  nmap <Leader>03 <Plug>AirlineSelectTab03
+  ...
+  nmap <Leader>99 <Plug>AirlineSelectTab99
+<
+  This matches that of the numbering scheme of |:buffers|, letting
+  `<Plug>AirlineSelectTab67` to reference buffer 67.
+
+  Note: To avoid ambiguity, there won't be <Plug>AirlineSelectTab1
+  - <Plug>AirlineSelectTab9 maps in mode 2 and 3.
 
   Note: Mappings will be ignored for filetypes that match
   `g:airline#extensions#tabline#keymap_ignored_filetypes`.
@@ -1227,7 +1307,7 @@ virtualenv <https://github.com/jmcantrell/vim-virtualenv>
   let g:airline#extensions#virtualenv#enabled = 1
 <
 -------------------------------------                   *airline-vista*
-vista.vim <https://github.com/liuchngxu/vista.vim>
+vista.vim <https://github.com/liuchengxu/vista.vim>
 
 * enable/disable vista integration >
   let g:airline#extensions#vista#enabled = 1
@@ -1327,7 +1407,7 @@ vim-windowswap <https://github.com/wesQ3/vim-windowswap>
   " The default value matches filetypes typically used for documentation
   " such as markdown and help files. Default is:
   let g:airline#extensions#wordcount#filetypes =
-    \ ['asciidoc', 'help', 'mail', 'markdown', 'org', 'rst', 'tex', 'text'])
+    \ ['asciidoc', 'help', 'mail', 'markdown', 'org', 'plaintex', 'rst', 'tex', 'text'])
   " Use ['all'] to enable for all filetypes.
 
 * defines the name of a formatter for word count will be displayed: >
@@ -1448,7 +1528,7 @@ be updated automatically. Either re-enter the tab or press <F5> two times.
    \ airline#extensions#tabline#xtabline#prev_buffer(v:count) : "\<Left>"
 
 -------------------------------------                    *airline-ycm*
-YouCompleteMe <https://github.com/Valloric/YouCompleteMe>
+YouCompleteMe <https://github.com/ycm-core/YouCompleteMe>
 
 Shows number of errors and warnings in the current file detected by YCM.
 
@@ -1461,6 +1541,23 @@ Shows number of errors and warnings in the current file detected by YCM.
 * set warning count prefix >
   let g:airline#extensions#ycm#warning_symbol = 'W:'
 <
+
+-------------------------------------                    *airline-zoomwintab*
+zoomwintab <https://github.com/troydm/zoomwintab.vim>
+
+* enable/disable zoomwintab integration >
+  let g:airline#extensions#zoomwintab#enabled = 1
+
+* zoomwintab's zoomin symbol >
+  let g:airline#extensions#zoomwintab#status_zoomed_in = 'Currently Zoomed In'
+
+default: '> Zoomed'
+
+* zoomwintab's zoomout symbol >
+  let g:airline#extensions#zoomwintab#status_zoomed_out ='Currently Zoomed Out'
+
+default: ''
+
 =============================================================================
 ADVANCED CUSTOMIZATION                      *airline-advanced-customization*
 
@@ -1512,10 +1609,10 @@ The following list of parts are predefined by vim-airline.
 And the following are defined for their respective extensions:
 
 `ale_error_count` `ale_warning_count` `branch` `eclim` `hunks`
-`languageclient_error_count` `languageclient_warning_count`
-`neomake_error_count` `neomake_warning_count` `obsession` `syntastic-warn`
-`syntastic-err` `tagbar` `whitespace` `windowswap` `ycm_error_count`
-`ycm_warning_count`
+`languageclient_error_count` `languageclient_warning_count` `lsp_error_count`
+`lsp_warning_count` `neomake_error_count` `neomake_warning_count` `obsession`
+`syntastic-warn` `syntastic-err` `tagbar` `whitespace` `windowswap`
+`ycm_error_count` `ycm_warning_count`
 
 -------------------------------------                      *airline-accents*
 Accents can be defined on any part, like so: >
@@ -1744,7 +1841,7 @@ Contributions and pull requests are welcome.
 =============================================================================
 LICENSE                                                    *airline-license*
 
-MIT License. Copyright © 2013-2019 Bailey Ling, Christian Brabandt, Mike
+MIT License. Copyright © 2013-2020 Bailey Ling, Christian Brabandt, Mike
 Hartington et al.
 
  vim:tw=78:ts=8:ft=help:norl:

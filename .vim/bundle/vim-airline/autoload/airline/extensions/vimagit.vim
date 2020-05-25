@@ -9,26 +9,21 @@ if !get(g:, 'loaded_magit', 0)
   finish
 endif
 
-function! airline#extensions#vimagit#init(ext)
+let s:commit_mode = {'': 'STAGING', 'CC': 'COMMIT', 'CA': 'AMEND'}
+
+function! airline#extensions#vimagit#init(ext) abort
   call a:ext.add_statusline_func('airline#extensions#vimagit#apply')
 endfunction
 
-function! airline#extensions#vimagit#get_mode()
+function! airline#extensions#vimagit#get_mode() abort
   if ( exists("*magit#get_current_mode") )
     return magit#get_current_mode()
   else
-    if ( b:magit_current_commit_mode == '' )
-      return "STAGING"
-    elseif ( b:magit_current_commit_mode == 'CC' )
-      return "COMMIT"
-    elseif ( b:magit_current_commit_mode == 'CA' )
-      return "AMEND"
-    else
-      return "???"
-    endif
+    return get(s:commit_mode, b:magit_current_commit_mode, '???')
+  endif
 endfunction
 
-function! airline#extensions#vimagit#apply(...)
+function! airline#extensions#vimagit#apply(...) abort
   if ( &filetype == 'magit' )
     let w:airline_section_a = '%{airline#extensions#vimagit#get_mode()}'
   endif

@@ -203,16 +203,31 @@ shared_examples_for "vim" do
   end
 
   describe "when using a function definition" do
-      it "indents shiftwidth spaces" do
+      it "handles indent with closing parenthesis on same line" do
           vim.feedkeys 'idef long_function_name(\<CR>arg'
+          indent.should == shiftwidth
+          vim.feedkeys '):'
           indent.should == shiftwidth * 2
+      end
+
+      it "handles indent with closing parenthesis on new line" do
+          vim.feedkeys 'idef long_function_name(\<CR>arg'
+          indent.should == shiftwidth
+          vim.feedkeys '\<CR>'
+          indent.should == shiftwidth
+          vim.feedkeys ')'
+          indent.should == (hang_closing ? shiftwidth * 2 : 0)
+          vim.feedkeys ':'
+          indent.should == (hang_closing ? shiftwidth * 2 : 0)
+          vim.feedkeys '\<Esc>k'
+          indent.should == shiftwidth
       end
   end
 
   describe "when using a class definition" do
       it "indents shiftwidth spaces" do
           vim.feedkeys 'iclass Foo(\<CR>'
-          indent.should == shiftwidth * 2
+          indent.should == shiftwidth
       end
   end
 
@@ -430,7 +445,7 @@ shared_examples_for "vim" do
 
     it "ignores the call signature after a function" do
       vim.feedkeys 'idef f(  JEDI_CALL_SIGNATURE\<CR>'
-      indent.should == shiftwidth * 2
+      indent.should == shiftwidth
     end
   end
 end
@@ -702,7 +717,10 @@ describe "Compact multiline dict" do
 end
 
 describe "Using O" do
-  before { vim.feedkeys 'iif foo:\<CR>' }
+  before {
+    vim.feedkeys '\<ESC>ggdG'
+    vim.feedkeys 'iif foo:\<CR>'
+  }
 
   it "respects autoindent" do
     vim.feedkeys '1\<CR>\<CR>'
@@ -725,5 +743,54 @@ describe "searchpairpos" do
   it "handles nested parenthesis" do
     vim.feedkeys 'iif foo.startswith("("):\<CR>'
     indent.should == shiftwidth
+  end
+end
+
+describe "o within TODO" do
+  before {
+    vim.feedkeys '\<ESC>ggdG'
+    vim.feedkeys 'iif 1:  # TODO\<Esc>'
+    # Assertion that we have a pythonTodo here.
+    vim.echo('synIDattr(synID(line("."), col("."), 0), "name")').should match 'pythonTodo'
+  }
+
+  it "respects autoindent" do
+    vim.feedkeys 'o'
+    indent.should == shiftwidth
+  end
+end
+
+describe "elif after else" do
+  before {
+    vim.feedkeys '\<ESC>ggdG'
+  }
+
+  it "is indented to the outer if" do
+    vim.feedkeys 'iif 1:\<CR>if 2:\<CR>pass\<CR>else:\<CR>pass\<CR>elif 3:\<Esc>'
+    indent.should == 0
+
+    vim.feedkeys '\<ESC>ggdG'
+    vim.feedkeys 'i    if 1:\<CR>if 2:\<CR>pass\<CR>else:\<CR>pass\<CR>elif 3:\<Esc>'
+    indent.should == 4
+  end
+end
+
+describe "elif after two ifs" do
+  before {
+    vim.feedkeys '\<ESC>ggdG'
+  }
+
+  it "keeps its indent to the outer if" do
+    vim.feedkeys 'iif 1:\<CR>if 2:\<CR>pass\<CR>elif 3:\<CR>pass\<CR>'
+    indent.should == 4
+    vim.feedkeys '\<Esc>'
+    indent.should == 0
+    proposed_indent.should == shiftwidth
+    vim.feedkeys 'ielif 4:'
+    indent.should == 0
+    proposed_indent.should == 0
+    vim.feedkeys '\<CR>'
+    indent.should == 4
+    proposed_indent.should == 4
   end
 end

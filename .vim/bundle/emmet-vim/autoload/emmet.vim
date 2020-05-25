@@ -85,12 +85,7 @@ function! emmet#isExtends(type, extend) abort
   if !has_key(s:emmet_settings[a:type], 'extends')
     return 0
   endif
-  let extends = s:emmet_settings[a:type].extends
-  if type(extends) ==# 1
-    let tmp = split(extends, '\s*,\s*')
-    unlet! extends
-    let extends = tmp
-  endif
+  let extends = emmet#lang#getExtends(a:type)
   for ext in extends
     if a:extend ==# ext
       return 1
@@ -119,8 +114,8 @@ function! emmet#isExpandable() abort
   endif
   let part = matchstr(line, '\(\S.*\)$')
   let type = emmet#getFileType()
-  let ftype = emmet#lang#exists(type) ? type : 'html'
-  let part = emmet#lang#{ftype}#findTokens(part)
+  let rtype = emmet#lang#type(type)
+  let part = emmet#lang#{rtype}#findTokens(part)
   return len(part) > 0
 endfunction
 
@@ -334,14 +329,14 @@ function! emmet#getResource(type, name, default) abort
     let ret = a:default
 
     if has_key(s:emmet_settings[type], 'extends')
-      let extends = s:emmet_settings[type].extends
-      if type(extends) ==# 1
-        let tmp = split(extends, '\s*,\s*')
-        unlet! extends
-        let extends = tmp
-      endif
+      let extends = emmet#lang#getExtends(a:type)
+      call reverse(extends) " reverse to overwrite the correct way
       for ext in extends
-        if has_key(s:emmet_settings, ext) && has_key(s:emmet_settings[ext], a:name)
+        if !has_key(s:emmet_settings, ext)
+          continue
+        endif
+
+        if has_key(s:emmet_settings[ext], a:name)
           if type(ret) ==# 3 || type(ret) ==# 4
             call emmet#mergeConfig(ret, s:emmet_settings[ext][a:name])
           else
@@ -385,14 +380,23 @@ function! emmet#getFileType(...) abort
   endif 
 
   let pos = emmet#util#getcurpos()
-  let type = synIDattr(synID(pos[1], pos[2], 1), 'name')
+  let type = synIDattr(synID(max([pos[1], 1]), max([pos[2], 1]), 1), 'name')
+
+  " ignore htmlTagName as it seems to occur too often
+  if type == 'htmlTagName'
+    let type = ''
+  endif
+  if type =~ '^mkdSnippet'
+    let type = tolower(type[10:])
+  endif
+
   if type =~? '^css'
     let type = 'css'
   elseif type =~? '^html'
     let type = 'html'
   elseif type =~? '^jsx'
     let type = 'jsx'
-  elseif type =~? '^js\w' || type =~? '^javascript'
+  elseif (type =~? '^js\w' || type =~? '^javascript') && !(&filetype =~? 'jsx')
     let type = 'javascript'
   elseif type =~? '^tsx'
     let type = 'tsx'
@@ -403,7 +407,7 @@ function! emmet#getFileType(...) abort
   else
     let types = split(&filetype, '\.')
     for part in types
-      if emmet#lang#exists(part)
+      if has_key(s:emmet_settings, part)
         let type = part
         break
       endif
@@ -515,8 +519,7 @@ function! emmet#unescapeDollarExpr(expand) abort
 endfunction
 
 function! emmet#expandAbbr(mode, abbr) range abort
-  let type = emmet#getFileType()
-  let rtype = emmet#lang#type(emmet#getFileType(1))
+  let type = emmet#getFileType(1)
   let indent = emmet#getIndentation(type)
   let expand = ''
   let line = ''
@@ -653,8 +656,8 @@ function! emmet#expandAbbr(mode, abbr) range abort
       let part = matchstr(line, '\([a-zA-Z0-9:_\-\@|]\+\)$')
     else
       let part = matchstr(line, '\(\S.*\)$')
-      let ftype = emmet#lang#exists(type) ? type : 'html'
-      let part = emmet#lang#{ftype}#findTokens(part)
+      let rtype = emmet#lang#type(type)
+      let part = emmet#lang#{rtype}#findTokens(part)
       let line = line[0: strridx(line, part) + len(part) - 1]
     endif
     if col('.') ==# col('$')
@@ -811,9 +814,9 @@ function! emmet#imageSize() abort
   return ''
 endfunction
 
-function! emmet#encodeImage() abort
+function! emmet#imageEncode() abort
   let type = emmet#getFileType()
-  return emmet#lang#{emmet#lang#type(type)}#encodeImage()
+  return emmet#lang#{emmet#lang#type(type)}#imageEncode()
 endfunction
 
 function! emmet#toggleComment() abort
@@ -842,6 +845,12 @@ endfunction
 function! emmet#removeTag() abort
   let type = emmet#getFileType()
   call emmet#lang#{emmet#lang#type(type)}#removeTag()
+  return ''
+endfunction
+
+function! emmet#mergeLines() abort
+  let type = emmet#getFileType()
+  call emmet#lang#{emmet#lang#type(type)}#mergeLines()
   return ''
 endfunction
 
@@ -1735,17 +1744,31 @@ let s:emmet_settings = {
 \        },
 \        'default_attributes': {
 \            'a': [{'href': ''}],
+\            'a:blank': [{'href': 'http://|'},{'target': '_blank'},{'rel': 'noopener noreferrer'}],
 \            'a:link': [{'href': 'http://|'}],
 \            'a:mail': [{'href': 'mailto:|'}],
+\            'a:tel': [{'href': 'tel:+|'}],
 \            'abbr': [{'title': ''}],
 \            'acronym': [{'title': ''}],
+\            'acr': [{'title': ''}],
 \            'base': [{'href': ''}],
 \            'bdo': [{'dir': ''}],
 \            'bdo:r': [{'dir': 'rtl'}],
 \            'bdo:l': [{'dir': 'ltr'}],
+\            'button:disabled': [{'disabled': 'disabled'}],
+\            'button:d': [{'disabled': 'disabled'}],
+\            'btn:d': [{'disabled': 'disabled'}],
+\            'button:submit': [{'type': 'submit'}],
+\            'button:s': [{'type': 'submit'}],
+\            'btn:s': [{'type': 'submit'}],
+\            'button:reset': [{'type': 'reset'}],
+\            'button:r': [{'type': 'reset'}],
+\            'btn:r': [{'type': 'reset'}],
 \            'del': [{'datetime': '${datetime}'}],
 \            'ins': [{'datetime': '${datetime}'}],
 \            'link:css': [{'rel': 'stylesheet'}, g:emmet_html5 ? {} : {'type': 'text/css'}, {'href': '|style.css'}, {'media': 'all'}],
+\            'link:manifest': [{'rel': 'manifest'},{'href': '|manifest.json'}],
+\            'link:mf': [{'rel': 'manifest'},{'href': '|manifest.json'}],
 \            'link:print': [{'rel': 'stylesheet'}, g:emmet_html5 ? {} : {'type': 'text/css'}, {'href': '|print.css'}, {'media': 'print'}],
 \            'link:import': [{'rel': 'import'}, {'href': '|.html'}],
 \            'link:im': [{'rel': 'import'}, {'href': '|.html'}],
@@ -1753,14 +1776,23 @@ let s:emmet_settings = {
 \            'link:touch': [{'rel': 'apple-touch-icon'}, {'href': '|favicon.png'}],
 \            'link:rss': [{'rel': 'alternate'}, {'type': 'application/rss+xml'}, {'title': 'RSS'}, {'href': '|rss.xml'}],
 \            'link:atom': [{'rel': 'alternate'}, {'type': 'application/atom+xml'}, {'title': 'Atom'}, {'href': 'atom.xml'}],
+\            'marquee': [{'behavior': ''},{'direction': ''}],
 \            'meta:utf': [{'http-equiv': 'Content-Type'}, {'content': 'text/html;charset=UTF-8'}],
 \            'meta:vp': [{'name': 'viewport'}, {'content': 'width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0'}],
 \            'meta:win': [{'http-equiv': 'Content-Type'}, {'content': 'text/html;charset=Win-1251'}],
 \            'meta:compat': [{'http-equiv': 'X-UA-Compatible'}, {'content': 'IE=7'}],
+\            'meta:desc': [{'name': 'description'},{'content': ''}],
+\            'meta:edge': [{'http-equiv': 'X-UA-Compatible'}, {'content': 'ie=edge'}],
+\            'meta:kw': [{'name': 'keywords'},{'content': ''}],
+\            'meta:redirect': [{'http-equiv': 'Content-Type'}, {'content': '0; url=http://example.com'}],
 \            'style': g:emmet_html5 ? [] : [{'type': 'text/css'}],
 \            'script': g:emmet_html5 ? [] : [{'type': 'text/javascript'}],
 \            'script:src': (g:emmet_html5 ? [] : [{'type': 'text/javascript'}]) + [{'src': ''}],
 \            'img': [{'src': ''}, {'alt': ''}],
+\            'img:srcset': [{'srcset': ''},{'src': ''}, {'alt': ''}],
+\            'img:s': [{'srcset': ''},{'src': ''}, {'alt': ''}],
+\            'img:sizes': [{'sizes': ''},{'srcset': ''},{'src': ''}, {'alt': ''}],
+\            'img:z': [{'sizes': ''},{'srcset': ''},{'src': ''}, {'alt': ''}],
 \            'iframe': [{'src': ''}, {'frameborder': '0'}],
 \            'embed': [{'src': ''}, {'type': ''}],
 \            'object': [{'data': ''}, {'type': ''}],
@@ -1772,6 +1804,10 @@ let s:emmet_settings = {
 \            'area:r': [{'shape': 'rect'}, {'coords': ''}, {'href': ''}, {'alt': ''}],
 \            'area:p': [{'shape': 'poly'}, {'coords': ''}, {'href': ''}, {'alt': ''}],
 \            'link': [{'rel': 'stylesheet'}, {'href': ''}],
+\            'fieldset:disabled': [{'disabled': 'disabled'}],
+\            'fieldset:d': [{'disabled': 'disabled'}],
+\            'fset:d': [{'disabled': 'disabled'}],
+\            'fst:disabled': [{'disabled': 'disabled'}],
 \            'form': [{'action': ''}],
 \            'form:get': [{'action': ''}, {'method': 'get'}],
 \            'form:post': [{'action': ''}, {'method': 'post'}],
@@ -1784,6 +1820,7 @@ let s:emmet_settings = {
 \            'input:t': [{'type': 'text'}, {'name': ''}, {'id': ''}],
 \            'input:search': [{'type': 'search'}, {'name': ''}, {'id': ''}],
 \            'input:email': [{'type': 'email'}, {'name': ''}, {'id': ''}],
+\            'input:tel': [{'type': 'tel'}, {'name': ''}, {'id': ''}],
 \            'input:url': [{'type': 'url'}, {'name': ''}, {'id': ''}],
 \            'input:password': [{'type': 'password'}, {'name': ''}, {'id': ''}],
 \            'input:p': [{'type': 'password'}, {'name': ''}, {'id': ''}],
@@ -1810,6 +1847,20 @@ let s:emmet_settings = {
 \            'input:button': [{'type': 'button'}, {'value': ''}],
 \            'input:b': [{'type': 'button'}, {'value': ''}],
 \            'select': [{'name': ''}, {'id': ''}],
+\            'select:disabled': [{'name': ''}, {'id': ''}, {'disabled': 'disabled'}],
+\            'source:media': [{'media': '(minwidth: )'},{'srcset': ''}],
+\            'source:m': [{'media': '(minwidth: )'},{'srcset': ''}],
+\            'source:media:type': [{'media': '(minwidth: )'},{'srcset': ''},{'type': 'image/'}],
+\            'source:media:sizes': [{'media': '(minwidth: )'},{'srcset': ''},{'sizes': ''}],
+\            'source:sizes:type': [{'sizes': ''},{'srcset': ''},{'type': 'image/'}],
+\            'source:src': [{'src': ''},{'type': ''}],
+\            'source:sc': [{'src': ''},{'type': ''}],
+\            'source:srcset': [{'srcset': ''}],
+\            'source:s': [{'srcset': ''}],
+\            'source:type': [{'srcset': ''},{'type': 'image/'}],
+\            'source:t': [{'srcset': ''},{'type': 'image/'}],
+\            'source:sizes': [{'sizes': ''},{'srcset': ''}],
+\            'source:z': [{'sizes': ''},{'srcset': ''}],
 \            'option': [{'value': ''}],
 \            'textarea': [{'name': ''}, {'id': ''}, {'cols': '30'}, {'rows': '10'}],
 \            'menu:context': [{'type': 'context'}],
@@ -1831,19 +1882,23 @@ let s:emmet_settings = {
 \            'html:*': 'html',
 \            'a:*': 'a',
 \            'menu:*': 'menu',
+\            'mn': 'main',
+\            'tem': 'template',
 \            'bq': 'blockquote',
 \            'acr': 'acronym',
 \            'fig': 'figure',
+\            'figc': 'figcaption',
 \            'ifr': 'iframe',
 \            'emb': 'embed',
 \            'obj': 'object',
-\            'src': 'source',
+\            'src:*': 'source',
 \            'cap': 'caption',
 \            'colg': 'colgroup',
 \            'fst': 'fieldset',
-\            'btn': 'button',
+\            'btn:': 'button',
 \            'optg': 'optgroup',
 \            'opt': 'option',
+\            'pic': 'picture',
 \            'tarea': 'textarea',
 \            'leg': 'legend',
 \            'sect': 'section',
@@ -1862,6 +1917,7 @@ let s:emmet_settings = {
 \            'out': 'output',
 \            'det': 'details',
 \            'cmd': 'command',
+\            'sum': 'summary',
 \        },
 \        'expandos': {
 \            'ol': 'ol>li',
@@ -1875,6 +1931,14 @@ let s:emmet_settings = {
 \            'select': 'select>option',
 \            'optgroup': 'optgroup>option',
 \            'optg': 'optgroup>option',
+\            'ri:dpr': 'img:s',
+\            'ri:d': 'img:s',
+\            'ri:viewport': 'img:z',
+\            'ri:vp': 'img:z',
+\            'ri:art': 'pic>source:m+img',
+\            'ri:a': 'pic>source:m+img',
+\            'ri:type': 'pic>source:t+img',
+\            'ri:t': 'pic>source:t+img',
 \        },
 \        'empty_elements': 'area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed,keygen,command',
 \        'block_elements': 'address,applet,blockquote,button,center,dd,del,dir,div,dl,dt,fieldset,form,frameset,hr,iframe,ins,isindex,li,link,map,menu,noframes,noscript,object,ol,p,pre,script,table,tbody,td,tfoot,th,thead,tr,ul,h1,h2,h3,h4,h5,h6',

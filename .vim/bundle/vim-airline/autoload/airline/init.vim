@@ -1,4 +1,4 @@
-" MIT License. Copyright (c) 2013-2019 Bailey Ling et al.
+" MIT License. Copyright (c) 2013-2020 Bailey Ling et al.
 " vim: et ts=2 sts=2 sw=2
 
 scriptencoding utf-8
@@ -161,10 +161,15 @@ function! airline#init#bootstrap()
   call airline#parts#define('branch', {
         \ 'raw': '',
         \ 'minwidth': 80})
+  call airline#parts#define('coc_status', {
+        \ 'raw': '',
+        \ 'accent': 'bold'
+        \ })
   call airline#parts#define_empty(['obsession', 'tagbar', 'syntastic-warn',
         \ 'syntastic-err', 'eclim', 'whitespace','windowswap',
         \ 'ycm_error_count', 'ycm_warning_count', 'neomake_error_count',
         \ 'neomake_warning_count', 'ale_error_count', 'ale_warning_count',
+        \ 'lsp_error_count', 'lsp_warning_count',
         \ 'languageclient_error_count', 'languageclient_warning_count',
         \ 'coc_warning_count', 'coc_error_count', 'vista'])
   call airline#parts#define_text('bookmark', '')
@@ -193,7 +198,7 @@ function! airline#init#sections()
     if exists("+autochdir") && &autochdir == 1
       let g:airline_section_c = airline#section#create(['%<', 'path', spc, 'readonly'])
     else
-      let g:airline_section_c = airline#section#create(['%<', 'file', spc, 'readonly'])
+      let g:airline_section_c = airline#section#create(['%<', 'file', spc, 'readonly', 'coc_status'])
     endif
   endif
   if !exists('g:airline_section_gutter')
@@ -213,9 +218,9 @@ function! airline#init#sections()
     endif
   endif
   if !exists('g:airline_section_error')
-    let g:airline_section_error = airline#section#create(['ycm_error_count', 'syntastic-err', 'eclim', 'neomake_error_count', 'ale_error_count', 'languageclient_error_count', 'coc_error_count'])
+    let g:airline_section_error = airline#section#create(['ycm_error_count', 'syntastic-err', 'eclim', 'neomake_error_count', 'ale_error_count', 'lsp_error_count', 'languageclient_error_count', 'coc_error_count'])
   endif
   if !exists('g:airline_section_warning')
-    let g:airline_section_warning = airline#section#create(['ycm_warning_count',  'syntastic-warn', 'neomake_warning_count', 'ale_warning_count', 'languageclient_warning_count', 'whitespace', 'coc_warning_count'])
+    let g:airline_section_warning = airline#section#create(['ycm_warning_count',  'syntastic-warn', 'neomake_warning_count', 'ale_warning_count', 'lsp_warning_count', 'languageclient_warning_count', 'whitespace', 'coc_warning_count'])
   endif
 endfunction

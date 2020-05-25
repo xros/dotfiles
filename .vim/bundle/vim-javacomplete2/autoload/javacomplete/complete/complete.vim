@@ -22,6 +22,12 @@ function! s:Init()
 endfunction
 
 function! javacomplete#complete#complete#Complete(findstart, base, is_filter)
+  if get(g:, 'JavaComplete_Disabled', 0)
+    return
+  endif
+
+  call javacomplete#highlights#Drop()
+
   if a:findstart
     call s:Init()
     return javacomplete#complete#context#FindContext()
@@ -30,6 +36,11 @@ function! javacomplete#complete#complete#Complete(findstart, base, is_filter)
   let base = (a:is_filter) ? a:base :
         \    (a:base =~ '^@') ? a:base[:2] : a:base[:1]
   let result = javacomplete#complete#context#ExecuteContext(base)
+
+  if g:JavaComplete_CompletionResultSort
+    call sort(result)
+  endif
+
   if len(result) > 0
     " filter according to b:incomplete
     if a:is_filter && b:incomplete != '' && b:incomplete != '+'
@@ -54,7 +65,7 @@ function! javacomplete#complete#complete#Complete(findstart, base, is_filter)
     endif
   endif
 
-  if len(get(b:, 'errormsg', '')) > 0
+  if get(g:, 'JavaComplete_IgnoreErrorMsg', 0) <= 0 && len(get(b:, 'errormsg', '')) > 0
     echoerr 'javacomplete error: ' . b:errormsg
     let b:errormsg = ''
   endif
@@ -537,7 +548,7 @@ function! javacomplete#complete#complete#ArrayAccess(arraytype, expr)
   return {}
 endfunction
 
-function! s:CanAccess(mods, kind, outputkind)
+function! s:CanAccess(mods, kind, outputkind, samePackage)
   if a:outputkind == 14
     return javacomplete#util#CheckModifier(a:mods, [g:JC_MODIFIER_PUBLIC, g:JC_MODIFIER_PROTECTED, g:JC_MODIFIER_ABSTRACT]) && !javacomplete#util#CheckModifier(a:mods, g:JC_MODIFIER_FINAL)
   endif
@@ -546,20 +557,23 @@ function! s:CanAccess(mods, kind, outputkind)
   endif
   return (a:mods[-4:-4] || a:kind/10 == 0)
         \ &&   (a:kind == 1 || a:mods[-1:]
-        \	|| (a:mods[-3:-3] && (a:kind == 1 || a:kind == 2 || a:kind == 7))
+        \	|| (a:mods[-3:-3] && (a:kind == 1 || a:kind == 2 || a:kind == 7 || a:samePackage))
+        \	|| (a:mods == 0 && a:samePackage)
         \	|| (a:mods[-2:-2] && (a:kind == 1 || a:kind == 7)))
 endfunction
 
 function! javacomplete#complete#complete#SearchMember(ci, name, fullmatch, kind, returnAll, outputkind, ...)
   call s:Log("search member. name: ". a:name. ", kind: ". a:kind. ", outputkind: ". a:outputkind)
 
+  let samePackage = javacomplete#complete#complete#GetPackageName() ==
+        \ javacomplete#util#GetClassPackage(a:ci.name)
   let result = [[], [], [], []]
 
   if a:kind != 13
     if a:outputkind != 14
       for m in (a:0 > 0 && a:1 ? [] : get(a:ci, 'fields', [])) + ((a:kind == 1 || a:kind == 2 || a:kind == 7) ? get(a:ci, 'declared_fields', []) : [])
         if empty(a:name) || (a:fullmatch ? m.n ==# a:name : m.n =~# '^' . a:name)
-          if s:CanAccess(m.m, a:kind, a:outputkind)
+          if s:CanAccess(m.m, a:kind, a:outputkind, samePackage)
             call add(result[2], m)
           endif
         endif
@@ -568,7 +582,7 @@ function! javacomplete#complete#complete#SearchMember(ci, name, fullmatch, kind,
 
     for m in (a:0 > 0 && a:1 ? [] : get(a:ci, 'methods', [])) + ((a:kind == 1 || a:kind == 2 || a:kind == 7) ? get(a:ci, 'declared_methods', []) : [])
       if empty(a:name) || (a:fullmatch ? m.n ==# a:name : m.n =~# '^' . a:name)
-        if s:CanAccess(m.m, a:kind, a:outputkind)
+        if s:CanAccess(m.m, a:kind, a:outputkind, samePackage)
           call add(result[1], m)
         endif
       endif
@@ -686,13 +700,24 @@ function! s:DoGetMethodList(methods, kind, ...)
     endif
   endif
 
+  let methodNames = map(copy(a:methods), 'v:val.n')
+
   let useFQN = javacomplete#UseFQN()
   let s = ''
+  let origParen = paren
   for method in a:methods
     if !useFQN
       let method.d = javacomplete#util#CleanFQN(method.d)
     endif
-    let s .= "{'kind':'" . (javacomplete#util#IsStatic(method.m) ? "M" : "m") . "','word':'" . s:GenWord(method, a:kind, paren) . "','abbr':'" . method.n . abbrEnd . "','menu':'" . method.d . "','dup':'1'},"
+    let paren = origParen
+    if paren == '('
+      if count(methodNames, method.n) == 1
+        if !has_key(method, 'p')
+          let paren = '()'
+        endif
+      endif
+    endif
+    let s .= "{'kind':'" . (javacomplete#util#IsStatic(method.m) ? "M" : "m") . "','word':'" . s:GenWord(method, a:kind, paren) . "','abbr':'" . method.n . abbrEnd . "','menu':'" . method.d . "','info':'" . method.d ."','dup':'1'},"
   endfor
 
   return s
@@ -753,7 +778,7 @@ function! s:DoGetMemberList(ci, outputkind)
 
   if kind == 11
     let tmp = javacomplete#collector#DoGetClassInfo('this')
-    if tmp.name == a:ci.name
+    if tmp.name == get(a:ci, 'name', '')
       let outputkind = 15
     endif
   endif
@@ -887,7 +912,7 @@ function! s:GetMembers(fqn, ...)
       endfor
     else
       let isClass = 1
-      let list += s:DoGetMemberList(v, b:context_type == g:JC__CONTEXT_IMPORT || b:context_type == g:JC__CONTEXT_NEED_TYPE ? 13 : b:context_type == g:JC__CONTEXT_IMPORT_STATIC ? 12 : 11)
+      let list += s:DoGetMemberList(v, b:context_type == g:JC__CONTEXT_IMPORT || b:context_type == g:JC__CONTEXT_COMPLETE_CLASSNAME ? 13 : b:context_type == g:JC__CONTEXT_IMPORT_STATIC ? 12 : 11)
     endif
   endif
 

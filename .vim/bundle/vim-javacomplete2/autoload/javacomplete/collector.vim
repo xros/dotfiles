@@ -33,7 +33,7 @@ function! javacomplete#collector#DoGetClassInfo(class, ...)
   if has_key(t, 'extends')
     if type(t.extends) == type([]) && len(t.extends) > 0
       if type(t.extends[0]) == type("")
-        let extends = t.extends[0] . '$'. a:class
+        let extends = t.extends[0] . '$'. class
       elseif type(t.extends[0]) == type({})
         if has_key(t.extends[0], 'name')
           let className = t.extends[0].name
@@ -70,7 +70,7 @@ function! javacomplete#collector#DoGetClassInfo(class, ...)
     endif
   endif
   for def in get(t, 'defs', [])
-    if def.tag == 'CLASSDEF' && def.name == class
+    if get(def, 'tag', '') == 'CLASSDEF' && get(def, 'name', '') == class
       return javacomplete#util#Sort(s:Tree2ClassInfo(def))
     endif
   endfor
@@ -255,6 +255,18 @@ function! s:Tree2ClassInfo(t)
     unlet def
   endfor
 
+  for line in reverse(getline(0, '.'))
+    let matches = matchlist(line, g:RE_TYPE_DECL_HEAD. t.name)
+    if len(matches)
+      if matches[1] == 'interface'
+        let t.interface = 1
+      elseif matches[1] == 'enum'
+        let t.enum = 1
+      endif
+      break
+    endif
+  endfor
+
   " convert type name in extends to fqn for class defined in source files
   if has_key(a:t, 'filepath') && a:t.filepath != javacomplete#GetCurrentFileKey()
     let filepath = a:t.filepath
@@ -311,7 +323,8 @@ function! s:CollectFQNs(typename, packagename, filekey, extends)
     let typename = a:typename
   endif
 
-  let directFqn = javacomplete#imports#SearchSingleTypeImport(typename, javacomplete#imports#GetImports('imports_fqn', a:filekey))
+  let imports = javacomplete#imports#GetImports('imports_fqn', a:filekey)
+  let directFqn = javacomplete#imports#SearchSingleTypeImport(typename, imports)
   if !empty(directFqn)
     return [directFqn. extra]
   endif

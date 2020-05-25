@@ -3,6 +3,7 @@
 
 import socket
 import sys
+import tempfile
 import time
 import subprocess
 import os
@@ -19,11 +20,11 @@ def GetUnusedLocalhostPort():
 SERVER = ('127.0.0.1', GetUnusedLocalhostPort())
 
 # A wrapper for subprocess.Popen that works around a Popen bug on Windows.
-def SafePopen(*args, **kwargs):
+def SafePopen(args, **kwargs):
     if kwargs.get('stdin') is None:
         kwargs['stdin'] = subprocess.PIPE if sys.platform == 'win32' else None
 
-    return subprocess.Popen( *args, **kwargs )
+    return subprocess.Popen(args, **kwargs)
 
 class JavaviBridge():
 
@@ -34,27 +35,39 @@ class JavaviBridge():
 
     def setupServer(self, javabin, args, classpath):
         is_win = sys.platform == 'win32'
+        separator = (';' if is_win else ':')
+        fileSeparator = ('\\' if is_win else '/')
+
+        classpathset = set(classpath.split(separator))
 
         environ = os.environ.copy()
         if 'CLASSPATH' in environ:
-            environ['CLASSPATH'] = environ['CLASSPATH'] + (';' if is_win else ':') + classpath
-        else:
-            environ['CLASSPATH'] = classpath
+            classpathset.union(environ['CLASSPATH'].split(separator))
 
-        if vim.eval('exists("g:JavaComplete_JavaviLogfileDirectory")') == "1":
-            self.logfile = open(vim.eval("g:JavaComplete_JavaviLogfileDirectory") + ('\\' if is_win else '/') + "javavi_" + str(SERVER[1]) + ".log", "w")
+        environ['CLASSPATH'] = separator.join(classpathset)
+
+        if vim.eval('get(g:, "JavaComplete_JavaviLogLevel", 0)') != 0:
+            defaulttmp = tempfile.gettempdir() + fileSeparator + 'javavi_log'
+            logdir = vim.eval(
+                "get(g:, 'JavaComplete_JavaviLogDirectory', '%s')" 
+                % defaulttmp)
+            if not os.path.isdir(logdir):
+                os.mkdir(logdir)
+            self.logfile = open("%s%s%s" % (
+                    logdir, fileSeparator, "javavi_stdout.log"), 
+                "a")
             output = self.logfile
         else:
             output = subprocess.PIPE
 
-        shell = is_win == False
+        args = [javabin] + args + ['-D', str(SERVER[1])]
         if is_win and vim.eval('has("gui_running")'):
             info = subprocess.STARTUPINFO()
             info.dwFlags = 1
             info.wShowWindow = 0
-            self.popen = SafePopen(javabin + ' ' + args + ' -D ' + str(SERVER[1]), shell=shell, env=environ, stdout = output, stderr = output, startupinfo = info)
+            self.popen = SafePopen(args, env=environ, stdout = output, stderr = output, startupinfo = info)
         else:
-            self.popen = SafePopen(javabin + ' ' + args + ' -D ' + str(SERVER[1]), shell=shell, env=environ, stdout = output, stderr = output)
+            self.popen = SafePopen(args, env=environ, stdout = output, stderr = output)
 
     def pid(self):
         return self.popen.pid
@@ -115,7 +128,7 @@ class JavaviBridge():
                     break
 
                 totalData.append(data.decode('UTF-8'))
-                time.sleep(.01)
+                time.sleep(0.0001)
             except:
                 if totalData: break
 

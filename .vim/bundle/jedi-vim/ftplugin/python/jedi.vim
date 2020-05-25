@@ -16,6 +16,9 @@ if g:jedi#auto_initialization
     if len(g:jedi#goto_definitions_command)
         execute 'nnoremap <buffer> '.g:jedi#goto_definitions_command.' :call jedi#goto_definitions()<CR>'
     endif
+    if len(g:jedi#goto_stubs_command)
+        execute 'nnoremap <buffer> '.g:jedi#goto_stubs_command.' :call jedi#goto_stubs()<CR>'
+    endif
     if len(g:jedi#usages_command)
         execute 'nnoremap <buffer> '.g:jedi#usages_command.' :call jedi#usages()<CR>'
     endif
@@ -29,7 +32,7 @@ if g:jedi#auto_initialization
         execute 'nnoremap <silent> <buffer>'.g:jedi#documentation_command.' :call jedi#show_documentation()<CR>'
     endif
 
-    if g:jedi#show_call_signatures > 0 && has('conceal')
+    if g:jedi#show_call_signatures > 0
         call jedi#configure_call_signatures()
     endif
 
@@ -47,8 +50,4 @@ if g:jedi#auto_initialization
             autocmd! InsertLeave <buffer> if pumvisible() == 0|pclose|endif
         augroup END
     endif
-    augroup jedi_usages
-        autocmd! TextChanged <buffer> call jedi#remove_usages()
-        autocmd! InsertEnter <buffer> call jedi#remove_usages()
-    augroup END
 endif
