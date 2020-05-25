@@ -1,4 +1,4 @@
-# Introduction
+# Introduction [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/cb%40256bit.org)
 
 This plugin is used for handling column separated data with Vim. Usually those
 files are called csv files and use the ',' as delimiter, though sometimes they
@@ -1829,6 +1829,17 @@ comes after the :filetype plugin ([`:filetype-plugin-on`](http://vimhelp.appspot
 [`.vimrc`](http://vimhelp.appspot.com/starting.txt.html#.vimrc)
 
 Alternatively, you can simply call [CSVInit](#csvinit) and ignore the error.
+
+Note: It could also be caused by lazy loading feature by a vim plugin
+manager. For example this line might also cause it:
+
+```vim
+  Plug 'https://github.com/chrisbra/csv.vim',  { 'for' : 'csv' }
+```
+The fix would then be:
+```vim
+  Plug 'https://github.com/chrisbra/csv.vim'
+```
 
 ## Calculate new columns
 

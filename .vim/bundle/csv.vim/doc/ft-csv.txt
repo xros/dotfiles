@@ -614,9 +614,11 @@ is equival to a single backslash '\', e.g. \K would run the lookup function on
 the word under the cursor and \J would join this line with the previous line.
 
 If you want to prevent the mapping of keys, simply set the global variable
-g:csv_nomap_<key> to 1, e.g. to prevent mapping of <CR> in csv files, put >
+g:csv_nomap_<key> to 1, (remove the special characters `<>` and replace `-` by
+`_`), e.g. to prevent mapping of <CR> and <C-Left> in csv files, put >
 
     let g:csv_nomap_cr = 1
+    let g:csv_nomap_c_left = 1
 <
 into your |.vimrc|. Note, the keyname must be lower case.
 
@@ -1497,9 +1499,13 @@ Returns the 10 smallest values for column col.
 ------------------------------------------------------
 Returns the average value for column col. 
 
-5.9 CSVWidth()                                                  *CSVWidth()*
+5.9 CSVWidth([silent])                                             *CSVWidth()*
 ------------------------------------------------------
-Returns a list with the width for each column.
+Returns a list with the width for each column. If the first argument is given
+and non-zero, do not output warning message about the number of records used
+to calculate the width (else it might output something like:
+  CSV: File too large, only checking the first 10000 rows for the width
+), default: 1
 
 ==============================================================================
 6. CSV Tips and Tricks						*csv-tips*
@@ -1692,6 +1698,16 @@ comes after the :filetype plugin (|:filetype-plugin-on|) statement in your
 |.vimrc|
 
 Alternatively, you can simply call |InitCSV| and ignore the error.
+
+Note: It could also be caused by lazy loading feature by a vim plugin
+manager. For example this line might also cause it: >
+
+  Plug 'https://github.com/chrisbra/csv.vim',  { 'for' : 'csv' }
+<
+
+The fix would then be: >
+
+  Plug 'https://github.com/chrisbra/csv.vim'
 
 6.6 Calculate new columns               *csv-calculate-column*
 -------------------------
