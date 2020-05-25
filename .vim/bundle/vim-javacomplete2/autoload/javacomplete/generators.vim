@@ -27,154 +27,6 @@ let g:JavaComplete_Templates['abstractDeclaration'] =
     \ "throw new UnsupportedOperationException();\n" .
   \ "}"
 
-" class:
-"   name - name of the class,
-"   fields:
-"       name
-"       type
-"       static
-"       final
-"       isArray
-"       getter
-let g:JavaComplete_Generators['toString_concat'] = join([
-  \ 'function! s:__toString_concat(class)',
-  \ '   let result = "@Override\n"',
-  \ '   let result .= "public String toString() {\n"',
-  \ '   let result .= "return \"". a:class.name ."{\" +\n"',
-  \ '   let i = 0',
-  \ '   for field in a:class.fields',
-  \ '       if i > 0',
-  \ '           let result .= "\n\", "',
-  \ '       else',
-  \ '           let result .= "\""',
-  \ '           let i += 1',
-  \ '       endif',
-  \ '       if has_key(field, "getter")',
-  \ '           let f = field.getter',
-  \ '       else',
-  \ '           let f = field.name',
-  \ '       endif',
-  \ '       let f = field.isArray ? "java.util.Arrays.toString(". f .")" : f',
-  \ '       let result .= field.name ." = \" + ". f. " +"',
-  \ '   endfor',
-  \ '   return result . "\n\"}\";\n}"',
-  \ 'endfunction'
-  \], "\n")
-
-let g:JavaComplete_Generators['toString_StringBuilder'] = join([
-  \ 'function! s:__toString_StringBuilder(class)',
-  \ '   let result = "@Override\n"',
-  \ '   let result .= "public String toString() {\n"',
-  \ '   let result .= "final StringBuilder sb = new StringBuilder(\"". a:class.name . "{\");\n"',
-  \ '   let i = 0',
-  \ '   for field in a:class.fields',
-  \ '       if i > 0',
-  \ '           let result .= "\nsb.append(\", "',
-  \ '       else',
-  \ '           let result .= "sb.append(\""',
-  \ '           let i += 1',
-  \ '       endif',
-  \ '       if has_key(field, "getter")',
-  \ '           let f = field.getter',
-  \ '       else',
-  \ '           let f = field.name',
-  \ '       endif',
-  \ '       let f = field.isArray ? "java.util.Arrays.toString(". f .")" : f',
-  \ '       let result .= field.name ." = \").append(". f. ");"',
-  \ '   endfor',
-  \ '   return result . "\nreturn sb.append(\"}\").toString();\n}"',
-  \ 'endfunction'
-  \], "\n")
-
-let g:JavaComplete_Generators['hashCode'] = join([
-  \ 'function! s:__hashCode(class)',
-  \ '   let result = "@Override\n"',
-  \ '   let result .= "public int hashCode() {\n"',
-  \ '   let result .= "int result = super.hashCode();\n"',
-  \ '   for field in a:class.fields',
-  \ '       if index(g:J_PRIMITIVE_TYPES, field.type) > -1',
-  \ '           if field.type == "boolean"',
-  \ '               let result .= "result = 31 * result + (". field.name . " ? 0 : 1);\n"',
-  \ '           elseif field.type == "long"',
-  \ '               let result .= "result = 31 * result + (int)(". field.name . " ^ (". field.name . " >>> 32));\n"',
-  \ '           elseif field.type == "float"',
-  \ '               let result .= "result = 31 * result + Float.floatToIntBits(". field.name . ");\n"',
-  \ '           elseif field.type == "double"',
-  \ '               let result .= "long ". field.name . "Long = Double.doubleToLongBits(". field.name .");\n"',
-  \ '               let result .= "result = 31 * result + (int)(". field.name . "Long ^ (". field.name . "Long >>> 32));\n"',
-  \ '           else',
-  \ '               let result .= "result = 31 * result + (int)". field.name . ";\n"',
-  \ '           endif',
-  \ '       elseif field.isArray',
-  \ '           let result .= "result = 31 * result + java.util.Arrays.hashCode(". field.name . ");\n"',
-  \ '       else',
-  \ '           let result .= "result = 31 * result + (". field.name . " != null ? ". field.name .".hashCode() : 0);\n"',
-  \ '       endif',
-  \ '   endfor',
-  \ '   return result. "return result;\n}"',
-  \ 'endfunction'
-  \], "\n")
-
-let g:JavaComplete_Generators['equals'] = join([
-  \ 'function! s:__equals(class)',
-  \ '   let result = "@Override\n"',
-  \ '   let result .= "public boolean equals(Object o) {\n"',
-  \ '   let result .= "if (this == o) return true;\n"',
-  \ '   let result .= "if (o == null || getClass() != o.getClass()) return false;\n"',
-  \ '   let result .= "if (!super.equals(o)) return false;\n\n"',
-  \ '   let result .= a:class.name ." object = (". a:class.name .") o;\n\n"',
-  \ '   let idx = 0',
-  \ '   for field in a:class.fields',
-  \ '       if idx != len(a:class.fields) - 1',
-  \ '           let result .= "if "',
-  \ '       else',
-  \ '           let result .= "return "',
-  \ '       endif',
-  \ '       if index(g:J_PRIMITIVE_TYPES, field.type) > -1',
-  \ '           if field.type == "double"',
-  \ '               let result .= "(Double.compare(". field.name .", object.". field.name .") != 0)"',
-  \ '           elseif field.type == "float"',
-  \ '               let result .= "(Float.compare(". field.name .", object.". field.name .") != 0)"',
-  \ '           else',
-  \ '               let result .= "(". field.name ." != object.". field.name .")"',
-  \ '           endif',
-  \ '       elseif field.isArray',
-  \ '           let result .= "(!java.util.Arrays.equals(". field.name .", object.". field.name ."))"',
-  \ '       else',
-  \ '           let result .= "(". field.name ." != null ? !". field.name .".equals(object.". field.name .") : object.". field.name ." != null)"',
-  \ '       endif',
-  \ '       if idx != len(a:class.fields) - 1',
-  \ '           let result .= " return false;\n"',
-  \ '       else',
-  \ '           let result .= ";\n"',
-  \ '       endif',
-  \ '       let idx += 1',
-  \ '   endfor',
-  \ '   return result. "}"',
-  \ 'endfunction'
-  \], "\n")
-
-let g:JavaComplete_Generators['constructor'] = join([
-  \ 'function! s:__constructor(class, ...)',
-  \ '   let parameters = ""',
-  \ '   let body = ""',
-  \ '   let idx = 0',
-  \ '   if a:0 == 0 || a:1.default != 1',
-  \ '       for field in a:class.fields',
-  \ '           if idx != 0',
-  \ '               let parameters .= ", "',
-  \ '           endif',
-  \ '           let parameters .= field.type . " ". field.name',
-  \ '           let body .= "this.". field.name ." = ". field.name .";\n"',
-  \ '           let idx += 1',
-  \ '       endfor',
-  \ '   endif',
-  \ '   let result = "public ". a:class.name ."(". parameters. ") {\n"',
-  \ '   let result .= body',
-  \ '   return result . "}"',
-  \ 'endfunction'
-  \], "\n")
-
 function! s:CollectVars()
   let currentFileVars = []
   for d in s:ti.defs
@@ -186,12 +38,18 @@ function! s:CollectVars()
   return currentFileVars
 endfunction
 
+function! javacomplete#generators#GenerateClass(options, ...)
+  let template = a:0 > 0 && !empty(a:1) ? '_'. a:1 : ''
+  let classCommand = {'template': 'class'. template, 'options': a:options, 'position_type' : 1}
+  call <SID>generateByTemplate(classCommand)
+endfunction
+
 function! javacomplete#generators#GenerateConstructor(default)
-  let defaultConstructorCommand = {'key': '1', 'desc': 'generate default constructor', 'call': '<SID>generateByTemplate', 'template': 'constructor', 'replace': {'type': 'search'}, 'options': {'default': 1}}
+  let defaultConstructorCommand = {'key': '1', 'desc': 'generate default constructor', 'call': '<SID>generateByTemplate', 'template': 'constructor', 'replace': {'type': 'same'}, 'options': {'default': 1}}
   if a:default == 0
     let commands = [
           \ defaultConstructorCommand,
-          \ {'key': '2', 'desc': 'generate constructor', 'call': '<SID>generateByTemplate', 'template': 'constructor', 'replace': {'type': 'search'}}
+          \ {'key': '2', 'desc': 'generate constructor', 'call': '<SID>generateByTemplate', 'template': 'constructor', 'replace': {'type': 'same'}}
           \ ]
     call s:FieldsListBuffer(commands)
   else
@@ -203,17 +61,17 @@ endfunction
 
 function! javacomplete#generators#GenerateEqualsAndHashCode()
   let commands = [
-        \ {'key': '1', 'desc': 'generate `equals` method', 'call': '<SID>generateByTemplate', 'template': 'equals', 'replace': {'type': 'constant', 'value': 'boolean equals(Object o)'}},
-        \ {'key': '2', 'desc': 'generate `hashCode` method', 'call': '<SID>generateByTemplate', 'template': 'hashCode', 'replace': {'type': 'constant', 'value': 'int hashCode()'}},
-        \ {'key': '3', 'desc': 'generate `equals` and `hashCode` methods', 'call': '<SID>generateByTemplate', 'template': ['hashCode', 'equals'], 'replace': {'type': 'constant', 'value': ['int hashCode()', 'boolean equals(Object o)']}}
+        \ {'key': '1', 'desc': 'generate `equals` method', 'call': '<SID>generateByTemplate', 'template': 'equals', 'replace': {'type': 'similar'}},
+        \ {'key': '2', 'desc': 'generate `hashCode` method', 'call': '<SID>generateByTemplate', 'template': 'hashCode', 'replace': {'type': 'similar'}},
+        \ {'key': '3', 'desc': 'generate `equals` and `hashCode` methods', 'call': '<SID>generateByTemplate', 'template': ['hashCode', 'equals'], 'replace': {'type': 'similar'}}
         \ ]
   call s:FieldsListBuffer(commands)
 endfunction
 
 function! javacomplete#generators#GenerateToString()
   let commands = [
-        \ {'key': '1', 'desc': 'generate `toString` method using concatination', 'call': '<SID>generateByTemplate', 'template': 'toString_concat', 'replace': {'type': 'constant', 'value': 'String toString()'}},
-        \ {'key': '2', 'desc': 'generate `toString` method using StringBuilder', 'call': '<SID>generateByTemplate', 'template': 'toString_StringBuilder', 'replace': {'type': 'constant', 'value': 'String toString()'}}
+        \ {'key': '1', 'desc': 'generate `toString` method using concatination', 'call': '<SID>generateByTemplate', 'template': 'toString_concat', 'replace': {'type': 'similar'}},
+        \ {'key': '2', 'desc': 'generate `toString` method using StringBuilder', 'call': '<SID>generateByTemplate', 'template': 'toString_StringBuilder', 'replace': {'type': 'similar'}}
         \ ]
   call s:FieldsListBuffer(commands)
 endfunction
@@ -237,11 +95,19 @@ function! s:FieldsListBuffer(commands)
   call cursor(contentLine + 1, 0)
 endfunction
 
+function! javacomplete#generators#GenerateByTemplate(command)
+  call <SID>generateByTemplate(a:command)
+endfunction
+
 " a:1 - method declaration to replace
 function! <SID>generateByTemplate(command)
-  let fields = []
+  let command = a:command
+  if !has_key(command, 'fields')
+    let command['fields'] = []
+  endif
+
   if bufname('%') == "__FieldsListBuffer__"
-    call s:Log("generate method with template: ". string(a:command.template))
+    call s:Log("generate method with template: ". string(command.template))
 
     let currentBuf = getline(1,'$')
     for line in currentBuf
@@ -249,7 +115,7 @@ function! <SID>generateByTemplate(command)
         let cmd = line[0]
         let idx = line[1:stridx(line, ' ')-1]
         let var = b:currentFileVars[idx]
-        call add(fields, var)
+        call add(command['fields'], var)
       endif
     endfor
 
@@ -257,36 +123,46 @@ function! <SID>generateByTemplate(command)
   endif
 
   let result = []
-  let templates = type(a:command.template) != type([]) ? [a:command.template] : a:command.template
-  let class = {"name": s:ti.name, "fields": fields}
+  let templates = type(command.template) != type([]) ? [command.template] : command.template
+  let class = {}
+  if has_key(s:, 'ti')
+    let class['name'] = s:ti.name
+  endif
+  let class['fields'] = command['fields']
   for template in templates
+    call s:CheckAndLoadTemplate(template)
     if has_key(g:JavaComplete_Generators, template)
-      execute g:JavaComplete_Generators[template]
+      call s:Log(g:JavaComplete_Generators[template]['data'])
+      execute g:JavaComplete_Generators[template]['data']
 
       let arguments = [class]
-      if has_key(a:command, 'options')
-        call add(arguments, a:command.options)
+      if has_key(command, 'options')
+        call add(arguments, command.options)
       endif
       let TemplateFunction = function('s:__'. template)
-      call add(result, '')
       for line in split(call(TemplateFunction, arguments), '\n')
         call add(result, line)
       endfor
+      call add(result, '')
     endif
   endfor
 
   if len(result) > 0
-    if has_key(a:command, 'replace')
-      if a:command.replace.type == 'constant'
-        let toReplace = type(a:command.replace.value) != type([]) ? [a:command.replace.value] : a:command.replace.value
-      elseif a:command.replace.type == 'search'
+    if has_key(command, 'replace')
+      let toReplace = []
+      if command.replace.type == 'same'
         let defs = s:GetNewMethodsDefinitions(result)
-        let toReplace = []
         for def in defs
           call add(toReplace, def.d)
         endfor
-      else
-        let toReplace = []
+      elseif command.replace.type == 'similar'
+        let defs = s:GetNewMethodsDefinitions(result)
+        for def in defs
+          let m = s:FindMethod(s:ti.methods, def)
+          if !empty(m)
+            call add(toReplace, m.d)
+          endif
+        endfor
       endif
 
       let idx = 0
@@ -311,16 +187,48 @@ function! <SID>generateByTemplate(command)
         endif
       endwhile
     endif
-    call s:InsertResults(result)
-    call setpos('.', s:savedCursorPosition)
+    if has_key(command, 'position_type')
+      call s:InsertResults(result, command['position_type'])
+    else
+      call s:InsertResults(result)
+    endif
+    if has_key(s:, 'savedCursorPosition')
+      call setpos('.', s:savedCursorPosition)
+    endif
   endif
+endfunction
+
+function! s:CheckAndLoadTemplate(template)
+  let filenames = []
+  if exists('g:JavaComplete_CustomTemplateDirectory')
+    call add(filenames, expand(g:JavaComplete_CustomTemplateDirectory). '/gen__'. a:template. '.tpl')
+  endif
+  call add(filenames, g:JavaComplete_Home. '/plugin/res/gen__'. a:template. '.tpl')
+  for filename in filenames
+    if filereadable(filename)
+      if has_key(g:JavaComplete_Generators, a:template)
+        if getftime(filename) > g:JavaComplete_Generators[a:template]['file_time']
+          let g:JavaComplete_Generators[a:template]['data'] = join(readfile(filename), "\n")
+          let g:JavaComplete_Generators[a:template]['file_time'] = getftime(filename)
+        endif
+      else
+        let g:JavaComplete_Generators[a:template] = {}
+        let g:JavaComplete_Generators[a:template]['data'] = join(readfile(filename), "\n")
+        let g:JavaComplete_Generators[a:template]['file_time'] = getftime(filename)
+      endif
+      break
+    endif
+  endfor
 endfunction
 
 function! javacomplete#generators#AbstractDeclaration()
   let s:ti = javacomplete#collector#DoGetClassInfo('this')
+  if get(s:ti, 'interface', 0) == 1
+    return
+  endif
   let s = ''
   let abstractMethods = []
-  let publicMethods = []
+  let implementedMethods = []
   for i in get(s:ti, 'extends', [])
     let parentInfo = javacomplete#collector#DoGetClassInfo(i)
     let members = javacomplete#complete#complete#SearchMember(parentInfo, '', 1, 1, 1, 14, 0)
@@ -328,7 +236,7 @@ function! javacomplete#generators#AbstractDeclaration()
       if javacomplete#util#CheckModifier(m.m, [g:JC_MODIFIER_ABSTRACT])
         call add(abstractMethods, m)
       elseif javacomplete#util#CheckModifier(m.m, [g:JC_MODIFIER_PUBLIC]) 
-        call add(publicMethods, m)
+        call add(implementedMethods, m)
       endif
     endfor
     unlet i
@@ -337,7 +245,7 @@ function! javacomplete#generators#AbstractDeclaration()
   let result = []
   let method = g:JavaComplete_Templates['abstractDeclaration']
   for m in abstractMethods
-    if s:CheckImplementationExistense(s:ti, publicMethods, m)
+    if !empty(s:CheckImplementationExistense(s:ti, implementedMethods, m))
       continue
     endif
     let declaration = javacomplete#util#GenMethodParamsDeclaration(m)
@@ -348,49 +256,78 @@ function! javacomplete#generators#AbstractDeclaration()
     for line in split(substitute(method, '$declaration', declaration, 'g'), '\n')
       call add(result, line)
     endfor
+
+    call add(implementedMethods, m)
   endfor
 
   call s:InsertResults(result)
 endfunction
 
 " ti - this class info
-" publicMethods - implemented methods from parent class
+" implementedMethods - implemented methods from parent class
 " method - method to check
-function! s:CheckImplementationExistense(ti, publicMethods, method) 
-  let methodDeclaration = javacomplete#util#CleanFQN(a:method.r . ' '. a:method.n)
-  let paramsList = []
+function! s:CheckImplementationExistense(ti, implementedMethods, method) 
+  let methods = a:ti.methods
+  call extend(methods, a:implementedMethods)
+  return s:FindMethod(methods, a:method)
+endfunction
+
+function! s:GetParams(params)
+  let params = []
+  for param in a:params
+    if type(param) == type({}) && has_key(param, 'type') 
+      if has_key(param.type, 'name')
+        call add(params, javacomplete#util#CleanFQN(param.type.name))
+      elseif has_key(param.type, 'clazz') && has_key(param.type.clazz, 'name')
+        let name = javacomplete#util#CleanFQN(param.type.clazz.name)
+        if has_key(param.type, 'arguments')
+          let args = []
+          for arg in param.type.arguments
+            if type(arg) == type({})
+              if len(arg.name) == 1
+                call add(params, '\('. g:RE_TYPE_ARGUMENT_EXTENDS. '\|'. g:RE_TYPE. '\)')
+              else
+                call add(params, arg.name)
+              endif
+            else
+              call add(params, '?')
+            endif
+          endfor
+          let name .= '<'. join(args, ',\s*'). '>'
+        endif
+        call add(params, name)
+      elseif has_key(param.type, 'typetag')
+        call add(params, param.type.typetag)
+      elseif has_key(param.type, 'tag') && param.type.tag == 'TYPEARRAY'
+        if has_key(param.type, 'elementtype') && has_key(param.type.elementtype, 'name')
+          call add(params, param.type.elementtype.name . '[]')
+        endif
+      endif
+    endif
+  endfor
+  return params
+endfunction
+
+function! s:FindMethod(methods, method)
+  let searchMethodParamList = []
   if has_key(a:method, 'p')
     for p in a:method.p
-      call add(paramsList, javacomplete#util#CleanFQN(p))
+      call add(searchMethodParamList, javacomplete#util#CleanFQN(p))
     endfor
+  elseif has_key(a:method, 'params')
+    call extend(searchMethodParamList, s:GetParams(a:method.params))
   endif
-  let methods = a:ti.methods
-  call extend(methods, a:publicMethods)
-  for em in methods
-    if methodDeclaration ==# javacomplete#util#CleanFQN(em.r . ' '. em.n)
-      let paramsList2 = []
-      if has_key(em, 'params')
-        for param in em.params
-          if type(param) == type({}) && has_key(param, 'type') 
-            if has_key(param.type, 'name')
-              call add(paramsList2, javacomplete#util#CleanFQN(param.type.name))
-            elseif has_key(param.type, 'clazz') && has_key(param.type.clazz, 'name')
-              let name = javacomplete#util#CleanFQN(param.type.clazz.name)
-              if has_key(param.type, 'arguments')
-                let args = []
-                for arg in param.type.arguments
-                  call add(args, arg.name)
-                endfor
-                let name .= '<'. join(args, ',\s*'). '>'
-              endif
-              call add(paramsList2, name)
-            endif
-          endif
-        endfor
-      elseif has_key(em, 'p')
-        for param in em.p
+
+  let methodDeclaration = javacomplete#util#CleanFQN(a:method.r . ' '. a:method.n)
+  for method in a:methods
+    if methodDeclaration ==# javacomplete#util#CleanFQN(method.r . ' '. method.n)
+      let methodParamList = []
+      if has_key(method, 'params')
+        call extend(methodParamList, s:GetParams(method.params))
+      elseif has_key(method, 'p')
+        for param in method.p
           if type(param) == type("")
-            call add(paramsList2, javacomplete#util#CleanFQN(param))
+            call add(methodParamList, javacomplete#util#CleanFQN(param))
           endif
         endfor
       endif
@@ -398,21 +335,26 @@ function! s:CheckImplementationExistense(ti, publicMethods, method)
       " compare parameters need to be done with regexp because of separator of
       " arguments if paramater has generic arguments
       let i = 0
-      for p in paramsList
-        if i < len(paramsList2)
-          if p !~ paramsList2[i]
-            return 0
+      let _continue = 0
+      for p in searchMethodParamList
+        if i < len(methodParamList)
+          if p !~ methodParamList[i]
+            let _continue = 1
+            break
           endif
         else
-          return 0;
+          let _continue = 1
+          break
         endif
         let i += 1
       endfor
-      return 1
+      if _continue == 1
+        continue
+      endif
+      return method
     endif
   endfor
-
-  return 0
+  return {}
 endfunction
 
 function! s:CreateBuffer(name, title, commands)
@@ -563,7 +505,7 @@ function! <SID>generateAccessors(...)
     else
       let currentLines = []
     endif
-    for d in s:ti.defs
+    for d in get(s:ti, 'defs', [])
       if get(d, 'tag', '') == 'VARDEF'
         let line = java_parser#DecodePos(d.pos).line
         if has_key(d, 'endpos')
@@ -589,7 +531,7 @@ endfunction
 function! s:FilterExistedMethods(locationMap, result)
   let resultMethods = []
   for def in s:GetNewMethodsDefinitions(a:result)
-    if s:CheckImplementationExistense(s:ti, [], def)
+    if !empty(s:CheckImplementationExistense(s:ti, [], def))
       continue
     endif
     for m in a:locationMap 
@@ -629,43 +571,64 @@ function! s:GetNewMethodsDefinitions(declarations)
   return defs
 endfunction
 
-function! s:InsertResults(result)
+function! s:InsertResults(result, ...)
   if len(a:result) > 0
-    let result = a:result
-    let t = javacomplete#collector#CurrentFileInfo()
-    let contentLine = line('.')
-    let currentCol = col('.')
-    let posResult = {}
-    for clazz in values(t)
-      if contentLine > clazz.pos[0] && contentLine <= clazz.endpos[0]
-        let posResult[clazz.endpos[0] - clazz.pos[0]] = clazz.endpos
-      endif
-    endfor
-
-    let saveCursor = getpos('.')
-    if len(posResult) > 0
-      let pos = posResult[min(keys(posResult))]
-      let endline = pos[0]
-      if pos[1] > 1 && !empty(javacomplete#util#Trim(getline(pos[0])[:pos[1] - 2]))
-        let endline += 1
-        call cursor(pos[0], pos[1])
-        execute "normal! i\r"
-      endif
-    elseif has_key(s:ti, 'endpos')
-      let endline = java_parser#DecodePos(s:ti.endpos).line
-    else
-      call s:Log("cannot find `endpos` [InsertResult]")
+    let positionType = a:0 > 0 && len(a:1) > 0 ? a:1 : 'END'
+    if positionType == 'END'
+      call s:InsertAtTheEndOfTheClass(a:result)
       return
     endif
 
-    if empty(javacomplete#util#Trim(getline(endline - 1)))
+    call s:Log(a:result)
+    call append(0, a:result)
+    silent execute "normal! dd"
+    silent execute "normal! =G"
+  endif
+endfunction
+
+function! s:InsertAtTheEndOfTheClass(result)
+  let result = a:result
+  let t = javacomplete#collector#CurrentFileInfo()
+  let contentLine = line('.')
+  let currentCol = col('.')
+  let posResult = {}
+  for clazz in values(t)
+    if contentLine > clazz.pos[0] && contentLine <= clazz.endpos[0]
+      let posResult[clazz.endpos[0] - clazz.pos[0]] = clazz.endpos
+    endif
+  endfor
+
+  let saveCursor = getpos('.')
+  call s:Log(posResult)
+  if len(posResult) > 0
+    let pos = posResult[min(keys(posResult))]
+    let endline = pos[0]
+    if pos[1] > 1 && !empty(javacomplete#util#Trim(getline(pos[0])[:pos[1] - 2]))
+      let endline += 1
+      call cursor(pos[0], pos[1])
+      execute "normal! i\r"
+    endif
+  elseif has_key(s:, 'ti') && has_key(s:ti, 'endpos')
+    let endline = java_parser#DecodePos(s:ti.endpos).line
+  else
+    call s:Log("cannot find `endpos` [InsertResult]")
+    return
+  endif
+
+  if empty(javacomplete#util#Trim(getline(endline - 1))) 
+    if empty(result[0])
       let result = result[1:]
     endif
-    call append(endline - 1, result)
-    call cursor(endline - 1, 1)
-    silent execute "normal! =G"
+  elseif !empty(result[0])
+    call insert(result, '', 0)
+  endif
+
+  call append(endline - 1, result)
+  call cursor(endline - 1, 1)
+  silent execute "normal! =G"
+  if has('saveCursor')
     call setpos('.', saveCursor)
   endif
 endfunction
 
-" vim:set fdm=marker sw=3 nowrap:
+" vim:set fdm=marker sw=2 nowrap:

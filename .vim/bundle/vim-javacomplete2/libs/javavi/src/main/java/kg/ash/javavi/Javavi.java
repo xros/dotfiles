@@ -1,32 +1,30 @@
 package kg.ash.javavi;
 
-import java.util.HashMap;
-
 import kg.ash.javavi.actions.Action;
 import kg.ash.javavi.actions.ActionFactory;
-import kg.ash.javavi.clazz.SourceClass;
+import kg.ash.javavi.apache.logging.log4j.LogManager;
+import kg.ash.javavi.apache.logging.log4j.Logger;
+import kg.ash.javavi.searchers.ClasspathCollector;
+
+import java.util.HashMap;
 
 public class Javavi {
 
-    static final String VERSION	= "2.3.5";
+    public static final String VERSION = "2.4.1";
 
     public static String NEWLINE = "";
 
-    static boolean debugMode = false;
-
-    public static void debug(Object s) {
-        if (debugMode)
-            System.out.println(s);
-    }
+    public static final Logger logger = LogManager.getLogger();
 
     static void output(String s) {
-        if (!debugMode)
-            System.out.print(s);
+        System.out.print(s);
     }
 
     private static void usage() {
         version();
-        System.out.println("  java [-classpath] kg.ash.javavi.Javavi [-sources sourceDirs] [-h] [-v] [-d] [-D port] [action]");
+        System.out.println(
+            "  java [-classpath] kg.ash.javavi.Javavi [-sources sourceDirs] [-h] [-v] [-d] [-D "
+                + "port] [action]");
         System.out.println("Options:");
         System.out.println("  -h	        help");
         System.out.println("  -v	        version");
@@ -36,27 +34,33 @@ public class Javavi {
     }
 
     private static void version() {
-        System.out.println("Reflection and parsing for javavi " +
-                "vim plugin (" + VERSION + ")");
+        System.out.println("Reflection and parsing for javavi " + "vim plugin (" + VERSION + ")");
     }
 
-    public static HashMap<String,String> system = new HashMap<>();
+    public static HashMap<String, String> system = new HashMap<>();
     public static Daemon daemon = null;
 
-    public static void main( String[] args ) throws Exception {
+    public static void main(String[] args) {
+        logger.info("starting javavi server on port: {}", System.getProperty("daemon.port", "0"));
+
+        if (logger.isTraceEnabled()) {
+            logger.trace("output included libraries");
+            new ClasspathCollector().collectClassPath().forEach(logger::trace);
+        }
+
         String response = makeResponse(args);
 
-        debug(response);
         output(response);
     }
 
     public static String makeResponse(String[] args) {
 
+        long ms = System.currentTimeMillis();
         Action action = null;
         boolean asyncRun = false;
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
-            debug(arg);
+            logger.debug("argument: {}", arg);
             switch (arg) {
                 case "-h":
                     usage();
@@ -69,9 +73,6 @@ public class Javavi {
                     break;
                 case "-n":
                     NEWLINE = "\n";
-                    break;
-                case "-d":
-                    Javavi.debugMode = true;
                     break;
                 case "-base":
                     system.put("base", args[++i]);
@@ -98,15 +99,17 @@ public class Javavi {
 
         String result = "";
         if (action != null) {
+            logger.debug("new {} action: \"{}\"", asyncRun ? "async" : "",
+                action.getClass().getSimpleName());
+
             if (asyncRun) {
                 final Action a = action;
-                new Thread(() -> { a.perform(args); }).start();
+                new Thread(() -> a.perform(args)).start();
             } else {
                 result = action.perform(args);
             }
         }
-
+        logger.debug("action time: {}ms", (System.currentTimeMillis() - ms));
         return result;
     }
-
 }

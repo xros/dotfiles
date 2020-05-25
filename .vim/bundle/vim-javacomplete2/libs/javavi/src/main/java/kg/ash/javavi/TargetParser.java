@@ -1,10 +1,11 @@
 package kg.ash.javavi;
 
+import kg.ash.javavi.searchers.ClassSearcher;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.List;
-import kg.ash.javavi.searchers.ClassSearcher;
 
 public class TargetParser {
 
@@ -38,7 +39,7 @@ public class TargetParser {
         arguments = arguments.replaceAll("(\\(|\\))", "");
         String[] argumentVariants = arguments.split("\\|");
         boolean added = false;
-        for (String arg : argumentVariants) { 
+        for (String arg : argumentVariants) {
             Matcher argMatcher = pattern.matcher(arg);
             boolean matchResult = argMatcher.find();
             if (matchResult) {
@@ -46,7 +47,7 @@ public class TargetParser {
             }
             String name = getExactName(arg);
             if (seacher.find(name.replaceAll("(\\[|\\])", ""), sources)) {
-                if (matchResult && argMatcher.group(2) != "?") {
+                if (matchResult && !argMatcher.group(2).equals("?")) {
                     typeArguments.add(String.format("%s<%s>", name, argMatcher.group(2)));
                 } else {
                     typeArguments.add(name);
@@ -71,8 +72,6 @@ public class TargetParser {
     }
 
     private String markSplits(String ta) {
-        Javavi.debug("markSplits: " + ta);
-
         int i = 0;
         int lbr = 0;
         while (i < ta.length()) {
@@ -97,7 +96,13 @@ public class TargetParser {
     }
 
     public String getTypeArgumentsString() {
-        if (typeArguments.isEmpty()) return "";
+        return getTypeArgumentsString(this.typeArguments);
+    }
+
+    public static String getTypeArgumentsString(List<String> typeArguments) {
+        if (typeArguments.isEmpty()) {
+            return "";
+        }
 
         StringBuilder builder = new StringBuilder("<");
         for (String arg : typeArguments) {
@@ -106,5 +111,4 @@ public class TargetParser {
         builder.setCharAt(builder.length() - 1, '>');
         return builder.toString();
     }
-
 }

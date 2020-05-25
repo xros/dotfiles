@@ -1,5 +1,6 @@
 let s:pomProperties={}   "maven project properties
 let s:pomTags = ['build', 'properties']
+let s:mavenErrors = []
 
 function! javacomplete#classpath#maven#IfMaven()
   if executable('mvn') && g:JavaComplete_PomPath != ""
@@ -8,12 +9,15 @@ function! javacomplete#classpath#maven#IfMaven()
   return 0
 endfunction
 
-function! javacomplete#classpath#maven#Generate() abort
+function! javacomplete#classpath#maven#Generate(force) abort
+  if a:force != 0
+    let s:pomProperties = {}
+  endif
   let g:JavaComplete_ProjectKey = substitute(g:JavaComplete_PomPath, '[\\/:;.]', '_', 'g')
   let path = javacomplete#util#GetBase("classpath". g:FILE_SEP). g:JavaComplete_ProjectKey
 
   if filereadable(path)
-    if getftime(path) >= getftime(g:JavaComplete_PomPath)
+    if a:force == 0 && getftime(path) >= getftime(g:JavaComplete_PomPath)
       return join(readfile(path), '')
     endif
     call javacomplete#util#RemoveFile(javacomplete#util#GetBase('cache'). g:FILE_SEP. 'class_packages_'. g:JavaComplete_ProjectKey. '.dat')
@@ -23,7 +27,7 @@ function! javacomplete#classpath#maven#Generate() abort
     let s:mavenPath = path
     let s:mavenPom = g:JavaComplete_PomPath
     let s:mavenSettingsOutput = []
-    let mvnCmd = ['mvn', '--file', g:JavaComplete_PomPath, 'help:effective-pom', 'dependency:build-classpath', '-DincludeScope=test']
+    let mvnCmd = ['mvn', '-B', '--file', g:JavaComplete_PomPath, 'dependency:build-classpath', '-DincludeScope=test']
     call javacomplete#server#BlockStart()
     call javacomplete#util#RunSystem(mvnCmd, 'maven classpath build process', 'javacomplete#classpath#maven#BuildClasspathHandler')
     return ""
@@ -76,7 +80,7 @@ function! s:ParseMavenOutput()
   let s:pomProperties[s:mavenPom] = mvnProperties
 endfunction
 
-function! javacomplete#classpath#maven#BuildClasspathHandler(jobId, data, event)
+function! javacomplete#classpath#maven#BuildClasspathHandler(data, event)
   if a:event == 'exit'
     if a:data == "0"
       call s:ParseMavenOutput()
@@ -91,6 +95,8 @@ function! javacomplete#classpath#maven#BuildClasspathHandler(jobId, data, event)
 
       echomsg "Maven classpath built successfully"
     else
+      echoerr join(s:mavenErrors, "\n")
+      let s:mavenErrors = []
       echohl WarningMsg | echomsg "Failed to build maven classpath" | echohl None
     endif
 
@@ -108,7 +114,7 @@ function! javacomplete#classpath#maven#BuildClasspathHandler(jobId, data, event)
     call extend(s:mavenSettingsOutput, a:data)
   elseif a:event == 'stderr'
     for data in filter(a:data,'v:val !~ "^\\s*$"')
-        echoerr data
+      call add(s:mavenErrors, data)
     endfor
   endif
 endfunction

@@ -1,6 +1,11 @@
 " Vim completion script for java
 " Maintainer:	artur shaik <ashaihullin@gmail.com>
 
+if exists('g:JavaComplete_Autoload')
+  finish
+endif
+let g:JavaComplete_Autoload = 1
+
 " It doesn't make sense to do any work if vim doesn't support any Python since
 " we relly on it to properly work.
 if get(g:, 'JavaComplete_UsePython3', 0) == 0 && has('python')
@@ -106,6 +111,14 @@ fu! SScope()
   return s:
 endfu
 
+function! javacomplete#Disable()
+  let g:JavaComplete_Disabled = 1
+endfunction
+
+function! javacomplete#Enable()
+  let g:JavaComplete_Disabled = 0
+endfunction
+
 function! javacomplete#ClearCache()
   let g:JavaComplete_Cache = {}
   let g:JavaComplete_Files = {}
@@ -133,14 +146,24 @@ endfunction
 call s:SetCurrentFileKey()
 
 function! s:HandleTextChangedI()
-  if get(g:, 'JC_ClassnameCompletedFlag', 0)
+  if get(g:, 'JC_ClassnameCompletedFlag', 0) && get(g:, 'JavaComplete_InsertImports', 1)
+    let saveCursor = getcurpos()
     let line = getline('.')
-    if line[col('.') - 2] !~ '\v(\s|\.|\(|\<)'
-      return
+    if empty(javacomplete#util#Trim(line))
+      call cursor(line('.') - 1, 500)
+      let line = getline('.')
+      let offset = 1
+    else
+      if line[col('.') - 2] !~ '\v(\s|\.|\(|\<)'
+        return
+      endif
+      let offset = 0
     endif
 
     let g:JC_ClassnameCompletedFlag = 0
     call javacomplete#imports#Add()
+    let saveCursor[1] = line('.') + offset
+    call setpos('.', saveCursor)
   endif
 
   if get(g:, 'JC_DeclarationCompletedFlag', 0)
@@ -190,6 +213,11 @@ function! s:RemoveCurrentFromCache()
   endif
   call javacomplete#server#Communicate('-clear-from-cache', fqn, 's:RemoveCurrentFromCache')
   call javacomplete#server#Communicate('-async -recompile-class', fqn, 's:RemoveCurrentFromCache')
+
+  let arguments = '-source '. resolve(expand('%:p'))
+  let arguments .= ' -class '. classname
+  let arguments .= ' -package '. package
+  call javacomplete#server#Communicate('-async -add-source-to-cache', arguments, 's:RemoveCurrentFromCache')
 endfunction
 
 function! s:DefaultMappings()
@@ -201,6 +229,7 @@ function! s:DefaultMappings()
   nmap <silent> <buffer> <leader>jR <Plug>(JavaComplete-Imports-RemoveUnused)
   nmap <silent> <buffer> <leader>ji <Plug>(JavaComplete-Imports-AddSmart)
   nmap <silent> <buffer> <leader>jii <Plug>(JavaComplete-Imports-Add)
+  nmap <silent> <buffer> <leader>jis <Plug>(JavaComplete-Imports-SortImports)
 
   imap <silent> <buffer> <C-j>I <Plug>(JavaComplete-Imports-AddMissing)
   imap <silent> <buffer> <C-j>R <Plug>(JavaComplete-Imports-RemoveUnused)
@@ -227,6 +256,9 @@ function! s:DefaultMappings()
   vmap <silent> <buffer> <leader>js <Plug>(JavaComplete-Generate-AccessorSetter)
   vmap <silent> <buffer> <leader>jg <Plug>(JavaComplete-Generate-AccessorGetter)
   vmap <silent> <buffer> <leader>ja <Plug>(JavaComplete-Generate-AccessorSetterGetter)
+
+  nmap <silent> <buffer> <leader>jn <Plug>(JavaComplete-Generate-NewClass)
+  nmap <silent> <buffer> <leader>jN <Plug>(JavaComplete-Generate-ClassInFile)
 endfunction
 
 augroup javacomplete
@@ -247,7 +279,7 @@ augroup javacomplete
 augroup END
 
 let g:JavaComplete_Home = fnamemodify(expand('<sfile>'), ':p:h:h:gs?\\?'. g:FILE_SEP. '?')
-let g:JavaComplete_JavaParserJar = fnamemodify(g:JavaComplete_Home. join(['', 'libs', 'javaparser.jar'], g:FILE_SEP), ":p")
+let g:JavaComplete_JavaParserJar = fnamemodify(g:JavaComplete_Home. join(['', 'libs', 'javaparser-core-3.5.20.jar'], g:FILE_SEP), ":p")
 
 call s:Log("JavaComplete_Home: ". g:JavaComplete_Home)
 
@@ -261,6 +293,16 @@ if filereadable(getcwd(). g:FILE_SEP. "build.gradle")
           \, join(['**', 'build', 'generated', 'source', '**', 'debug'], g:FILE_SEP), 0, 0)
           \, g:PATH_SEP)
 endif
+
+for source in get(g:, 'JavaComplete_SourceExclude', [])
+  let source = fnamemodify(source, ':p')
+  let idx = stridx(g:JavaComplete_SourcesPath, source)
+  while idx > 0
+    let colon = stridx(g:JavaComplete_SourcesPath, ':', idx + 1)
+    let g:JavaComplete_SourcesPath = g:JavaComplete_SourcesPath[:idx - 1] . g:JavaComplete_SourcesPath[colon + 1:]
+    let idx = stridx(g:JavaComplete_SourcesPath, source)
+  endwhile
+endfor
 
 call s:Log("Default sources: ". g:JavaComplete_SourcesPath)
 

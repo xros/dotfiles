@@ -4,6 +4,7 @@
 " Java server bridge initiator and caller
 
 let s:serverStartBlocked = 0
+let s:autoRecompileCheckFlag = 0
 
 function! s:Log(log)
   let log = type(a:log) == type("") ? a:log : string(a:log)
@@ -54,36 +55,78 @@ function! javacomplete#server#Terminate()
   endif
 endfunction
 
+function! s:ControlServerAppVersion()
+  let classpath =
+        \ s:GetJavaviClassPath(). g:PATH_SEP.
+        \ s:GetJavaviDeps(). g:PATH_SEP
+  let s:serverVersionOutput = []
+  call javacomplete#util#RunSystem(join(
+        \ [
+          \ javacomplete#server#GetJVMLauncher(), '-cp', classpath,
+          \ 'kg.ash.javavi.Javavi -version'
+        \ ]),
+        \ 'Javavi server version check',
+        \ 'javacomplete#server#CheckServerAccordance')
+endfunction
+
+function! javacomplete#server#CheckServerAccordance(data, event)
+  if a:event == 'exit'
+    if a:data == '0'
+      let serverVersion = join(s:serverVersionOutput)
+      if !javacomplete#version#CheckServerCompatibility(serverVersion)
+        call s:Log("server ". serverVersion. " is outdated, recompile")
+        call javacomplete#server#Compile()
+      endif
+    endif
+
+    unlet s:serverVersionOutput
+  elseif a:event == 'stdout'
+    call extend(s:serverVersionOutput, a:data)
+  endif
+endfunction
+
 function! javacomplete#server#Start()
   if s:Poll() == 0 && s:serverStartBlocked == 0
-    call s:Log("start server")
-
-    let classpath = substitute(javacomplete#server#GetClassPath(), '\\', '\\\\', 'g')
-    let sources = ''
-    if exists('g:JavaComplete_SourcesPath')
-      let sources = '-sources "'. substitute(s:ExpandAllPaths(g:JavaComplete_SourcesPath), '\\', '\\\\', 'g'). '"'
+    if get(g:, 'JavaComplete_CheckServerVersionAtStartup', 1)
+      call s:ControlServerAppVersion()
     endif
 
-    let args = ' kg.ash.javavi.Javavi '. sources
-    if exists('g:JavaComplete_ServerAutoShutdownTime')
-      let args .= ' -t '. g:JavaComplete_ServerAutoShutdownTime
-    endif
-    if exists('g:JavaComplete_JavaviDebug') && g:JavaComplete_JavaviDebug
-      let args .= ' -d'
-    endif
-    let args .= ' -base "'. substitute(javacomplete#util#GetBase(''), '\\', '\\\\', 'g'). '"'
-    let args .= ' -compiler "'. substitute(javacomplete#server#GetCompiler(), '\\', '\\\\', 'g'). '"'
-    if !empty(g:JavaComplete_ProjectKey)
-      let args .= ' -project "'. substitute(g:JavaComplete_ProjectKey, '\\', '\\\\', 'g'). '"'
-    endif
-    call s:Log("server classpath: -cp ". classpath)
-    call s:Log("server arguments:". args)
-
+    JavacompletePy import vim
     let file = g:JavaComplete_Home. g:FILE_SEP. "autoload". g:FILE_SEP. "javavibridge.py"
     call s:Log("executing python file: " . file)
     execute "JavacompletePyfile ". file
 
-    JavacompletePy import vim
+    let javaProps = []
+    if exists('g:JavaComplete_JavaviLogLevel')
+      call add(javaProps, '-Dlog.level='. g:JavaComplete_JavaviLogLevel)
+    endif
+    if exists('g:JavaComplete_JavaviLogDirectory')
+      call add(javaProps, '-Dlog.directory='. g:JavaComplete_JavaviLogDirectory)
+    endif
+    JavacompletePy vim.command('let port = "%s"' % SERVER[1])
+    call add(javaProps, '-Ddaemon.port='. port)
+    let log4j2Config = join([g:JavaComplete_Home,'libs', 'javavi', 'target', 'classes', 'log4j2.xml'], g:FILE_SEP)
+    call add(javaProps, '-Dlog4j.configurationFile='. log4j2Config)
+
+    let classpath = substitute(javacomplete#server#GetClassPath(), '\\', '\\\\', 'g')
+    let sources = []
+    if exists('g:JavaComplete_SourcesPath')
+      let sources += ['-sources', s:ExpandAllPaths(g:JavaComplete_SourcesPath)]
+    endif
+
+    let args = javaProps + ['kg.ash.javavi.Javavi'] + sources
+    if exists('g:JavaComplete_ServerAutoShutdownTime')
+      let args += ['-t', g:JavaComplete_ServerAutoShutdownTime]
+    endif
+    let args += ['-base', javacomplete#util#GetBase('')]
+    let args += ['-compiler', javacomplete#server#GetCompiler()]
+    if !empty(g:JavaComplete_ProjectKey)
+      let args += ['-project', g:JavaComplete_ProjectKey]
+    endif
+
+    call s:Log("server classpath: -cp ". classpath)
+    call s:Log("server arguments:". join(args, ' '))
+
     JavacompletePy bridgeState = JavaviBridge()
     JavacompletePy bridgeState.setupServer(vim.eval('javacomplete#server#GetJVMLauncher()'), vim.eval('args'), vim.eval('classpath'))
 
@@ -121,9 +164,10 @@ function! javacomplete#server#SetJVMLauncher(interpreter)
   let g:JavaComplete_JvmLauncher = a:interpreter
 endfunction
 
-function! javacomplete#server#CompilationJobHandler(jobId, data, event)
+function! javacomplete#server#CompilationJobHandler(data, event)
   if a:event == 'exit'
     if a:data == "0"
+      JCserverStart
       echo 'Javavi compilation finished '
     else
       echo 'Failed to compile javavi server'
@@ -148,11 +192,12 @@ function! javacomplete#server#Compile()
 
   let s:compilationIsRunning = 1
   if executable('mvn')
-    let command = ['mvn', '-f', '"'. javaviDir. g:FILE_SEP. 'pom.xml"', 'compile']
+    let command = ['mvn', '-B', '-f', javaviDir. g:FILE_SEP. 'pom.xml', 'compile']
   else
     call mkdir(javaviDir. join(['target', 'classes'], g:FILE_SEP), "p")
+    let deps = s:GetJavaviDeps()
     let command = javacomplete#server#GetCompiler()
-    let command .= ' -d "'. javaviDir. 'target'. g:FILE_SEP. 'classes" -classpath "'. javaviDir. 'target'. g:FILE_SEP. 'classes'. g:PATH_SEP. g:JavaComplete_Home. g:FILE_SEP .'libs'. g:FILE_SEP. 'javaparser.jar" -sourcepath "'. javaviDir. 'src'. g:FILE_SEP. 'main'. g:FILE_SEP. 'java" -g -nowarn -target 1.8 -source 1.8 -encoding UTF-8 "'. javaviDir. join(['src', 'main', 'java', 'kg', 'ash', 'javavi', 'Javavi.java"'], g:FILE_SEP)
+    let command .= ' -d '. javaviDir. 'target'. g:FILE_SEP. 'classes -classpath '. javaviDir. 'target'. g:FILE_SEP. 'classes'. g:PATH_SEP. deps. ' -sourcepath '. javaviDir. 'src'. g:FILE_SEP. 'main'. g:FILE_SEP. 'java -g -nowarn -target 1.8 -source 1.8 -encoding UTF-8 '. javaviDir. join(['src', 'main', 'java', 'kg', 'ash', 'javavi', 'Javavi.java'], g:FILE_SEP)
   endif
   call javacomplete#util#RunSystem(command, "server compilation", "javacomplete#server#CompilationJobHandler")
 endfunction
@@ -190,7 +235,7 @@ function! javacomplete#server#Communicate(option, args, log)
     call s:Log("communicate: ". cmd. " [". a:log. "]")
     let result = ""
 JavacompletePy << EOPC
-vim.command('let result = "%s"' % bridgeState.send(vim.eval("cmd")))
+vim.command('let result = "%s"' % bridgeState.send(vim.eval("cmd")).replace('"', '\\"'))
 EOPC
 
     call s:Log(result)
@@ -207,7 +252,7 @@ endfunction
 
 function! javacomplete#server#GetClassPath()
   let jars = s:GetExtraPath()
-  let path = s:GetJavaviClassPath() . g:PATH_SEP. s:GetJavaParserClassPath(). g:PATH_SEP
+  let path = s:GetJavaviClassPath() . g:PATH_SEP. s:GetJavaviDeps(). g:PATH_SEP
   let path = path . join(jars, g:PATH_SEP) . g:PATH_SEP
 
   if &ft == 'jsp'
@@ -254,8 +299,12 @@ function! s:ExpandAllPaths(path)
     return result
 endfunction
 
-function! s:GetJavaParserClassPath()
-  let path = g:JavaComplete_JavaParserJar . g:PATH_SEP
+function! s:GetJavaviDeps()
+  let deps = []
+  call add(deps, fnamemodify(g:JavaComplete_Home. join(['', 'libs', 'javaparser-core-3.5.20.jar'], g:FILE_SEP), ":p"))
+  call add(deps, fnamemodify(g:JavaComplete_Home. join(['', 'libs', 'javavi_log4j-api.jar'], g:FILE_SEP), ":p"))
+  call add(deps, fnamemodify(g:JavaComplete_Home. join(['', 'libs', 'javavi_log4j-core.jar'], g:FILE_SEP), ":p"))
+  let path = join(deps, g:PATH_SEP)
   if exists('b:classpath') && b:classpath !~ '^\s*$'
     return path . b:classpath
   endif
@@ -331,5 +380,46 @@ endfu
 function! s:GetClassPath()
   return exists('s:classpath') ? join(s:classpath, g:PATH_SEP) : ''
 endfu
+
+function! s:GetDebugLogPath()
+  return javacomplete#server#Communicate('-get-debug-log-path', '', '')
+endfunction
+
+function! javacomplete#server#EnableDebug()
+  let g:JavaComplete_JavaviLogLevel = "debug"
+  if s:Poll()
+    JCserverTerminate
+    JCserverStart
+  endif
+endfunction
+
+function! javacomplete#server#EnableTraceDebug()
+  let g:JavaComplete_JavaviLogLevel = "trace"
+  if s:Poll()
+    JCserverTerminate
+    JCserverStart
+  endif
+endfunction
+
+function! javacomplete#server#GetLogContent()
+  let bufferName = "__JCServer_Log_Buffer__"
+  let n = bufnr(bufferName)
+  if n != -1
+    execute "bwipeout! ". n
+  endif
+  let curWin = winnr("#")
+  execute 'silent! split '. bufferName
+  set modifiable
+  setlocal buftype=nofile
+  setlocal bufhidden=wipe
+  setlocal noswapfile
+  setlocal nowrap
+  setlocal nobuflisted
+  execute '.-1read '. s:GetDebugLogPath()
+  execute "normal! G"
+  set nomodified
+  nnoremap <buffer> <silent> q :bwipeout!<CR>
+  execute curWin. 'wincmd w'
+endfunction
 
 " vim:set fdm=marker sw=2 nowrap:

@@ -3,6 +3,11 @@
 "
 " Utility functions
 
+function! s:Log(log)
+  let log = type(a:log) == type("") ? a:log : string(a:log)
+  call javacomplete#logger#Log("[util] ". log)
+endfunction
+
 " TODO: search pair used in string, like
 " 	'create(ao.fox("("), new String).foo().'
 function! javacomplete#util#GetMatchedIndexEx(str, idx, one, another)
@@ -134,20 +139,18 @@ function! javacomplete#util#GetClassNameWithScope(...)
   let offset = a:0 > 0 ? a:1 : col('.')
   let curline = getline('.')
   let word_l = offset - 1
-  let word_r = offset - 2
   while curline[word_l - 1] =~ '[\.:@A-Za-z0-9_]'
     let word_l -= 1
     if curline[word_l] == '@'
       break
     endif
   endwhile
-  while curline[word_r + 1] =~ '[A-Za-z0-9_]'
+  let word_r = word_l
+  while curline[word_r] =~ '[@A-Za-z0-9_]'
     let word_r += 1
   endwhile
 
-  let c = curline[word_l : word_r]
-
-  return c
+  return curline[word_l : word_r - 1]
 endfunction
 
 function! s:MemberCompare(m1, m2)
@@ -191,11 +194,12 @@ function! javacomplete#util#CleanFQN(fqnDeclaration)
   return fqnDeclaration
 endfunction
 
-function! javacomplete#util#FindFile(what) abort
+function! javacomplete#util#FindFile(what, ...) abort
+  let direction = a:0 > 0 ? a:1 : ';'
   let old_suffixesadd = &suffixesadd
   try
     let &suffixesadd = ''
-    return findfile(a:what, escape(expand('.'), '*[]?{}, ') . ';')
+    return findfile(a:what, escape(expand('.'), '*[]?{}, ') . direction)
   finally
     let &suffixesadd = old_suffixesadd
   endtry
@@ -223,17 +227,68 @@ function! javacomplete#util#IsWindows() abort
   return has("win32") || has("win64") || has("win16") || has("dos32") || has("dos16")
 endfunction
 
+function! s:JobVimOnCloseHandler(channel)
+  let job = s:asyncJobs[s:ChannelId(a:channel)]
+  let info = job_info(job['job'])
+  let Handler = function(job['handler'])
+  call call(Handler, [info['exitval'], 'exit'])
+endfunction
+
+function! s:JobVimOnErrorHandler(channel, text)
+  let job = s:asyncJobs[s:ChannelId(a:channel)]
+  let Handler = function(job['handler'])
+  call call(Handler, [[a:text], 'stderr'])
+endfunction
+
+function! s:JobVimOnCallbackHandler(channel, text)
+  let job = s:asyncJobs[s:ChannelId(a:channel)]
+  let Handler = function(job['handler'])
+  call call(Handler, [[a:text], 'stdout'])
+endfunction
+
+function! s:JobNeoVimResponseHandler(jobId, data, event)
+  let job = s:asyncJobs[a:jobId]
+  let Handler = function(job['handler'])
+  call call(Handler, [a:data, a:event])
+endfunction
+
+function! s:ChannelId(channel)
+  return matchstr(a:channel, '\d\+')
+endfunction
+
+function! s:NewJob(id, handler)
+  let s:asyncJobs = get(s:, 'asyncJobs', {})
+  let s:asyncJobs[a:id] = {}
+  let s:asyncJobs[a:id]['handler'] = a:handler
+endfunction
+
 function! javacomplete#util#RunSystem(command, shellName, handler)
+  call s:Log("running command: ". string(a:command))
   if has('nvim')
     if exists('*jobstart')
       let callbacks = {
-      \ 'on_stdout': function(a:handler),
-      \ 'on_stderr': function(a:handler),
-      \ 'on_exit': function(a:handler)
-      \ }
-      call jobstart(a:command, extend({'shell': a:shellName}, callbacks))
+        \ 'on_stdout': function('s:JobNeoVimResponseHandler'),
+        \ 'on_stderr': function('s:JobNeoVimResponseHandler'),
+        \ 'on_exit': function('s:JobNeoVimResponseHandler')
+        \ }
+      let jobId = jobstart(a:command, extend({'shell': a:shellName}, callbacks))
+      call s:NewJob(jobId, a:handler)
       return
     endif
+  elseif exists('*job_start')
+    let options = {
+      \ 'out_cb' : function('s:JobVimOnCallbackHandler'),
+      \ 'err_cb' : function('s:JobVimOnErrorHandler'),
+      \ 'close_cb' : function('s:JobVimOnCloseHandler')
+      \ }
+    if has('win32') && type(a:command) == 3
+      let a:command[0] = exepath(a:command[0])
+    endif
+    let job = job_start(a:command, options)
+    let jobId = s:ChannelId(job_getchannel(job))
+    call s:NewJob(jobId, a:handler)
+    let s:asyncJobs[jobId]['job'] = job
+    return
   endif
 
   if type(a:command) == type([])
@@ -242,9 +297,9 @@ function! javacomplete#util#RunSystem(command, shellName, handler)
     let ret = system(a:command)
   endif
   for l in split(ret, "\n")
-    call call(a:handler, [0, [l], "stdout"])
+    call call(a:handler, [[l], "stdout"])
   endfor
-  call call(a:handler, [0, "0", "exit"])
+  call call(a:handler, ["0", "exit"])
 endfunction
 
 function! javacomplete#util#Base64Encode(str)
@@ -257,12 +312,14 @@ function! javacomplete#util#Base64Encode(str)
 endfunction
 
 function! javacomplete#util#RemoveFile(file)
-  if g:JavaComplete_IsWindows
-    silent exe '!rmdir /s /q "'. a:file. '"'
-  else
-    silent exe '!rm -r "'. a:file. '"'
+  if filewritable(a:file)
+    if g:JavaComplete_IsWindows
+      silent exe '!rmdir /s /q "'. a:file. '"'
+    else
+      silent exe '!rm -r "'. a:file. '"'
+    endif
+    silent redraw!
   endif
-  silent redraw!
 endfunction
 
 if exists('*uniq')
@@ -374,6 +431,14 @@ function! javacomplete#util#GenMethodParamsDeclaration(method)
     endif
   endif
   return a:method.d
+endfunction
+
+function! javacomplete#util#GetClassPackage(class)
+  let lastDot = strridx(a:class, '.')
+  if lastDot > 0
+    return a:class[0:lastDot - 1]
+  endif
+  return a:class
 endfunction
 
 " vim:set fdm=marker sw=2 nowrap:
