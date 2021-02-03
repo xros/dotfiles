@@ -6,14 +6,15 @@ tests of pydocstyle.
 import difflib
 import re
 from functools import total_ordering
+from typing import Iterator, Tuple
 
 import parso
 from parso.utils import python_bytes_to_unicode
 
 
 @total_ordering
-class WantedIssue(object):
-    def __init__(self, code, line, column):
+class WantedIssue:
+    def __init__(self, code: str, line: int, column: int) -> None:
         self.code = code
         self._line = line
         self._column = column
@@ -21,18 +22,18 @@ class WantedIssue(object):
     def __eq__(self, other):
         return self.code == other.code and self.start_pos == other.start_pos
 
-    def __lt__(self, other):
+    def __lt__(self, other: 'WantedIssue') -> bool:
         return self.start_pos < other.start_pos or self.code < other.code
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(str(self.code) + str(self._line) + str(self._column))
 
     @property
-    def start_pos(self):
+    def start_pos(self) -> Tuple[int, int]:
         return self._line, self._column
 
 
-def collect_errors(code):
+def collect_errors(code: str) -> Iterator[WantedIssue]:
     for line_nr, line in enumerate(code.splitlines(), 1):
         match = re.match(r'(\s*)#: (.*)$', line)
         if match is not None:
@@ -42,9 +43,9 @@ def collect_errors(code):
                 column = int(add_indent or len(match.group(1)))
 
                 code, _, add_line = code.partition('+')
-                l = line_nr + 1 + int(add_line or 0)
+                ln = line_nr + 1 + int(add_line or 0)
 
-                yield WantedIssue(code[1:], l, column)
+                yield WantedIssue(code[1:], ln, column)
 
 
 def test_normalizer_issue(normalizer_issue_case):

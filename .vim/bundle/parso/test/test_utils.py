@@ -83,12 +83,16 @@ def test_bytes_to_unicode_failing_encoding(code, errors):
     else:
         python_bytes_to_unicode(code, errors=errors)
 
+
 @pytest.mark.parametrize(
     ('version_str', 'version'), [
         ('3', (3,)),
         ('3.6', (3, 6)),
         ('3.6.10', (3, 6)),
         ('3.10', (3, 10)),
+        ('3.10a9', (3, 10)),
+        ('3.10b9', (3, 10)),
+        ('3.10rc9', (3, 10)),
     ]
 )
 def test_parse_version_string(version_str, version):

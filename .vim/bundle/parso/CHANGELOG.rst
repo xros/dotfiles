@@ -3,6 +3,31 @@
 Changelog
 ---------
 
+Unreleased
+++++++++++
+
+0.8.1 (2020-12-10)
+++++++++++++++++++
+
+- Various small bugfixes
+
+0.8.0 (2020-08-05)
+++++++++++++++++++
+
+- Dropped Support for Python 2.7, 3.4, 3.5
+- It's possible to use ``pathlib.Path`` objects now in the API
+- The stubs are gone, we are now using annotations
+- ``namedexpr_test`` nodes are now a proper class called ``NamedExpr``
+- A lot of smaller refactorings
+
+0.7.1 (2020-07-24)
+++++++++++++++++++
+
+- Fixed a couple of smaller bugs (mostly syntax error detection in
+  ``Grammar.iter_errors``)
+
+This is going to be the last release that supports Python 2.7, 3.4 and 3.5.
+
 0.7.0 (2020-04-13)
 ++++++++++++++++++
 

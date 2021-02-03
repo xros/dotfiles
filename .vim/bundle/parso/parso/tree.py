@@ -1,7 +1,6 @@
-import sys
 from abc import abstractmethod, abstractproperty
+from typing import List, Optional, Tuple
 
-from parso._compatibility import utf8_repr, encoding
 from parso.utils import split_lines
 
 
@@ -20,12 +19,12 @@ def search_ancestor(node, *node_types):
             return node
 
 
-class NodeOrLeaf(object):
+class NodeOrLeaf:
     """
     The base class for nodes and leaves.
     """
     __slots__ = ()
-    type = None
+    type: str
     '''
     The type is a string that typically matches the types of the grammar file.
     '''
@@ -127,7 +126,7 @@ class NodeOrLeaf(object):
                 return node
 
     @abstractproperty
-    def start_pos(self):
+    def start_pos(self) -> Tuple[int, int]:
         """
         Returns the starting position of the prefix as a tuple, e.g. `(3, 4)`.
 
@@ -135,7 +134,7 @@ class NodeOrLeaf(object):
         """
 
     @abstractproperty
-    def end_pos(self):
+    def end_pos(self) -> Tuple[int, int]:
         """
         Returns the end position of the prefix as a tuple, e.g. `(3, 4)`.
 
@@ -168,7 +167,7 @@ class NodeOrLeaf(object):
     @abstractmethod
     def get_code(self, include_prefix=True):
         """
-        Returns the code that was input the input for the parser for this node.
+        Returns the code that was the input for the parser for this node.
 
         :param include_prefix: Removes the prefix (whitespace and comments) of
             e.g. a statement.
@@ -182,7 +181,7 @@ class Leaf(NodeOrLeaf):
     '''
     __slots__ = ('value', 'parent', 'line', 'column', 'prefix')
 
-    def __init__(self, value, start_pos, prefix=''):
+    def __init__(self, value: str, start_pos: Tuple[int, int], prefix: str = '') -> None:
         self.value = value
         '''
         :py:func:`str` The value of the current token.
@@ -193,17 +192,17 @@ class Leaf(NodeOrLeaf):
         :py:func:`str` Typically a mixture of whitespace and comments. Stuff
         that is syntactically irrelevant for the syntax tree.
         '''
-        self.parent = None
+        self.parent: Optional[BaseNode] = None
         '''
         The parent :class:`BaseNode` of this leaf.
         '''
 
     @property
-    def start_pos(self):
+    def start_pos(self) -> Tuple[int, int]:
         return self.line, self.column
 
     @start_pos.setter
-    def start_pos(self, value):
+    def start_pos(self, value: Tuple[int, int]) -> None:
         self.line = value[0]
         self.column = value[1]
 
@@ -228,7 +227,7 @@ class Leaf(NodeOrLeaf):
             return self.value
 
     @property
-    def end_pos(self):
+    def end_pos(self) -> Tuple[int, int]:
         lines = split_lines(self.value)
         end_pos_line = self.line + len(lines) - 1
         # Check for multiline token
@@ -238,7 +237,6 @@ class Leaf(NodeOrLeaf):
             end_pos_column = len(lines[-1])
         return end_pos_line, end_pos_column
 
-    @utf8_repr
     def __repr__(self):
         value = self.value
         if not value:
@@ -250,7 +248,7 @@ class TypedLeaf(Leaf):
     __slots__ = ('type',)
 
     def __init__(self, type, value, start_pos, prefix=''):
-        super(TypedLeaf, self).__init__(value, start_pos, prefix)
+        super().__init__(value, start_pos, prefix)
         self.type = type
 
 
@@ -260,28 +258,27 @@ class BaseNode(NodeOrLeaf):
     A node has children, a type and possibly a parent node.
     """
     __slots__ = ('children', 'parent')
-    type = None
 
-    def __init__(self, children):
+    def __init__(self, children: List[NodeOrLeaf]) -> None:
         self.children = children
         """
         A list of :class:`NodeOrLeaf` child nodes.
         """
-        self.parent = None
+        self.parent: Optional[BaseNode] = None
         '''
         The parent :class:`BaseNode` of this leaf.
         None if this is the root node.
         '''
 
     @property
-    def start_pos(self):
+    def start_pos(self) -> Tuple[int, int]:
         return self.children[0].start_pos
 
     def get_start_pos_of_prefix(self):
         return self.children[0].get_start_pos_of_prefix()
 
     @property
-    def end_pos(self):
+    def end_pos(self) -> Tuple[int, int]:
         return self.children[-1].end_pos
 
     def _get_code_for_children(self, children, include_prefix):
@@ -315,7 +312,6 @@ class BaseNode(NodeOrLeaf):
                 except AttributeError:
                     return element
 
-
             index = int((lower + upper) / 2)
             element = self.children[index]
             if position <= element.end_pos:
@@ -333,11 +329,8 @@ class BaseNode(NodeOrLeaf):
     def get_last_leaf(self):
         return self.children[-1].get_last_leaf()
 
-    @utf8_repr
     def __repr__(self):
         code = self.get_code().replace('\n', ' ').replace('\r', ' ').strip()
-        if not sys.version_info.major >= 3:
-            code = code.encode(encoding, 'replace')
         return "<%s: %s@%s,%s>" % \
             (type(self).__name__, code, self.start_pos[0], self.start_pos[1])
 
@@ -347,7 +340,7 @@ class Node(BaseNode):
     __slots__ = ('type',)
 
     def __init__(self, type, children):
-        super(Node, self).__init__(children)
+        super().__init__(children)
         self.type = type
 
     def __repr__(self):
@@ -373,7 +366,7 @@ class ErrorLeaf(Leaf):
     type = 'error_leaf'
 
     def __init__(self, token_type, value, start_pos, prefix=''):
-        super(ErrorLeaf, self).__init__(value, start_pos, prefix)
+        super().__init__(value, start_pos, prefix)
         self.token_type = token_type
 
     def __repr__(self):
