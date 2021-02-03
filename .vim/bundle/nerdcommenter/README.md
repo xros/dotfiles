@@ -1,91 +1,178 @@
-# Installation  
+# NERD Commenter
 
-_\*For simplicity, let's use **[VIM_ROOT]** which will mean ~/.vim (\*nix) or ~/vimfiles (Windows)_
+[![Vint](https://github.com/preservim/nerdcommenter/workflows/Vint/badge.svg)](https://github.com/preservim/nerdcommenter/actions?workflow=Vint)
 
-The NERD Commenter requires Vim 7 or higher is comprised of 2 files:  
+Comment functions so powerful—no comment necessary.
 
-    plugin/NERD_commenter.vim  
-    doc/NERD_commenter.txt 
+## Installation
 
-### Classic Install
+### Via Plugin Manager (Recommended)
 
-1. Extract the plugin files into your **[VIM_ROOT]**/plugin and **[VIM_ROOT]**/doc folders respectively.
-2. Finish the install by updating your help files.  Run:
+#### [Vim-Plug](https://github.com/junegunn/vim-plug)
 
-<pre><code>:helptags [VIM_ROOT]/doc</code></pre>
+1. Add `Plug 'preservim/nerdcommenter'` to your vimrc file.
+2. Reload your vimrc or restart
+3. Run `:PlugInstall`
 
-See **|add-local-help|** for more details. 
+#### [Vundle](https://github.com/VundleVim/Vundle.vim) or similar
 
-### Pathogen Install
-1. Navigate to your **[VIM_ROOT]/bundle** directory in your local Vim setup
-2. git clone https://github.com/scrooloose/nerdcommenter.git
+1. Add `Plugin 'preservim/nerdcommenter'` to your vimrc file.
+2. Reload your vimrc or restart
+3. Run `:BundleInstall`
 
-### Post Install  
-After the **'Classic'** or **'Pathogen'** install, make sure that you have filetype plugins enabled, as the script makes use of 
-**|'commentstring'|** where possible (which is usually set in a filetype plugin). 
-See **|filetype-plugin-on|** for details, but basically, stick this in your vimrc:
+#### [NeoBundle](https://github.com/Shougo/neobundle.vim)
 
-    filetype plugin on
+1. Add `NeoBundle 'preservim/nerdcommenter'` to your vimrc file.
+2. Reload your vimrc or restart
+3. Run `:NeoUpdate`
 
-# Usage  
+#### [Pathogen](https://github.com/tpope/vim-pathogen)
 
-The following key mappings are provided by default (there is also a menu 
-provided that contains menu items corresponding to all the below mappings): 
+```sh
+cd ~/.vim/bundle
+git clone https://github.com/preservim/nerdcommenter.git
+```
 
-Most of the following mappings are for normal/visual mode only. The |NERDComInsertComment| mapping is for insert mode only. 
+### Manual Installation
 
-**[count]\<leader\>cc |NERDComComment|**  
-Comment out the current line or text selected in visual mode. 
+#### Unix
 
+(For Neovim, change `~/.vim/` to `~/.config/nvim/`.)
 
-**[count]\<leader\>cn |NERDComNestedComment|**  
-Same as \<leader\>cc but forces nesting. 
+```sh
+curl -fLo ~/.vim/plugin/NERD_Commenter.vim --create-dirs \
+  https://raw.githubusercontent.com/preservim/nerdcommenter/master/plugin/NERD_commenter.vim
+curl -fLo ~/.vim/doc/NERD_Commenter.txt --create-dirs \
+  https://raw.githubusercontent.com/preservim/nerdcommenter/master/doc/NERD_commenter.txt
+```
 
+#### Windows (PowerShell)
 
-**[count]\<leader\>c\<space\> |NERDComToggleComment|**  
-Toggles the comment state of the selected line(s). If the topmost selected 
-line is commented, all selected lines are uncommented and vice versa. 
+```powershell
+md ~\vimfiles\plugin
+md ~\vimfiles\doc
+$pluguri = 'https://raw.githubusercontent.com/preservim/nerdcommenter/master/plugin/NERD_commenter.vim'
+$docsuri = 'https://raw.githubusercontent.com/preservim/nerdcommenter/master/doc/NERD_commenter.txt'
+(New-Object Net.WebClient).DownloadFile($pluguri, $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath("~\vimfiles\plugin\NERD_commenter.vim"))
+(New-Object Net.WebClient).DownloadFile($docsuri, $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath("~\vimfiles\doc\NERD_commenter.txt"))
+```
 
+### Post Installation
 
-**[count]\<leader\>cm |NERDComMinimalComment|**  
-Comments the given lines using only one set of multipart delimiters. 
+Make sure that you have filetype plugins enabled, as the plugin makes use of **|commentstring|** where possible (which is usually set in a filetype plugin). See **|filetype-plugin-on|** for details, but the short version is make sure this line appears in your vimrc:
 
+```sh
+filetype plugin on
+```
 
-**[count]\<leader\>ci |NERDComInvertComment|**  
-Toggles the comment state of the selected line(s) individually. 
+## Usage
 
+### Documentation
 
-**[count]\<leader\>cs |NERDComSexyComment|**  
-Comments out the selected lines ``sexily'' 
+Please see the vim help system for full documentation of all options: `:help nerdcommenter`
 
+### Settings
 
-**[count]\<leader\>cy |NERDComYankComment|**  
-Same as \<leader\>cc except that the commented line(s) are yanked first. 
+Several settings can be added to your vimrc to change the default behavior. Some examples:
 
+```vim
+" Create default mappings
+let g:NERDCreateDefaultMappings = 1
 
-**\<leader\>c$ |NERDComEOLComment|**  
-Comments the current line from the cursor to the end of line. 
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
 
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 1
 
-**\<leader\>cA |NERDComAppendComment|**  
-Adds comment delimiters to the end of line and goes into insert mode between 
-them. 
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
 
+" Set a language to use its alternate delimiters by default
+let g:NERDAltDelims_java = 1
 
-**|NERDComInsertComment|**  
-Adds comment delimiters at the current cursor position and inserts between. 
-Disabled by default. 
+" Add your own custom formats or override the defaults
+let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
 
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
 
-**\<leader\>ca |NERDComAltDelim|**  
-Switches to the alternative set of delimiters. 
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
 
+" Enable NERDCommenterToggle to check all selected lines is commented or not 
+let g:NERDToggleCheckAllLines = 1
+```
 
-**[count]\<leader\>cl**  
-**[count]\<leader\>cb    |NERDComAlignedComment|**  
-Same as |NERDComComment| except that the delimiters are aligned down the 
-left side (\<leader\>cl) or both sides (\<leader\>cb). 
+### Default mappings
 
+> **Note:** You can turn off settings default mappings to provide your own from scratch (look at the [Settings list](#settings) above)
 
-**[count]\<leader\>cu |NERDComUncommentLine|**  
-Uncomments the selected line(s). 
+The following key mappings are provided by default (there is also a menu provided that contains menu items corresponding to all the below mappings):
+
+Most of the following mappings are for normal/visual mode only. The **|NERDCommenterInsert|** mapping is for insert mode only.
+
+  * `[count]<leader>cc` **|NERDCommenterComment|**
+
+    Comment out the current line or text selected in visual mode.
+
+  * `[count]<leader>cn` **|NERDCommenterNested|**
+
+    Same as <leader>cc but forces nesting.
+
+  * `[count]<leader>c<space>` **|NERDCommenterToggle|**
+
+    Toggles the comment state of the selected line(s). If the topmost selected line is commented, all selected lines are uncommented and vice versa.
+
+  * `[count]<leader>cm` **|NERDCommenterMinimal|**
+
+    Comments the given lines using only one set of multipart delimiters.
+
+  * `[count]<leader>ci` **|NERDCommenterInvert|**
+
+    Toggles the comment state of the selected line(s) individually.
+
+  * `[count]<leader>cs` **|NERDCommenterSexy|**
+
+    Comments out the selected lines with a pretty block formatted layout.
+
+  * `[count]<leader>cy` **|NERDCommenterYank|**
+
+    Same as <leader>cc except that the commented line(s) are yanked first.
+
+  * `<leader>c$` **|NERDCommenterToEOL|**
+
+    Comments the current line from the cursor to the end of line.
+
+  * `<leader>cA` **|NERDCommenterAppend|**
+
+    Adds comment delimiters to the end of line and goes into insert mode between them.
+
+  * **|NERDCommenterInsert|**
+
+    Adds comment delimiters at the current cursor position and inserts between. Disabled by default.
+
+  * `<leader>ca` **|NERDCommenterAltDelims|**
+
+    Switches to the alternative set of delimiters.
+
+  * `[count]<leader>cl` **|NERDCommenterAlignLeft**
+    `[count]<leader>cb` **|NERDCommenterAlignBoth**
+
+    Same as **|NERDCommenterComment|** except that the delimiters are aligned down the left side (`<leader>cl`) or both sides (`<leader>cb`).
+
+  * `[count]<leader>cu` **|NERDCommenterUncomment|**
+
+    Uncomments the selected line(s).
+
+## Motions
+
+While the plugin does not directly support motions, you can leverage its support for selections to do something very similar. For example, to add motions to toggle comments on the paragraph text object you could use:
+```vim
+nnoremap <silent> <leader>c} V}:call NERDComment('x', 'toggle')<CR>
+nnoremap <silent> <leader>c{ V{:call NERDComment('x', 'toggle')<CR>
+```
+
+## Contributions
+
+This plugin was originally written in 2007 by [Martin Grenfell (@scrooloose)](https://github.com/scrooloose/). Lots of features and many of the supported filetypes have come from [community contributors](https://github.com/preservim/nerdcommenter/graphs/contributors). Since 2016 it has been maintained primarily by [Caleb Maclennan (@alerque)](https://github.com/alerque). Additional file type support, bug fixes, and new feature contributons are all welcome, please send them as Pull Requests on Github. If you can't contribute yourself please also feel free to open issues to report problems or request features.
