@@ -1,4 +1,4 @@
-" MIT License. Copyright (c) 2013-2019 Bailey Ling et al.
+" MIT License. Copyright (c) 2013-2021 Bailey Ling et al.
 " Plugin: vim-gitgutter, vim-signify, changesPlugin, quickfixsigns, coc-git
 " vim: et ts=2 sts=2 sw=2
 
@@ -118,6 +118,11 @@ function! airline#extensions#hunks#get_hunks() abort
       endif
     endfor
   endif
+  if index(airline#extensions#get_loaded_extensions(), 'branch') == -1 && string[-1:] == ' '
+    " branch extension not loaded, skip trailing whitespace
+    let string = string[0:-2]
+  endif
+
   let b:airline_hunks = string
   let b:airline_changenr = b:changedtick
   let s:airline_winwidth = airline#util#winwidth()

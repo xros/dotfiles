@@ -1,4 +1,4 @@
-" MIT License. Copyright (c) 2016-2019 Jerome Reybert et al.
+" MIT License. Copyright (c) 2016-2021 Jerome Reybert et al.
 " Plugin: https://github.com/jreybert/vimagit
 " vim: et ts=2 sts=2 sw=2
 
@@ -9,7 +9,7 @@ if !get(g:, 'loaded_magit', 0)
   finish
 endif
 
-let s:commit_mode = {'': 'STAGING', 'CC': 'COMMIT', 'CA': 'AMEND'}
+let s:commit_mode = {'ST': 'STAGING', 'CC': 'COMMIT', 'CA': 'AMEND'}
 
 function! airline#extensions#vimagit#init(ext) abort
   call a:ext.add_statusline_func('airline#extensions#vimagit#apply')

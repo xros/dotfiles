@@ -1,4 +1,4 @@
-" MIT License. Copyright (c) 2013-2020 Bailey Ling et al.
+" MIT License. Copyright (c) 2013-2021 Bailey Ling et al.
 " vim: et ts=2 sts=2 sw=2
 
 scriptencoding utf-8
@@ -221,7 +221,7 @@ function! airline#check_mode(winnr)
     elseif l:m ==# "no"   " does not work, most likely, Vim does not refresh the statusline in OP mode
       let l:mode = ['normal']
     elseif l:m[0:1] ==# 'ni'
-      let l:mode = ['normal']
+      let l:mode = ['insert']
       let l:m = 'ni'
     else
       let l:mode = ['normal']

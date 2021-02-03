@@ -1,4 +1,4 @@
-" MIT License. Copyright (c) 2013-2020 Christian Brabandt et al.
+" MIT License. Copyright (c) 2013-2021 Christian Brabandt et al.
 " vim: et ts=2 sts=2 sw=2
 
 scriptencoding utf-8
@@ -153,9 +153,12 @@ if v:version >= 800 && has("job")
   endfunction
 
   function! airline#async#get_msgfmt_stat(cmd, file)
-    if g:airline#init#is_windows || !executable('msgfmt')
-      " no msgfmt on windows?
+    if !executable('msgfmt')
+      " no msgfmt
       return
+    endif
+    if g:airline#init#is_windows
+      let cmd = 'cmd /C ' . a:cmd. shellescape(a:file)
     else
       let cmd = ['sh', '-c', a:cmd. shellescape(a:file)]
     endif

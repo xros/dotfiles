@@ -1,4 +1,4 @@
-" MIT License. Copyright (c) 2013-2020 Bailey Ling, Christian Brabandt et al.
+" MIT License. Copyright (c) 2013-2021 Bailey Ling, Christian Brabandt et al.
 " vim: et ts=2 sts=2 sw=2
 
 let s:save_cpo = &cpo
@@ -47,14 +47,6 @@ function! s:init()
   call airline#util#doautocmd('AirlineAfterInit')
 endfunction
 
-function! s:do_vim_enter()
-  " Needed for the Vista extension #2009
-  if get(g:, 'airline#extensions#vista#enabled', 1) && exists(':Vista')
-    call vista#RunForNearestMethodOrFunction()
-  endif
-  call <sid>on_window_changed('VimEnter')
-endfunction
-
 let s:active_winnr = -1
 function! s:on_window_changed(event)
   " don't trigger for Vim popup windows
@@ -99,7 +91,6 @@ function! s:on_colorscheme_changed()
   call s:init()
   unlet! g:airline#highlighter#normal_fg_hi
   call airline#highlighter#reset_hlcache()
-  let g:airline_gui_mode = airline#init#gui_mode()
   if !s:theme_in_vimrc
     call airline#switch_matching_theme()
   endif
@@ -139,17 +130,13 @@ function! s:airline_toggle()
             \ | call <sid>on_window_changed('CmdwinEnter')
       autocmd CmdwinLeave * call airline#remove_statusline_func('airline#cmdwinenter')
 
-      autocmd GUIEnter,ColorScheme * call <sid>on_colorscheme_changed()
-      if exists("##OptionSet")
-        " Make sure that g_airline_gui_mode is refreshed
-        autocmd OptionSet termguicolors call <sid>on_colorscheme_changed()
-      endif
+      autocmd ColorScheme * call <sid>on_colorscheme_changed()
       " Set all statuslines to inactive
       autocmd FocusLost * call airline#update_statusline_focuslost()
       " Refresh airline for :syntax off
       autocmd SourcePre */syntax/syntax.vim
             \ call airline#extensions#tabline#buffers#invalidate()
-      autocmd VimEnter * call <sid>do_vim_enter()
+      autocmd VimEnter * call <sid>on_window_changed('VimEnter')
       autocmd WinEnter * call <sid>on_window_changed('WinEnter')
       autocmd FileType * call <sid>on_window_changed('FileType')
       autocmd BufWinEnter * call <sid>on_window_changed('BufWinEnter')
@@ -189,7 +176,11 @@ function! s:airline_toggle()
 
     if !airline#util#stl_disabled(winnr())
       if &laststatus < 2
+        let _scroll=&scroll
         set laststatus=2
+        if &scroll != _scroll
+          let &scroll = _scroll
+        endif
       endif
     endif
     if s:airline_initialized

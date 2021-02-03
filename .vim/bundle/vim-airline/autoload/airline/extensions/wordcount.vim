@@ -1,4 +1,4 @@
-" MIT License. Copyright (c) 2013-2020 Bailey Ling et al.
+" MIT License. Copyright (c) 2013-2021 Bailey Ling et al.
 " vim: et ts=2 sts=2 sw=2 fdm=marker
 
 scriptencoding utf-8
@@ -87,7 +87,7 @@ endfunction
 " default filetypes:
 function! airline#extensions#wordcount#apply(...)
   let filetypes = get(g:, 'airline#extensions#wordcount#filetypes', 
-    \ ['asciidoc', 'help', 'mail', 'markdown', 'org', 'rst', 'plaintex', 'tex', 'text'])
+    \ ['asciidoc', 'help', 'mail', 'markdown', 'nroff', 'org', 'rst', 'plaintex', 'tex', 'text'])
   " export current filetypes settings to global namespace
   let g:airline#extensions#wordcount#filetypes = filetypes
 

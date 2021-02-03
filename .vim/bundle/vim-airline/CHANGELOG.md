@@ -9,13 +9,24 @@ This is the Changelog for the vim-airline project.
     - [vim-lsp](https://github.com/prabirshrestha/vim-lsp) support
     - [zoomwintab](https://github.com/troydm/zoomwintab.vim) support
     - [Vaffle](https://github.com/cocopon/vaffle.vim) support
+    - [vim-dirvish](https://github.com/justinmk/vim-dirvish) support
+    - [fzf.vim](https://github.com/junegunn/fzf.vim) support
+    - [OmniSharp](https://github.com/OmniSharp/omnisharp-vim) support
+    - [searchcount](https://vim-jp.org/vimdoc-en/eval.html#searchcount())  support
+    - [fern.vim](https://github.com/lambdalisue/fern.vim) support
+    - [Vim-CMake](https://github.com/cdelledonne/vim-cmake) support
+    - [battery.vim](https://github.com/lambdalisue/battery.vim) support
+    - [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) support
+    - [gen_tags.vim](https://github.com/jsfaint/gen_tags.vim) support
 - Improvements
   - git branch can also be displayed using [gina.vim](https://github.com/lambdalisue/gina.vim)
   - coc extensions can also show additional status messages
   - [coc-git](https://github.com/neoclide/coc-git) extension integrated into hunks extension
 - Other
+  - Changed CI from travis-ci.org to GitHub Actions
   - Introduce Vim script static analysis using [reviewdog](https://github.com/reviewdog/action-vint)
   - Added multiple Vim versions to unit tests using Travis CI
+  - Added option to show short paths in the status line
 
 ## [0.11] - 2019-11-10
 - New features
