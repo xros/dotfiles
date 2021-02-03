@@ -230,25 +230,25 @@ colorscheme corporation
 " Want to hide .pyc files? Then add the following line:
 let NERDTreeIgnore=['\.pyc$', '\~$', '\.pyo$'] "ignore files in NERDTree
 
-" ultisnips
+" ultisnips (removed for branch mini)
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 "let g:UltiSnipsExpandTrigger="<tab>"
 "let g:UltiSnipsJumpForwardTrigger="<c-b>"
 "let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-let g:UltiSnipsExpandTrigger="<leader>s"
-let g:UltiSnipsJumpForwardTrigger="<leader>f"
-let g:UltiSnipsJumpBackwardTrigger="<leader>b"
+"let g:UltiSnipsExpandTrigger="<leader>s"
+"let g:UltiSnipsJumpForwardTrigger="<leader>f"
+"let g:UltiSnipsJumpBackwardTrigger="<leader>b"
 
 " If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
+"let g:UltiSnipsEditSplit="vertical"
 
 " this fixes backspace not erasing in Vim
 set backspace=indent,eol,start " backspace over everything in insert mode
 
 
 
-""""""""" Enabling plugin vim-javacomplete2
-autocmd FileType java setlocal omnifunc=javacomplete#Complete
+""""""""" Enabling plugin vim-javacomplete2 (removed for branch mini)
+"autocmd FileType java setlocal omnifunc=javacomplete#Complete
 
 """"""""" For C/C++ project building
 " set makeprg=make\ -C\ ../build\ -j9

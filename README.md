@@ -4,31 +4,39 @@ Dot files
     A C/C++/Java/Python/HTML IDE for Vim is built in.
     With Machine Learning Settings for TensorFlow 1.4+ and Cuda 8.0+
                           --- Created by Alexander Liu
+
+Branch mini
+-----------
+Branch mini is mainly for low-end computers such as low energy ARM based CPU and alternatives to exchange for better performance.
+Branch master is the full version.
+
 VIM Plugins including
 ---
+Those plugins ends with **x** are not included in the vim settings, where should be located at `~/.vim/bundle`
+
 *   jedi
 *   ctags
 *   tagbar
-*   csv.vim
+*   csv.vim **x**
 *   NERDTree
 *   ftplugin
 *   supertab
-*   vim-clang
-*   Conque GDB
+*   vim-clang **x**
+*   Conque GDB **x**
 *   emmet-vim
 *   ctrlp.vim
 *   colorizer
-*   ultisnips
+*   ultisnips **x**
 *   indentLine
 *   numbers.vim
 *   nerdcommenter
 *   vim-airline
 *   vim-crosshairs
-*   vim-fugitive
+*   vim-fugitive **x**
 *   vim-indent-guides
 *   vim-airline-themes
 *   vim-multiple-cursors
-*   vim-javacomplete2
+*   vim-javacomplete2 **x**
 *   vim-python-pep8-indent
 *   Default Vim colorscheme is corporation. Also you can try this [**raincode**](https://github.com/xros/dotfiles/blob/master/.vim/colors/raincode.vim)
 *   and so on , just check it out. For VIM 7.3+
