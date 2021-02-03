@@ -683,7 +683,7 @@ func! s:ParseCompletionResult(output, base)
       "let l:proto = substitute(l:proto, '\(<#\)\|\(#>\)\|#', '', 'g')
       " Identify the type (test)
       if empty(l:res) || l:res[-1]['word'] !=# l:word
-        if l:proto =~ '\v^\[#.{-}#\].+\(.*\).*' 
+        if l:proto =~ '\v^\[#.{-}#\].+\(.*\).*'
           let l:kind = 'f'
         elseif l:proto =~ '\v^\[#.*#\].+'
           let l:kind = 'v'
@@ -902,14 +902,19 @@ func! s:ClangCompleteDatabase()
   let l:clang_options = ''
 
   if g:clang_compilation_database !=# ''
-    let l:ccd = fnameescape(fnamemodify(
-          \ g:clang_compilation_database . '/compile_commands.json', '%:p'))
-    let b:clang_root = fnameescape(fnamemodify(
-          \ g:clang_compilation_database, ':p:h'))
-
+    let l:ccd = fnameescape(fnamemodify(g:clang_compilation_database . '/compile_commands.json', '%:p'))
+    let b:clang_root = fnameescape(fnamemodify(g:clang_compilation_database, ':p:h'))
     call s:PDebug("s:ClangCompleteInit::database", l:ccd)
     if filereadable(l:ccd)
       execute s:py . ' ' . s:compilation_database_py
+    else
+      let build_path = finddir(g:clang_compilation_database, '.;')
+      if build_path !=# ''
+        let l:ccd = fnameescape(fnamemodify(build_path . '/compile_commands.json', '%:p'))
+        if filereadable(l:ccd)
+          execute s:py . ' ' . s:compilation_database_py
+        endif
+      endif
     endif
   endif
 
@@ -937,12 +942,21 @@ func! s:ClangCompleteInit(force)
   endif
 
   " find project file first
+  let l:localdir = haslocaldir()
   let l:cwd = fnameescape(getcwd())
   let l:fwd = fnameescape(expand('%:p:h'))
-  silent exe 'lcd ' . l:fwd
-  let l:dotclang    = findfile(g:clang_dotfile, '.;')
-  let l:dotclangow  = findfile(g:clang_dotfile_overwrite, '.;')
-  silent exe 'lcd '.l:cwd
+  let l:dotclang    = ''
+  let l:dotclangow  = ''
+  if isdirectory(l:fwd)
+    silent exe 'lcd ' . l:fwd
+    let l:dotclang    = fnamemodify(findfile(g:clang_dotfile, '.;'), ':p')
+    let l:dotclangow  = fnamemodify(findfile(g:clang_dotfile_overwrite, '.;'), ':p')
+    if l:localdir
+      silent exe 'lcd ' . l:cwd
+    else
+      silent exe 'cd ' . l:cwd
+    end
+  endif
 
   let l:has_dotclang = strlen(l:dotclang) + strlen(l:dotclangow)
   if !l:has_dotclang && g:clang_load_if_clang_dotfile
@@ -1030,13 +1044,22 @@ func! s:ClangCompleteInit(force)
   " try to find PCH files in clang_root and clang_root/include
   " Or add `-include-pch /path/to/x.h.pch` into the root file .clang manully
   if &filetype == 'cpp' && b:clang_options !~# '-include-pch'
+    let l:localdir = haslocaldir()
     let l:cwd = fnameescape(getcwd())
-    silent exe 'lcd ' . b:clang_root
-    let l:afx = findfile(g:clang_stdafx_h, '.;./include') . '.pch'
-    if filereadable(l:afx)
-      let b:clang_options .= ' -include-pch ' . shellescape(l:afx)
+    if isdirectory(b:clang_root)
+      silent exe 'lcd ' . b:clang_root
+      let l:afx = findfile(g:clang_stdafx_h, '.;./include') . '.pch'
+      if filereadable(l:afx)
+        let b:clang_options .= ' -include-pch ' . shellescape(l:afx)
+      endif
+      if isdirectory(l:cwd)
+        if l:localdir
+          silent exe 'lcd ' . l:cwd
+        else
+          silent exe 'cd ' . l:cwd
+        end
+      endif
     endif
-    silent exe 'lcd '.l:cwd
   endif
 
   " Create GenPCH command
@@ -1149,6 +1172,7 @@ endf
 " @col Column to complete
 " @return [completion, diagnostics]
 func! s:ClangExecute(root, clang_options, line, col)
+  let l:localdir = haslocaldir()
   let l:cwd = fnameescape(getcwd())
   silent exe 'lcd ' . a:root
   let l:src = join(getline(1, '$'), "\n") . "\n"
@@ -1219,7 +1243,11 @@ func! s:ClangExecute(root, clang_options, line, col)
       call s:PError('s:ClangExecute::acmd', 'execute async command failed')
     endif
   endif
-  silent exe 'lcd ' . l:cwd
+  if l:localdir
+    silent exe 'lcd ' . l:cwd
+  else
+    silent exe 'cd ' . l:cwd
+  end
   let b:clang_state['stdout'] = l:res[0]
   let b:clang_state['stderr'] = l:res[1]
   return l:res
@@ -1264,6 +1292,7 @@ endf
 " Only do syntax check without completion, will open diags window when have
 " problem. Now this function will block...
 func! s:ClangSyntaxCheck(root, clang_options)
+  let l:localdir = haslocaldir()
   let l:cwd = fnameescape(getcwd())
   silent exe 'lcd ' . a:root
   let l:src = join(getline(1, '$'), "\n")
@@ -1271,7 +1300,11 @@ func! s:ClangSyntaxCheck(root, clang_options)
   call s:PDebug("ClangSyntaxCheck::command", l:command)
   let l:clang_output = system(l:command, l:src)
   call s:DiagnosticsWindowOpen(expand('%:p:.'), split(l:clang_output, '\n'))
-  silent exe 'lcd ' . l:cwd
+  if l:localdir
+    silent exe 'lcd ' . l:cwd
+  else
+    silent exe 'cd ' . l:cwd
+  end
 endf
 " }}}
 " {{{ s:ClangFormat
