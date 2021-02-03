@@ -28,11 +28,9 @@ Currently this repository contains the following themes:
     * alduin
     * angr
     * atomic
-    * aurora
     * ayu_light
     * ayu_mirage
     * ayu_dark
-    * badcat
     * badwolf
     * base16 (|airline-theme-base16|)
     * base16_vim (|airline-theme-base16_vim|)
@@ -104,7 +102,9 @@ Currently this repository contains the following themes:
     * kalisi
     * kolor
     * laederon
+    * lessnoise
     * light
+    * lighthaus
     * lucius
     * luna
     * minimalist (|airline-theme-minimalist|)
@@ -112,8 +112,10 @@ Currently this repository contains the following themes:
     * monochrome
     * murmur
     * night_owl
+    * nord-minimal
     * onedark (|airline-theme-onedark|)
     * ouo
+    * owo
     * papercolor
     * peaksea
     * powerlineish
@@ -121,6 +123,7 @@ Currently this repository contains the following themes:
     * raven
     * ravenpower
     * seagull
+    * seoul256
     * serene
     * sierra
     * silver
@@ -134,11 +137,11 @@ Currently this repository contains the following themes:
     * tomorrow
     * ubaryd
     * understated
-    * vice
     * violet
     * wombat
     * xtermlight
     * zenburn
+    * transparent
 
 ==============================================================================
 NAME                                         *airline-themes-configuration*
@@ -298,6 +301,6 @@ Contributions and pull requests are welcome.
 ==============================================================================
 LICENSE                                            *airline-themes-license*
 
-MIT License.  Copyright © 2013-2019 Bailey Ling, et al
+MIT License.  Copyright © 2013-2020 Bailey Ling, et al
 
  vim:tw=78:ts=8:ft=help:norl:
