@@ -65,9 +65,13 @@ function! javacomplete#complete#complete#Complete(findstart, base, is_filter)
     endif
   endif
 
-  if get(g:, 'JavaComplete_IgnoreErrorMsg', 0) <= 0 && len(get(b:, 'errormsg', '')) > 0
-    echoerr 'javacomplete error: ' . b:errormsg
-    let b:errormsg = ''
+  if len(get(b:, 'errormsg', '')) > 0
+    call javacomplete#ClearCache()
+
+    if get(g:, 'JavaComplete_IgnoreErrorMsg', 0) <= 0
+      echom 'javacomplete error: ' . b:errormsg
+      let b:errormsg = ''
+    endif
   endif
 
   return []
@@ -424,7 +428,7 @@ function! javacomplete#complete#complete#CompleteAfterDot(expr)
 
           if !empty(members[3])
             if len(members[3]) > 0
-              let fount = 0
+              let found = 0
               for entry in members[3]
                 if has_key(entry, 'n') && entry.n == ident && has_key(entry, 'm')
                   let ti = javacomplete#collector#DoGetClassInfo(entry.m)
@@ -548,7 +552,7 @@ function! javacomplete#complete#complete#ArrayAccess(arraytype, expr)
   return {}
 endfunction
 
-function! s:CanAccess(mods, kind, outputkind, samePackage)
+function! s:CanAccess(mods, kind, outputkind, samePackage, isinterface)
   if a:outputkind == 14
     return javacomplete#util#CheckModifier(a:mods, [g:JC_MODIFIER_PUBLIC, g:JC_MODIFIER_PROTECTED, g:JC_MODIFIER_ABSTRACT]) && !javacomplete#util#CheckModifier(a:mods, g:JC_MODIFIER_FINAL)
   endif
@@ -558,7 +562,7 @@ function! s:CanAccess(mods, kind, outputkind, samePackage)
   return (a:mods[-4:-4] || a:kind/10 == 0)
         \ &&   (a:kind == 1 || a:mods[-1:]
         \	|| (a:mods[-3:-3] && (a:kind == 1 || a:kind == 2 || a:kind == 7 || a:samePackage))
-        \	|| (a:mods == 0 && a:samePackage)
+        \	|| (a:mods == 0 && (a:samePackage || a:isinterface))
         \	|| (a:mods[-2:-2] && (a:kind == 1 || a:kind == 7)))
 endfunction
 
@@ -569,11 +573,13 @@ function! javacomplete#complete#complete#SearchMember(ci, name, fullmatch, kind,
         \ javacomplete#util#GetClassPackage(a:ci.name)
   let result = [[], [], [], []]
 
+  let isinterface = get(a:ci, 'interface', 0)
+
   if a:kind != 13
     if a:outputkind != 14
       for m in (a:0 > 0 && a:1 ? [] : get(a:ci, 'fields', [])) + ((a:kind == 1 || a:kind == 2 || a:kind == 7) ? get(a:ci, 'declared_fields', []) : [])
         if empty(a:name) || (a:fullmatch ? m.n ==# a:name : m.n =~# '^' . a:name)
-          if s:CanAccess(m.m, a:kind, a:outputkind, samePackage)
+          if s:CanAccess(m.m, a:kind, a:outputkind, samePackage, isinterface)
             call add(result[2], m)
           endif
         endif
@@ -582,7 +588,7 @@ function! javacomplete#complete#complete#SearchMember(ci, name, fullmatch, kind,
 
     for m in (a:0 > 0 && a:1 ? [] : get(a:ci, 'methods', [])) + ((a:kind == 1 || a:kind == 2 || a:kind == 7) ? get(a:ci, 'declared_methods', []) : [])
       if empty(a:name) || (a:fullmatch ? m.n ==# a:name : m.n =~# '^' . a:name)
-        if s:CanAccess(m.m, a:kind, a:outputkind, samePackage)
+        if s:CanAccess(m.m, a:kind, a:outputkind, samePackage, isinterface)
           call add(result[1], m)
         endif
       endif
