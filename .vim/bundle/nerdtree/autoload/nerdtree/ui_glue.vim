@@ -25,12 +25,16 @@ function! nerdtree#ui_glue#createDefaultBindings() abort
     call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapPreview, 'scope': 'Bookmark', 'callback': s.'previewBookmark' })
     call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapActivateNode, 'scope': 'all', 'callback': s.'activateAll' })
 
-    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapOpenSplit, 'scope': 'Node', 'callback': s.'openHSplit' })
-    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapOpenVSplit, 'scope': 'Node', 'callback': s.'openVSplit' })
+    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapOpenSplit, 'scope': 'FileNode', 'callback': s.'openHSplit' })
+    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapOpenSplit, 'scope': 'Bookmark', 'callback': s.'openHSplitBookmark' })
+    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapOpenVSplit, 'scope': 'FileNode', 'callback': s.'openVSplit' })
+    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapOpenVSplit, 'scope': 'Bookmark', 'callback': s.'openVSplitBookmark' })
 
-    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapPreview, 'scope': 'Node', 'callback': s.'previewNodeCurrent' })
-    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapPreviewVSplit, 'scope': 'Node', 'callback': s.'previewNodeVSplit' })
-    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapPreviewSplit, 'scope': 'Node', 'callback': s.'previewNodeHSplit' })
+    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapPreview, 'scope': 'FileNode', 'callback': s.'previewNodeCurrent' })
+    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapPreviewSplit, 'scope': 'FileNode', 'callback': s.'previewNodeHSplit' })
+    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapPreviewSplit, 'scope': 'Bookmark', 'callback': s.'previewNodeHSplitBookmark' })
+    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapPreviewVSplit, 'scope': 'FileNode', 'callback': s.'previewNodeVSplit' })
+    call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapPreviewVSplit, 'scope': 'Bookmark', 'callback': s.'previewNodeVSplitBookmark' })
 
     call NERDTreeAddKeyMap({ 'key': g:NERDTreeMapOpenRecursively, 'scope': 'DirNode', 'callback': s.'openNodeRecursively' })
 
@@ -104,10 +108,41 @@ function! s:customOpenBookmark(node) abort
 endfunction
 
 "FUNCTION: s:initCustomOpenArgs() {{{1
-" Make sure NERDTreeCustomOpenArgs has needed keys
 function! s:initCustomOpenArgs() abort
-    let g:NERDTreeCustomOpenArgs = get(g:, 'NERDTreeCustomOpenArgs', {})
-    return extend(g:NERDTreeCustomOpenArgs, {'file':{'reuse': 'all', 'where': 'p'}, 'dir':{}}, 'keep')
+    let l:defaultOpenArgs = {'file': {'reuse': 'all', 'where': 'p'}, 'dir': {}}
+    let l:customOpenArgs = get(g:, 'NERDTreeCustomOpenArgs', {})
+
+    if !s:validateType(l:customOpenArgs, type({})) || empty(l:customOpenArgs)
+        let g:NERDTreeCustomOpenArgs = l:customOpenArgs
+        return l:defaultOpenArgs
+    endif
+
+    for l:typeKey in keys(l:defaultOpenArgs)
+        if !s:validateType(get(l:customOpenArgs, l:typeKey, {}), type({}))
+              \ || !has_key(l:customOpenArgs, l:typeKey)
+            let l:customOpenArgs[l:typeKey] = l:defaultOpenArgs[l:typeKey]
+            continue
+        endif
+
+        for l:optionName in keys(l:defaultOpenArgs[l:typeKey])
+            if s:validateType(get(l:customOpenArgs[l:typeKey], l:optionName, v:null), type(''))
+                continue
+            endif
+            let l:customOpenArgs[l:typeKey][l:optionName] = l:defaultOpenArgs[l:typeKey][l:optionName]
+        endfor
+    endfor
+
+    let g:NERDTreeCustomOpenArgs = l:customOpenArgs
+
+    return extend(l:customOpenArgs, l:defaultOpenArgs, 'keep')
+endfunction
+
+function! s:validateType(variable, type) abort
+    if type(a:variable) == a:type
+        return v:true
+    endif
+
+    return v:false
 endfunction
 
 "FUNCTION: s:activateAll() {{{1
@@ -496,9 +531,10 @@ function! nerdtree#ui_glue#openBookmark(name) abort
     endtry
     if l:bookmark.path.isDirectory
         call l:bookmark.open(b:NERDTree)
-    else
-        call l:bookmark.open(b:NERDTree, {'where': 'p'})
+        return
     endif
+
+    call l:bookmark.open(b:NERDTree, s:initCustomOpenArgs().file)
 endfunction
 
 " FUNCTION: s:openHSplit(target) {{{1
@@ -509,6 +545,28 @@ endfunction
 " FUNCTION: s:openVSplit(target) {{{1
 function! s:openVSplit(target) abort
     call a:target.activate({'where': 'v'})
+endfunction
+
+"FUNCTION: s:openHSplitBookmark(bookmark) {{{1
+"handle the user activating a bookmark
+function! s:openHSplitBookmark(bm) abort
+    call a:bm.activate(b:NERDTree, !a:bm.path.isDirectory ? {'where': 'h'} : {})
+endfunction
+
+"FUNCTION: s:openVSplitBookmark(bookmark) {{{1
+"handle the user activating a bookmark
+function! s:openVSplitBookmark(bm) abort
+    call a:bm.activate(b:NERDTree, !a:bm.path.isDirectory ? {'where': 'v'} : {})
+endfunction
+
+" FUNCTION: s:previewHSplitBookmark(bookmark) {{{1
+function! s:previewNodeHSplitBookmark(bookmark) abort
+    call a:bookmark.activate(b:NERDTree, !a:bookmark.path.isDirectory ? {'stay': 1, 'where': 'h', 'keepopen': 1} : {})
+endfunction
+
+" FUNCTION: s:previewVSplitBookmark(bookmark) {{{1
+function! s:previewNodeVSplitBookmark(bookmark) abort
+    call a:bookmark.activate(b:NERDTree, !a:bookmark.path.isDirectory ? {'stay': 1, 'where': 'v', 'keepopen': 1} : {})
 endfunction
 
 " FUNCTION: s:openExplorer(node) {{{1
@@ -538,11 +596,7 @@ endfunction
 
 " FUNCTION: s:previewBookmark(bookmark) {{{1
 function! s:previewBookmark(bookmark) abort
-    if a:bookmark.path.isDirectory
-        execute 'NERDTreeFind '.a:bookmark.path.str()
-    else
-        call a:bookmark.activate(b:NERDTree, {'stay': 1, 'where': 'p', 'keepopen': 1})
-    endif
+    call a:bookmark.activate(b:NERDTree, !a:bookmark.path.isDirectory ? {'stay': 1, 'where': 'h', 'keepopen': 1} : {})
 endfunction
 
 "FUNCTION: s:previewNodeCurrent(node) {{{1
