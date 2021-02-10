@@ -209,7 +209,7 @@ if [[ "$platform" == 'linux' ]]; then
     echo "[+] Creating directory for Go Language projects in $HOME/goworks/ ..."
     mkdir -p $HOME/goworks/
     
-elif [[ $platform='macos' ]]; then
+elif [[ "$platform"=='macos' ]]; then
     # do nothing with fonts in macos
     true
 fi
