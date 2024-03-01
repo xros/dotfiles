@@ -14,7 +14,6 @@ VIM Plugins including
 *   ftplugin
 *   supertab
 *   vim-clang
-*   Conque GDB
 *   emmet-vim
 *   ctrlp.vim
 *   colorizer
