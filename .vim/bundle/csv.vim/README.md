@@ -11,6 +11,10 @@ works differently.
 
 It will make use of the [vartabs](https://vimhelp.org/options.txt.html#%27vartabstop%27) feature for tab delimited files.
 
+By default, some remapings are done, including `E` to go back to the previous column (comma) which is obviously not the best option :
+it'd be logical to use `B` to do so. Fortunately, you can set your favourite key to do this action just by setting a variable in your config.
+Follow the indications [there](#map-b-instead-of-e-to-jump-back-to-previous-column) (also in the builtin docs).
+
 ![Screenshot](http://www.256bit.org/~chrisbra/csv.gif)
 
 # Table of Contents
@@ -67,6 +71,7 @@ It will make use of the [vartabs](https://vimhelp.org/options.txt.html#%27vartab
   * [Move folded lines](#move-folded-lines)
   * [Using comments](#using-comments)
   * [Size and performance considerations](#size-and-performance-considerations)
+  * [Map `B` instead of `E` to jump back to previous column](#map-b-instead-of-e-to-jump-back-to-previous-column)
 - [Functions](#functions)
   * [CSVPat()](#csvpat)
   * [CSVField(x,y[, orig])](#csvfieldxy-orig)
@@ -243,7 +248,7 @@ If you would like all columns to be visually arranged, you can use the
 
 Beware, that this will change your file and depending on the size of
 your file may slow down Vim significantly. This is highly experimental.
-:ArrangeCommand will try to vertically align all columns by their maximum
+:ArrangeColumn will try to vertically align all columns by their maximum
 column size. While the command is run, a progressbar in the statusline 'stl'
 will be shown.
 
@@ -280,7 +285,14 @@ And this:
 ```vim
 :let b:csv_arrange_align = 'l*'
 ```
-will left align all columns.
+will left align all columns. The CSV plugin uses the `g:csv_arrange_align`
+variable as a fallback, if `b:csv_arrange_align` does not exists. So if you
+always want to have left alignment, you simply set this variable in your
+.vimrc file:
+
+```vim
+:let g:csv_arrange_align='l*'
+```
 
 If you change the alignment parameter, you need to use the "!" attribute, the
 next time you run the `:ArrangeCol` command, otherwise for performance
@@ -426,11 +438,15 @@ While this command
 :1,10Sort! 3
 ```
 
-reverses the order based on column 3.
+reverses the order based on column 3. If you want numeric sort on floatng
+points, you can use:
+```vim
+:2,$Sort 3f
+```
 
 The column number can be optionally followed by any of the flags [i], [n],
 [x] and [o] for [i]gnoring case, sorting by [n]umeric, he[x]adecimal
-or [o]ctal value.
+[o]ctal or [f]loat value.
 
 When no column number is given, it will sort by the column, on which the
 cursor is currently.
@@ -441,11 +457,12 @@ If you need to copy a specific column, you can use the command `:CSVColumn` or
 `:Column` 
 
 ```vim
-:[N]Column [a]
+:[N]Column[!] [a]
 ```
 
 Copy column N into register a. This will copy all the values, that are
 not folded-away ([Dynamic filters](#dynamic-filters)) and skip comments.
+If the bang (`!`) attribute is given, skips the Header Lines.
 
 If you don't specify N, the column of the current cursor position is used.
 If no register is given, the default register
@@ -523,15 +540,17 @@ If you want to check the file for duplicate records, use the command
 `:Duplicate` or `:CSVDuplicate`: 
 
 ```vim
-:Duplicate columnlist
+:Duplicate [columnlist]
 ```
 
 Columnlist needs to be a numeric comma-separated list of all columns that you
 want to check. You can also use a range like '2-5' which means the plugin
-should check columns 2,3,4 and 5.
+should check columns 2,3,4 and 5. If no columnlist ist given, will use the
+current column.
 
 If the plugin finds a duplicate records, it outputs its line number (but it
-only does that at most 10 times).
+only does that at most 10 times). You can find the message also in the message
+history using `:mess`.
 
 ## Normal mode commands
 
@@ -625,10 +644,11 @@ You can convert your CSV file to a different format with the `:ConvertData`
 or `:CSVConvertData` command 
 
 ```vim
-ConvertData
+[range]ConvertData[!]
 ```
 
-Use the the ! attribute, to convert your data without the delimiter.
+Use the the bang ("!") attribute, to convert your data without the delimiter.
+If [range] is given, will only convert the lines in range.
 
 This command will interactively ask you for the definition of 3 variables.
 After which it will convert your csv file into a new format, defined by those
@@ -678,7 +698,7 @@ as default value which you can confirm by pressing Enter. Last, you define,
 how your columns need to be converted. Again, Vim asks you for how to do that:
 
 ```
-Converted text, use %s for column input:
+How to convert data (use %s for column input):
 <tr><td>%s</td><td>%s</td><td>%s</td></tr>
 ```
 
@@ -723,7 +743,7 @@ Post convert text: Commit;
 After inserting the data, commit it into the database.
 
 ```
-Converted text, use %s for column input:
+How to convert data (use %s for column input):
 Insert into table foobar values ('%s', '%s', %s);
 ```
 
@@ -920,8 +940,11 @@ In csv files, you can also use the :CSVTabularize command, in different
 filetypes you can use the :CSVTable command (and is available as plugin so it
 will be available for non-CSV filetypes).
 
-Set the variable g:csv_table_leftalign=1 if you want the columns to be
+Set the variable `g:csv_table_leftalign=1` if you want the columns to be
 leftaligned.
+
+Set the variable `g:csv_table_use_ascii=1` if you do not want to use unicode
+drawing characters.
 
 Note: Each row must contain exactly as many fields as columns.
 
@@ -1306,7 +1329,7 @@ more memory than [`'maxmempattern'`](http://vimhelp.appspot.com/options.txt.html
 ## Concealing
 
 The CSV plugin comes with a function to syntax highlight csv files. Basically
-allt it does is highlight the columns and the header line.
+all it does is highlight the columns and the header line.
 
 By default, the delimiter will not be displayed, if Vim supports [`conceal`](http://vimhelp.appspot.com/syntax.txt.html#conceal) of
 syntax items and instead draws a vertical line. If you don't want that, simply
@@ -1560,7 +1583,7 @@ set the variable `g:csv_disable_fdt` in your [`.vimrc`](http://vimhelp.appspot.c
 By default, the csv plugin will analyze the whole file to determine which
 delimiter to use. Beside specifying the the actual delimiter to use
 (see also [Delimiter](#delimiter)) you can restrict analyzing the plugin to consider only a
-certain part of the file. This should make loading huge csv files a log
+certain part of the file. This should make loading huge csv files a lot
 faster. To only consider the first 100 rows set the `g:csv_start` and
 `g:csv_end` variables in your [`.vimrc`](http://vimhelp.appspot.com/starting.txt.html#.vimrc) like this
 
@@ -1575,6 +1598,24 @@ will disable syntax highlighting and the filetype commands for very large csv
 files (by default larger than 100 MB).
 
 See also [Slow CSV plugin](#slow-csv-plugin)
+
+## Map `B` instead of `E` to jump back to previous column
+
+Mapping E to go back a cell has no logic ; this feature lets the user choose
+to map B instead with the `g:csv_bind_B` variable (boolean) defined anywhere
+in his vim configuration. If it is not set, falls back to mapping E to
+previous column. Added by @lapingenieur ([lapingenieur over github](https://github.com/lapingenieur),
+email: lapingenieur@gmail.com).
+
+Exemple : I want to remap `B` to go to the previous column (comma) instead of `E`.
+Just put this in your counfig file :
+
+```vim
+    let g:csv_bind_B = 1
+```
+
+If you don't want this feature, you can just leave this variable without
+defining it : the script will automatically map `E`.
 
 # Functions
 
