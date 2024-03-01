@@ -51,8 +51,17 @@ For help with secure cipher selection, visit [Mozillas SSL Configuration Generat
 
 ## Installation
 
-Install using any vim plugin manager. If you're not familiar with any, go with Plug ([``vim-plug``](https://github.com/junegunn/vim-plug)).
-Then install this plugin using the your vim's plugin manager as follows:
+If your Vim is at version 8 or later, the first method below is the quickest. Otherwise, install this plugin with any Vim plugin manager ([``vim-plug``](https://github.com/junegunn/vim-plug) is recommended).
+
+### Native plugin management (Vim 8+)
+
+Clone or submodule this repo into your Vim packages location. Example:
+
+```
+mkdir -p ~/.vim/pack/plugins/start
+cd ~/.vim/pack/plugins/start
+git clone https://github.com/chr4/nginx.vim.git
+```
 
 ### Plug
 ```
@@ -75,3 +84,9 @@ git clone https://github.com/chr4/nginx.vim ~/.vim/bundle/nginx.vim
 ```
 
 Optionally, if you like [Jinja](http://jinja.pocoo.org/) template syntax highlighting, install `lepture/vim-jinja`, too.
+
+
+## License
+
+Copyright (c) Chris Aumann.  Distributed under the same terms as Vim itself.
+See `:help license`.
