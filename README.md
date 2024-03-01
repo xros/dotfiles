@@ -97,6 +97,8 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 
     *Notice*: ```<leader>``` in file ```.vimrc``` represents <kbd>\\</kbd> 
 
+    To use **jedi** autocompletion in vim, you need to install vim-python-jedi package. For example, on Linux debian and Ubuntu `sudo apt install vim-python-jedi`
+
 #### C/C++ IDE
 * Type **:Ide** in the Vim prompt console.
 
