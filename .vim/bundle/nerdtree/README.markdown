@@ -8,7 +8,7 @@ The NERDTree is a file system explorer for the Vim editor. Using this plugin, us
 
 ## Installation
 
-Use your favorite plugin manager to install this plugin. [tpope/vim-pathogen](https://github.com/tpope/vim-pathogen), [VundleVimVundle.vim](https://github.com/VundleVim/Vundle.vim), [junegunnvim-plug](https://github.com/junegunn/vim-plug), and [Shougo/dein.vim](https://github.com/Shougo/dein.vim) are some of the more popular ones. A lengthy discussion of these and other managers can be found on [vi.stackexchange.com](https://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-plugin-managers). Basic instructions are provided below, but please **be sure to read, understand, and follow all the safety rules that come with your ~~power tools~~ plugin manager.**
+Use your favorite plugin manager to install this plugin. [tpope/vim-pathogen](https://github.com/tpope/vim-pathogen), [VundleVim/Vundle.vim](https://github.com/VundleVim/Vundle.vim), [junegunn/vim-plug](https://github.com/junegunn/vim-plug), and [Shougo/dein.vim](https://github.com/Shougo/dein.vim) are some of the more popular ones. A lengthy discussion of these and other managers can be found on [vi.stackexchange.com](https://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-plugin-managers). Basic instructions are provided below, but please **be sure to read, understand, and follow all the safety rules that come with your ~~power tools~~ plugin manager.**
 
 If you have no favorite, or want to manage your plugins without 3rd-party dependencies, consider using Vim 8+ packages, as described in Greg Hurrell's excellent Youtube video: [Vim screencast #75: Plugin managers](https://www.youtube.com/watch?v=X2_R3uxDN6g).
 
@@ -84,7 +84,7 @@ vim -u NONE -c "helptags ~/.vim/pack/vendor/start/nerdtree/doc" -c q
 After installing NERDTree, the best way to learn it is to turn on the Quick Help. Open NERDTree with the `:NERDTree` command, and press `?` to turn on the Quick Help, which will show you all the mappings and commands available in the NERDTree. Of course, your most complete source of information is the documentation: `:help NERDTree`.
 
 ## NERDTree Plugins
-NERDTree can be extended with custom mappings and functions using its built-in API. The details of this API and are described in the included documentation. Several plugins have been written, and are available on Github for installation like any other plugin. The plugins in this list are maintained (or not) by their respective owners, and certain combinations may be incompatible.
+NERDTree can be extended with custom mappings and functions using its built-in API. The details of this API are described in the included documentation. Several plugins have been written, and are available on Github for installation like any other plugin. The plugins in this list are maintained (or not) by their respective owners, and certain combinations may be incompatible.
 
 * [Xuyuanp/nerdtree-git-plugin](https://github.com/Xuyuanp/nerdtree-git-plugin): Shows Git status flags for files and folders in NERDTree.
 * [ryanoasis/vim-devicons](https://github.com/ryanoasis/vim-devicons): Adds filetype-specific icons to NERDTree files and folders,
@@ -148,19 +148,23 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in
     \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
 ```
 
-### How can I close Vim automatically when NERDTree is the last window?
+### How can I close Vim or a tab automatically when NERDTree is the last window?
 
 ```vim
-" Exit Vim if NERDTree is the only window left.
-autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() |
-    \ quit | endif
+" Exit Vim if NERDTree is the only window remaining in the only tab.
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+```
+---
+```vim
+" Close the tab if NERDTree is the only window remaining in it.
+autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 ```
 
 ### How can I prevent other buffers replacing NERDTree in its window?
 
 ```vim
-" If another buffer tries to replace NERDTree, put in the other window, and bring back NERDTree.
-autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
     \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 ```
 
@@ -168,7 +172,7 @@ autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_
 
 ```vim
 " Open the existing NERDTree on each new tab.
-autocmd BufWinEnter * silent NERDTreeMirror
+autocmd BufWinEnter * if &buftype != 'quickfix' && getcmdwintype() == '' | silent NERDTreeMirror | endif
 ```
 or change your NERDTree-launching shortcut key like so:
 ```vim
@@ -179,8 +183,61 @@ nnoremap <C-n> :NERDTreeMirror<CR>:NERDTreeFocus<CR>
 ### How can I change the default arrows?
 
 ```vim
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
+let g:NERDTreeDirArrowExpandable = '?'
+let g:NERDTreeDirArrowCollapsible = '?'
 ```
 The preceding values are the non-Windows default arrow symbols. Setting these variables to empty strings will remove the arrows completely and shift the entire tree two character positions to the left. See `:h NERDTreeDirArrowExpandable` for more details.
 
+### How can I show lines of files?
+
+```vim
+let g:NERDTreeFileLines = 1
+```
+
+Lines in the file are displayed as shown below.
+```
+</pack/packer/start/nerdtree/
+▸ autoload/
+▸ doc/
+▸ lib/
+▸ nerdtree_plugin/
+▸ plugin/
+▸ syntax/
+  _config.yml (1)
+  CHANGELOG.md (307)
+  LICENCE (13)
+  README.markdown (234)
+  screenshot.png (219)
+```
+
+### Can NERDTree access remote files via scp or ftp?
+
+Short answer: No, and there are no plans to add that functionality. However, Vim ships with a plugin that does just that. It's called netrw, and by adding the following lines to your `.vimrc`, you can use it to open files over the `scp:`, `ftp:`, or other protocols, while still using NERDTree for all local files. The function seamlessly makes the decision to open NERDTree or netrw, and other supported protocols can be added to the regular expression.
+
+```vim
+" Function to open the file or NERDTree or netrw.
+"   Returns: 1 if either file explorer was opened; otherwise, 0.
+function! s:OpenFileOrExplorer(...)
+    if a:0 == 0 || a:1 == ''
+        NERDTree
+    elseif filereadable(a:1)
+        execute 'edit '.a:1
+        return 0
+    elseif a:1 =~? '^\(scp\|ftp\)://' " Add other protocols as needed.
+        execute 'Vexplore '.a:1
+    elseif isdirectory(a:1)
+        execute 'NERDTree '.a:1
+    endif
+    return 1
+endfunction
+
+" Auto commands to handle OS commandline arguments
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc()==1 && !exists('s:std_in') | if <SID>OpenFileOrExplorer(argv()[0]) | wincmd p | enew | wincmd p | endif | endif
+
+" Command to call the OpenFileOrExplorer function.
+command! -n=? -complete=file -bar Edit :call <SID>OpenFileOrExplorer('<args>')
+
+" Command-mode abbreviation to replace the :edit Vim command.
+cnoreabbrev e Edit
+```

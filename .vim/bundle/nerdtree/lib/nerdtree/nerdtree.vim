@@ -65,14 +65,6 @@ function! s:NERDTree.Close()
     endif
 endfunction
 
-"FUNCTION: s:NERDTree.CloseIfQuitOnOpen() {{{1
-"Closes the NERD tree window if the close on open option is set
-function! s:NERDTree.CloseIfQuitOnOpen()
-    if nerdtree#and(g:NERDTreeQuitOnOpen,1) && s:NERDTree.IsOpen()
-        call s:NERDTree.Close()
-    endif
-endfunction
-
 "FUNCTION: s:NERDTree.CursorToBookmarkTable(){{{1
 "Places the cursor at the top of the bookmarks table
 function! s:NERDTree.CursorToBookmarkTable()
@@ -152,7 +144,7 @@ function! s:NERDTree.GetWinNum()
 
     " If WindowTree, there is no t:NERDTreeBufName variable. Search all windows.
     for w in range(1,winnr('$'))
-        if bufname(winbufnr(w)) =~# '^' . g:NERDTreeCreator.BufNamePrefix() . '\d\+$'
+        if bufname(winbufnr(w)) =~# '^' . g:NERDTreeCreator.BufNamePrefix() . 'win_\d\+$'
             return w
         endif
     endfor
