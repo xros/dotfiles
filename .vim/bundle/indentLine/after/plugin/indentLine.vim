@@ -5,7 +5,12 @@
 
 scriptencoding utf-8
 
-if !has("conceal") || exists("g:indentLine_loaded")
+if !has("conceal")
+    echoerr "conceal is invalid. To use the plugin, please enable the conceal"
+    finish
+endif
+
+if exists("g:indentLine_loaded")
     finish
 endif
 let g:indentLine_loaded = 1
@@ -146,6 +151,7 @@ endfunction
 
 "{{{1 function! s:IndentLinesEnable()
 function! s:IndentLinesEnable()
+    let s:indentSpace = get(g:, 'indentLine_indentSpace', &l:shiftwidth == 0 ? &l:tabstop : &l:shiftwidth)
     if g:indentLine_newVersion
         if exists("b:indentLine_enabled") && b:indentLine_enabled == 0
             return
@@ -161,10 +167,9 @@ function! s:IndentLinesEnable()
             call add(w:indentLine_indentLineId, matchadd('Conceal', '^ ', 0, -1, {'conceal': g:indentLine_first_char}))
         endif
 
-        let space = &l:shiftwidth == 0 ? &l:tabstop : &l:shiftwidth
         let n = len(g:indentLine_char_list)
         let level = 0
-        for i in range(space+1, space * g:indentLine_indentLevel + 1, space)
+        for i in range(s:indentSpace+1, s:indentSpace * g:indentLine_indentLevel + 1, s:indentSpace)
             if n > 0
                 let char = g:indentLine_char_list[level % n]
                 let level += 1
@@ -187,19 +192,17 @@ function! s:IndentLinesEnable()
 
     let g:mysyntaxfile = g:indentLine_mysyntaxfile
 
-    let space = &l:shiftwidth == 0 ? &l:tabstop : &l:shiftwidth
-
     if g:indentLine_showFirstIndentLevel
         execute 'syntax match IndentLine /^ / containedin=ALL conceal cchar=' . g:indentLine_first_char
     endif
 
     if g:indentLine_faster
         execute 'syntax match IndentLineSpace /^\s\+/ containedin=ALL contains=IndentLine'
-        execute 'syntax match IndentLine / \{'.(space-1).'}\zs / contained conceal cchar=' . g:indentLine_char
+        execute 'syntax match IndentLine / \{'.(s:indentSpace-1).'}\zs / contained conceal cchar=' . g:indentLine_char
         execute 'syntax match IndentLine /\t\zs / contained conceal cchar=' . g:indentLine_char
     else
         let pattern = line('$') < g:indentLine_maxLines ? 'v' : 'c'
-        for i in range(space+1, space * g:indentLine_indentLevel + 1, space)
+        for i in range(s:indentSpace+1, s:indentSpace * s:indentLine_indentLevel + 1, s:indentSpace)
             execute 'syntax match IndentLine /\%(^\s\+\)\@<=\%'.i.pattern.' / containedin=ALL conceal cchar=' . g:indentLine_char
         endfor
     endif
@@ -437,7 +440,7 @@ augroup END
 
 "{{{1 commands
 command! -nargs=? IndentLinesReset call s:ResetWidth(<f-args>)
-command! IndentLinesToggle call s:IndentLinesToggle()
+command! -bar IndentLinesToggle call s:IndentLinesToggle()
 if g:indentLine_newVersion
     command! -bar IndentLinesEnable let b:indentLine_enabled = 1 | call s:IndentLinesEnable()
     command! -bar IndentLinesDisable let b:indentLine_enabled = 0 | call s:IndentLinesDisable()
