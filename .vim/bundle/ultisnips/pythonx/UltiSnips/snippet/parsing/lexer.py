@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 
 """Not really a lexer in the classical sense, but code to convert snippet
@@ -7,6 +7,7 @@ definitions into logical units called Tokens."""
 import string
 import re
 
+from UltiSnips.error import PebkacError
 from UltiSnips.position import Position
 from UltiSnips.text import unescape
 
@@ -75,7 +76,7 @@ def _parse_till_closing_brace(stream):
     rv = ""
     in_braces = 1
     while True:
-        if EscapeCharToken.starts_here(stream, "{}"):
+        if EscapeCharToken.starts_here(stream, "\\{}"):
             rv += next(stream) + next(stream)
         else:
             char = next(stream)
@@ -184,7 +185,7 @@ class VisualToken(Token):
                 self.replace = _parse_till_unescaped_char(stream, "/")[0]
                 self.options = _parse_till_closing_brace(stream)
             except StopIteration:
-                raise RuntimeError(
+                raise PebkacError(
                     "Invalid ${VISUAL} transformation! Forgot to escape a '/'?"
                 )
         else:
@@ -272,9 +273,7 @@ class ChoicesToken(Token):
         self.number = _parse_number(stream)
 
         if self.number == 0:
-            raise RuntimeError(
-                "Choices selection is not supported on $0"
-            )
+            raise PebkacError("Choices selection is not supported on $0")
 
         next(stream)  # |
 
@@ -292,7 +291,9 @@ class ChoicesToken(Token):
                     continue
                 choice_list.append(self._get_unescaped_choice_item(result))
             except:
-                last_choice_item = self._get_unescaped_choice_item(choices_text[cur_col:])
+                last_choice_item = self._get_unescaped_choice_item(
+                    choices_text[cur_col:]
+                )
                 if last_choice_item:
                     choice_list.append(last_choice_item)
                 break

@@ -17,6 +17,14 @@ function! s:compensate_for_pum() abort
     endif
 endfunction
 
+function! s:is_floating(winId) abort
+    if has('nvim')
+        return get(nvim_win_get_config(a:winId), 'relative', '') !=# ''
+    endif
+
+    return 0
+endfunction
+
 function! UltiSnips#Edit(bang, ...) abort
     if a:0 == 1 && a:1 != ''
         let type = a:1
@@ -79,6 +87,12 @@ function! UltiSnips#ExpandSnippetOrJump() abort
     return ""
 endfunction
 
+function! UltiSnips#JumpOrExpandSnippet() abort
+    call s:compensate_for_pum()
+    py3 UltiSnips_Manager.jump_or_expand()
+    return ""
+endfunction
+
 function! UltiSnips#ListSnippets() abort
     py3 UltiSnips_Manager.list_snippets()
     return ""
@@ -92,6 +106,21 @@ function! UltiSnips#SnippetsInCurrentScope(...) abort
     endif
     py3 UltiSnips_Manager.snippets_in_current_scope(int(vim.eval("all")))
     return g:current_ulti_dict
+endfunction
+
+function! UltiSnips#CanExpandSnippet() abort
+	py3 vim.command("let can_expand = %d" % UltiSnips_Manager.can_expand())
+	return can_expand
+endfunction
+
+function! UltiSnips#CanJumpForwards() abort
+	py3 vim.command("let can_jump_forwards = %d" % UltiSnips_Manager.can_jump_forwards())
+	return can_jump_forwards
+endfunction
+
+function! UltiSnips#CanJumpBackwards() abort
+	py3 vim.command("let can_jump_backwards = %d" % UltiSnips_Manager.can_jump_backwards())
+	return can_jump_backwards
 endfunction
 
 function! UltiSnips#SaveLastVisualSelection() range abort
@@ -138,8 +167,10 @@ endf
 function! UltiSnips#LeavingBuffer() abort
     let from_preview = getwinvar(winnr('#'), '&previewwindow')
     let to_preview = getwinvar(winnr(), '&previewwindow')
+    let from_floating = s:is_floating(win_getid('#'))
+    let to_floating = s:is_floating(win_getid())
 
-    if !(from_preview || to_preview)
+    if !(from_preview || to_preview || from_floating || to_floating)
         py3 UltiSnips_Manager._leaving_buffer()
     endif
 endf

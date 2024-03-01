@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 
 """Code to provide access to UltiSnips files from disk."""
@@ -6,12 +6,13 @@
 from collections import defaultdict
 import os
 
-from UltiSnips import vim_helper
 from UltiSnips import compatibility
+from UltiSnips import vim_helper
+from UltiSnips.error import PebkacError
 from UltiSnips.snippet.source.base import SnippetSource
 
 
-class SnippetSyntaxError(RuntimeError):
+class SnippetSyntaxError(PebkacError):
 
     """Thrown when a syntax error is found in a file."""
 
@@ -58,7 +59,7 @@ class SnippetFileSource(SnippetSource):
 
     def _parse_snippets(self, ft, filename):
         """Parse the 'filename' for the given 'ft'."""
-        with open(filename, "r", encoding="utf-8") as to_read:
+        with open(filename, "r", encoding="utf-8-sig") as to_read:
             file_data = to_read.read()
         self._snippets[ft]  # Make sure the dictionary exists
         for event, data in self._parse_snippet_file(file_data, filename):
@@ -81,3 +82,6 @@ class SnippetFileSource(SnippetSource):
                 self._snippets[ft].add_snippet(snippet)
             else:
                 assert False, "Unhandled %s: %r" % (event, data)
+        # precompile global snippets code for all snipepts we just sourced
+        for snippet in self._snippets[ft]:
+            snippet._precompile_globals()
