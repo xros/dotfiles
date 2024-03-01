@@ -97,7 +97,7 @@ Download a Vim deb package pre-compiled with `Java`, `Python`, `Lua`, `Ruby` sup
 
     *Notice*: ```<leader>``` in file ```.vimrc``` represents <kbd>\\</kbd> 
 
-    To use **jedi** autocompletion in vim, you need to install vim-python-jedi package. For example, on Linux debian and Ubuntu `sudo apt install vim-python-jedi`
+    To use **jedi** autocompletion in vim, you need to install vim-python-jedi package. For example, on Linux debian and Ubuntu `sudo apt install vim-python-jedi`. FYI, if you use python in **miniconda** environment, please read this <https://github.com/davidhalter/jedi-vim/issues/907>
 
 #### C/C++ IDE
 * Type **:Ide** in the Vim prompt console.
@@ -111,9 +111,10 @@ The C/C++ IDE ablity is based on `global`.
 For more info, please visit [vim-clang](https://github.com/justmao945/vim-clang)
 
 [Reference of snippets for C/C++](https://github.com/yangyangwithgnu/use_vim_as_ide#52-模板补全)
-    *Notice*: Use keys <kbd>\\</kbd><kbd>s</kbd>, <kbd>\\</kbd><kbd>f</kbd>, <kbd>\\</kbd><kbd>b</kbd> to start, jump forward and jump backward with the snippets.
 
-    *Notice*: Vim plugin **Conque-GDB** is removed due to non-maintainance.
+*Notice*: Use keys <kbd>\\</kbd><kbd>s</kbd>, <kbd>\\</kbd><kbd>f</kbd>, <kbd>\\</kbd><kbd>b</kbd> to start, jump forward and jump backward with the snippets.
+
+*Notice*: Vim plugin **Conque-GDB** is removed due to non-maintainance.
 
 #### JAVA IDE
 
