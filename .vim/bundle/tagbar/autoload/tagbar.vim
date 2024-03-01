@@ -4,7 +4,7 @@
 " Author:      Jan Larres <jan@majutsushi.net>
 " Licence:     Vim licence
 " Website:     https://preservim.github.io/tagbar
-" Version:     3.0.0
+" Version:     3.1.1
 " Note:        This plugin was heavily inspired by the 'Taglist' plugin by
 "              Yegappan Lakshmanan and uses a small amount of code from it.
 "
@@ -266,6 +266,7 @@ function! s:InitTypes() abort
             \ {'short' : 'd', 'long' : 'extends',            'fold' : 0, 'stl' : 0},
             \ {'short' : 'w', 'long' : 'with',               'fold' : 0, 'stl' : 0},
             \ {'short' : 'z', 'long' : 'implements',         'fold' : 0, 'stl' : 0},
+            \ {'short' : 'n', 'long' : 'on',                 'fold' : 0, 'stl' : 0},
             \ {'short' : 'r', 'long' : 'constructors',       'fold' : 0, 'stl' : 0},
             \ {'short' : 'a', 'long' : 'abstract functions', 'fold' : 0, 'stl' : 0},
             \ {'short' : 'f', 'long' : 'fields',             'fold' : 0, 'stl' : 0},
@@ -563,6 +564,16 @@ function! s:CreateAutocommands() abort
             autocmd WinEnter   __Tagbar__.* call s:SetStatusLine()
             autocmd WinLeave   __Tagbar__.* call s:SetStatusLine()
 
+            if g:tagbar_show_balloon == 1 && has('balloon_eval')
+                autocmd WinEnter __Tagbar__.*
+                        \ let s:beval = &beval |
+                        \ set ballooneval
+                autocmd WinLeave __Tagbar__.*
+                        \ if exists("s:beval") |
+                        \   let &beval = s:beval |
+                        \ endif
+            endif
+
             if g:tagbar_autopreview
                 autocmd CursorMoved __Tagbar__.* nested call s:ShowInPreviewWin()
             endif
@@ -582,8 +593,6 @@ function! s:CreateAutocommands() abort
                 autocmd CursorHoldI * call
                         \ s:AutoUpdate(fnamemodify(expand('<afile>'), ':p'), 0)
             endif
-            autocmd BufDelete,BufWipeout *
-                        \ nested call s:HandleBufDelete(expand('<afile>'), expand('<abuf>'))
 
             " Suspend Tagbar while grep commands are running, since we don't want
             " to process files that only get loaded temporarily to search them
@@ -593,6 +602,17 @@ function! s:CreateAutocommands() abort
                         \ endif
 
             autocmd VimEnter * call s:CorrectFocusOnStartup()
+        endif
+    augroup END
+
+    " Separate these autocmds out from the others as we want to always perform
+    " these actions even if the tagbar window closes.
+    augroup TagbarCleanupAutoCmds
+        autocmd!
+
+        if !g:tagbar_no_autocmds
+            autocmd BufDelete,BufWipeout *
+                        \ nested call s:HandleBufDelete(expand('<afile>'), expand('<abuf>'))
         endif
     augroup END
 
@@ -660,16 +680,16 @@ function! s:CheckForExCtags(silent) abort
     let ctags_output = s:ExecuteCtags(ctags_cmd)
 
     call tagbar#debug#log("Command output:\n" . ctags_output)
-    call tagbar#debug#log('Exit code: ' . v:shell_error)
+    call tagbar#debug#log('Exit code: ' . s:shell_error)
 
-    if v:shell_error || ctags_output !~# '\(Exuberant\|Universal\) Ctags'
+    if s:shell_error || ctags_output !~# '\(Exuberant\|Universal\) Ctags'
         let l:errmsg = 'Tagbar: Ctags doesn''t seem to be Exuberant Ctags!'
         let l:infomsg = 'BSD ctags will NOT WORK.' .
             \ ' Please download Exuberant Ctags from ctags.sourceforge.net' .
             \ ' and install it in a directory in your $PATH' .
             \ ' or set g:tagbar_ctags_bin.'
         call s:CtagsErrMsg(l:errmsg, l:infomsg, a:silent,
-                         \ ctags_cmd, ctags_output, v:shell_error)
+                         \ ctags_cmd, ctags_output, s:shell_error)
         let s:checked_ctags = 2
         return 0
     elseif !s:CheckExCtagsVersion(ctags_output)
@@ -778,7 +798,7 @@ function! s:GetSupportedFiletypes() abort
 
     let ctags_output = s:ExecuteCtags(ctags_cmd)
 
-    if v:shell_error
+    if s:shell_error
         " this shouldn't happen as potential problems would have already been
         " caught by the previous ctags checking
         return
@@ -863,7 +883,7 @@ function! s:OpenWindow(flags) abort
     if tagbarwinnr != -1
         if winnr() != tagbarwinnr && jump
             call s:goto_win(tagbarwinnr)
-            call s:HighlightTag(g:tagbar_autoshowtag != 2, 1, curline)
+            call s:HighlightTag(g:tagbar_autoshowtag != 2, 1, 1, curline)
         endif
         call tagbar#debug#log('OpenWindow finished, Tagbar already open')
         return
@@ -929,7 +949,7 @@ function! s:OpenWindow(flags) abort
     endif
 
     call s:AutoUpdate(curfile, 0)
-    call s:HighlightTag(g:tagbar_autoshowtag != 2, 1, curline)
+    call s:HighlightTag(g:tagbar_autoshowtag != 2, 1, 1, curline)
 
     if !(g:tagbar_autoclose || autofocus || g:tagbar_autofocus)
         if exists('*win_getid')
@@ -972,6 +992,7 @@ function! s:InitWindow(autoclose) abort
     setlocal nobuflisted
     setlocal nomodifiable
     setlocal textwidth=0
+    setlocal colorcolumn=""
 
     if g:tagbar_scrolloff > 0
         execute 'setlocal scrolloff=' . g:tagbar_scrolloff
@@ -979,7 +1000,6 @@ function! s:InitWindow(autoclose) abort
 
     if g:tagbar_show_balloon == 1 && has('balloon_eval')
         setlocal balloonexpr=TagbarBalloonExpr()
-        set ballooneval
     endif
 
 
@@ -996,6 +1016,11 @@ function! s:InitWindow(autoclose) abort
         if exists('+linebreak')
             setlocal breakindent
             setlocal breakindentopt=shift:4
+            if g:tagbar_wrap == 1
+                setlocal linebreak
+            elseif g:tagbar_wrap == 2
+                setlocal nolinebreak
+            endif
         endif
     endif
 
@@ -1383,11 +1408,6 @@ function! s:ExecuteCtagsOnFile(fname, realfname, typeinfo) abort
             let ctags_args += [ '-V' ]
         endif
 
-        " Include extra type definitions
-        if has_key(a:typeinfo, 'deffile')
-            let ctags_args += ['--options=' . expand(a:typeinfo.deffile)]
-        endif
-
         " Third-party programs may not necessarily make use of this
         if has_key(a:typeinfo, 'ctagstype')
             let ctags_type = a:typeinfo.ctagstype
@@ -1401,6 +1421,18 @@ function! s:ExecuteCtagsOnFile(fname, realfname, typeinfo) abort
 
             let ctags_args += ['--language-force=' . ctags_type]
             let ctags_args += ['--' . ctags_type . '-kinds=' . ctags_kinds]
+        endif
+
+        " Include extra type definitions - include last to allow for any
+        " overrides
+        if has_key(a:typeinfo, 'deffile') && filereadable(expand(a:typeinfo.deffile))
+            let ctags_args += ['--options=' . expand(a:typeinfo.deffile)]
+        endif
+
+        if has_key(a:typeinfo, 'regex')
+            for regex in a:typeinfo.regex
+                let ctags_args += ['--regex-' . ctags_type . '=' . regex]
+            endfor
         endif
     endif
 
@@ -1421,10 +1453,10 @@ function! s:ExecuteCtagsOnFile(fname, realfname, typeinfo) abort
 
     let ctags_output = s:ExecuteCtags(ctags_cmd)
 
-    if v:shell_error || ctags_output =~? 'Warning: cannot open \(source\|input\) file'
+    if s:shell_error || ctags_output =~? 'Warning: cannot open \(source\|input\) file'
         call tagbar#debug#log('Command output:')
         call tagbar#debug#log(ctags_output)
-        call tagbar#debug#log('Exit code: ' . v:shell_error)
+        call tagbar#debug#log('Exit code: ' . s:shell_error)
         " Only display an error message if the Tagbar window is open and we
         " haven't seen the error before.
         if bufwinnr(s:TagbarBufName()) != -1 &&
@@ -1438,7 +1470,7 @@ function! s:ExecuteCtagsOnFile(fname, realfname, typeinfo) abort
                     echomsg line
                 endfor
             endif
-            echomsg 'Exit code: ' . v:shell_error
+            echomsg 'Exit code: ' . s:shell_error
         endif
         return -1
     endif
@@ -2220,12 +2252,14 @@ function! s:HighlightTag(openfolds, ...) abort
         return
     endif
 
+    let noauto = a:0 > 0 ? a:1 : 0
+
     let tagline = 0
 
-    let force = a:0 > 0 ? a:1 : 0
+    let force = a:0 > 1 ? a:2 : 0
 
-    if a:0 > 1
-        let tag = s:GetNearbyTag(g:tagbar_highlight_method, 0, a:2)
+    if a:0 > 2
+        let tag = s:GetNearbyTag(g:tagbar_highlight_method, 0, a:3)
     else
         let tag = s:GetNearbyTag(g:tagbar_highlight_method, 0)
     endif
@@ -2303,7 +2337,7 @@ function! s:HighlightTag(openfolds, ...) abort
     finally
         if !in_tagbar
             call s:goto_win(pprevwinnr, 1)
-            call s:goto_win(prevwinnr, 1)
+            call s:goto_win(prevwinnr, noauto)
         endif
         redraw
     endtry
@@ -2319,16 +2353,37 @@ function! s:IsLineVisible(line) abort
 endfunction
 
 " s:JumpToTag() {{{2
-function! s:JumpToTag(stay_in_tagbar) abort
-    let taginfo = s:GetTagInfo(line('.'), 1)
-
-    let autoclose = w:autoclose
+function! s:JumpToTag(stay_in_tagbar, ...) abort
+    let taginfo = a:0 > 0 ? a:1 : s:GetTagInfo(line('.'), 1)
+    let force_lazy_scroll = a:0 > 1 ? a:2 : 0
 
     if empty(taginfo) || !taginfo.isNormalTag()
+        " Cursor line not on a tag. Check if this is the start of a foldable
+        " line and if so, initiate the CloseFold() / OpenFold(). First trim
+        " any whitespace from the start of the line so we don't have to worry
+        " about multiple nested folds that are indented
+        "
+        " NOTE: This will only work with folds that are not also tags. For
+        " example in a class definition that acts as the start of a fold when
+        " there are member functions in the class, that line is also a valid
+        " tag, so hitting <CR> on that line will cause it to jump to the tag,
+        " not fold/unfold that particular fold
+        let line   = substitute(getline('.'), '^\s*\(.\{-}\)\s*$', '\1', '')
+
+        if (match(line, g:tagbar#icon_open . '[-+ ]')) == 0
+            call s:CloseFold()
+        elseif (match(line, g:tagbar#icon_closed . '[-+ ]')) == 0
+            call s:OpenFold()
+        endif
         return
     endif
 
     let tagbarwinnr = winnr()
+    if exists('w:autoclose')
+        let autoclose = w:autoclose
+    else
+        let autoclose = 0
+    endif
 
     call s:GotoFileWindow(taginfo.fileinfo)
 
@@ -2338,7 +2393,7 @@ function! s:JumpToTag(stay_in_tagbar) abort
     " Check if the tag is already visible in the window.  We must do this
     " before jumping to the line.
     let noscroll = 0
-    if g:tagbar_jump_lazy_scroll != 0
+    if g:tagbar_jump_lazy_scroll != 0 || force_lazy_scroll
         let noscroll = s:IsLineVisible(taginfo.fields.line)
     endif
 
@@ -2408,7 +2463,7 @@ function! s:JumpToTag(stay_in_tagbar) abort
     normal! zv
 
     if a:stay_in_tagbar
-        call s:HighlightTag(0)
+        call s:HighlightTag(0, 1)
         call s:goto_win(tagbarwinnr)
         redraw
     elseif g:tagbar_autoclose || autoclose
@@ -2454,9 +2509,12 @@ function! s:ShowInPreviewWin() abort
     " Open the preview window if it is not already open. This has to be done
     " explicitly before the :psearch below to better control its positioning.
     if !pwin_open
-        silent execute
+        let l:confirm = &confirm
+        let &confirm = 0
+        silent! execute
             \ g:tagbar_previewwin_pos . ' pedit ' .
             \ fnameescape(taginfo.fileinfo.fpath)
+        let &confirm = l:confirm
         if g:tagbar_position !~# 'vertical'
             silent execute 'vertical resize ' . g:tagbar_width
         endif
@@ -2877,7 +2935,7 @@ function! s:AutoUpdate(fname, force, ...) abort
         let s:nearby_disabled = 0
     endif
 
-    call s:HighlightTag(0)
+    call s:HighlightTag(0, 1)
     call s:SetStatusLine()
     call tagbar#debug#log('AutoUpdate finished successfully')
 endfunction
@@ -2955,7 +3013,7 @@ function! s:EscapeCtagsCmd(ctags_bin, args, ...) abort
 
     "Set up 0th argument of ctags_cmd
     "a:ctags_bin may have special characters that require escaping.
-    if &shell =~? 'cmd\.exe$' && a:ctags_bin !~# '\s'
+    if (&shell =~? 'cmd\.exe$' || &shell =~? 'powershell\.exe$' || &shell =~? 'powershell$' || &shell =~? 'pwsh\.exe$' || &shell =~? 'pwsh$') && a:ctags_bin !~# '\s'
         "For windows cmd.exe, escaping the 0th argument can cause
         "problems if it references a batch file and the batch file uses %~dp0.
         "So for windows cmd.exe, only escape the 0th argument iff necessary.
@@ -3100,8 +3158,9 @@ function! s:ExecuteCtags(ctags_cmd) abort
 
     if tagbar#debug#enabled()
         silent 5verbose let ctags_output = system(a:ctags_cmd)
+        let s:shell_error = v:shell_error
         call tagbar#debug#log(v:statusmsg)
-        call tagbar#debug#log('Exit code: ' . v:shell_error)
+        call tagbar#debug#log('Exit code: ' . s:shell_error)
         redraw!
     else
         let py_version = get(g:, 'tagbar_python', 1)
@@ -3136,20 +3195,27 @@ function! s:GetNearbyTag(request, forcecurrent, ...) abort
         return {}
     endif
 
+    let curline = a:0 > 0 ? a:1 : line('.')
+    let direction = a:0 > 1 ? a:2 : -1
+    let ignore_curline = a:0 > 2 ? a:3 : 0
+
     let typeinfo = fileinfo.typeinfo
-    if a:0 > 0
-        let curline = a:1
-    else
-        let curline = line('.')
-    endif
     let tag = {}
+
+    if direction < 0
+        let endline = 1
+        let increment = -1
+    else
+        let endline = line('$')
+        let increment = 1
+    endif
 
     " If a tag appears in a file more than once (for example namespaces in
     " C++) only one of them has a 'tline' entry and can thus be highlighted.
     " The only way to solve this would be to go over the whole tag list again,
     " making everything slower. Since this should be a rare occurence and
     " highlighting isn't /that/ important ignore it for now.
-    for line in range(curline, 1, -1)
+    for line in range(curline, endline, increment)
         if has_key(fileinfo.fline, line)
             let curtag = fileinfo.fline[line]
             if a:request ==# 'nearest-stl' && typeinfo.getKind(curtag.fields.kind).stl
@@ -3161,7 +3227,7 @@ function! s:GetNearbyTag(request, forcecurrent, ...) abort
                         \ && curline <= curtag.fields.end
                 let tag = curtag
                 break
-            elseif a:request ==# 'nearest' || line == curline
+            elseif a:request ==# 'nearest' || (line == curline && ignore_curline == 0)
                 let tag = curtag
                 break
             endif
@@ -3169,6 +3235,31 @@ function! s:GetNearbyTag(request, forcecurrent, ...) abort
     endfor
 
     return tag
+endfunction
+
+" s:JumpToNearbyTag() {{{2
+function! s:JumpToNearbyTag(direction, request, flags) abort
+    let fileinfo = tagbar#state#get_current_file(0)
+    if empty(fileinfo)
+        return {}
+    endif
+
+    let lnum = a:direction > 0 ? line('.') + 1 : line('.') - 1
+    let lazy_scroll = a:flags =~# 's' ? 0 : 1
+
+    let tag = s:GetNearbyTag(a:request, 1, lnum, a:direction, 1)
+
+    if empty(tag)
+        " No next tag found
+        if a:direction > 0
+            echo '...no next tag found'
+        else
+            echo '...no previous tag found'
+        endif
+        return
+    endif
+
+    call s:JumpToTag(1, tag, lazy_scroll)
 endfunction
 
 " s:GetTagInfo() {{{2
@@ -3428,7 +3519,15 @@ function! s:HandleOnlyWindow() abort
     let vim_quitting = s:vim_quitting
     let s:vim_quitting = 0
 
-    if vim_quitting && !s:HasOpenFileWindows()
+    let file_open = s:HasOpenFileWindows()
+
+    if vim_quitting && file_open == 2 && !g:tagbar_autoclose_netrw
+        call tagbar#debug#log('Closing Tagbar due to QuitPre - netrw only remaining window')
+        call s:CloseWindow()
+        return
+    endif
+
+    if vim_quitting && file_open != 1
         call tagbar#debug#log('Closing Tagbar window due to QuitPre event')
         if winnr('$') >= 1
             call s:goto_win(tagbarwinnr, 1)
@@ -3463,12 +3562,12 @@ function! s:HandleBufDelete(bufname, bufnr) abort
         return
     endif
 
+    call s:known_files.rm(fnamemodify(a:bufname, ':p'))
+
     let tagbarwinnr = bufwinnr(s:TagbarBufName())
     if tagbarwinnr == -1 || a:bufname =~# '__Tagbar__.*'
         return
     endif
-
-    call s:known_files.rm(fnamemodify(a:bufname, ':p'))
 
     if !s:HasOpenFileWindows()
         if tabpagenr('$') == 1 && exists('t:tagbar_buf_name')
@@ -3546,11 +3645,22 @@ endfunction
 
 " s:HasOpenFileWindows() {{{2
 function! s:HasOpenFileWindows() abort
+    let netrw = 0
+
     for i in range(1, winnr('$'))
         let buf = winbufnr(i)
 
-        " skip unlisted buffers, except for netrw
-        if !buflisted(buf) && getbufvar(buf, '&filetype') !=# 'netrw'
+        " If the buffer filetype is netrw (or nerdtree) then mark netrw
+        " for final return. If we don't find any other window, we want
+        " to leave the netrw window open and not close vim entirely when
+        " called from the HandleOnlyWindow() code path.
+        let buf_ft = getbufvar(buf, '&filetype')
+        if buf_ft ==# 'netrw' || buf_ft ==# 'nerdtree'
+            let netrw = 1
+        endif
+
+        " skip unlisted buffers
+        if !buflisted(buf)
             continue
         endif
 
@@ -3567,6 +3677,10 @@ function! s:HasOpenFileWindows() abort
         return 1
     endfor
 
+    if netrw
+        call tagbar#debug#log('netrw only window remaining')
+        return 2
+    endif
     return 0
 endfunction
 
@@ -3704,7 +3818,7 @@ function! tagbar#highlighttag(openfolds, force) abort
         echohl None
         return
     endif
-    call s:HighlightTag(a:openfolds, a:force)
+    call s:HighlightTag(a:openfolds, 1, a:force)
 endfunction
 
 function! tagbar#RestoreSession() abort
@@ -3832,13 +3946,13 @@ function! tagbar#currenttag(fmt, default, ...) abort
         if a:0 >= 2
             let search_method = a:2
         else
-            let search_method = 'nearest-stl'
+            let search_method = g:tagbar_highlight_method
         endif
     else
         let longsig   = 0
         let fullpath  = 0
         let prototype = 0
-        let search_method = 'nearest-stl'
+        let search_method = g:tagbar_highlight_method
     endif
 
     if !s:Init(1)
@@ -3989,6 +4103,19 @@ function! tagbar#jump() abort
     endif
     call s:JumpToTag(1)
 endfun
+
+" tagbar#jumpToNearbyTag() {{{2
+" params:
+"   direction = -1:backwards search   1:forward search
+"   [search_method] = Search method to use for GetTagNearLine()
+"   [flags] = list of flags (as a string) to control behavior
+"       's' - use the g:tagbar_scroll_offset setting when jumping
+function! tagbar#jumpToNearbyTag(direction, ...) abort
+    let search_method = a:0 >= 1 ? a:1 : 'nearest-stl'
+    let flags = a:0 >= 2 ? a:2 : ''
+
+    call s:JumpToNearbyTag(a:direction, search_method, flags)
+endfunction
 
 " Modeline {{{1
 " vim: ts=8 sw=4 sts=4 et foldenable foldmethod=marker foldcolumn=1

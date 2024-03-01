@@ -3,7 +3,7 @@
 Author:         Jan Larres <jan@majutsushi.net>
 Licence:        Vim licence, see |license|
 Homepage:       https://preservim.github.io/tagbar
-Version:        3.0.0
+Version:        3.1.1
 
 ==============================================================================
 Contents                                            *tagbar* *tagbar-contents*
@@ -212,6 +212,10 @@ by moving the cursor to a tag and pressing <Enter> or double-clicking on it
 with the mouse. The source file will then move to the definition and put the
 cursor in the corresponding line. This won't work for pseudo-tags.
 
+If the current line of the tagbar window is not on a tag, for example on the
+'functions' tag-kind and <Enter> is hit, then that tag-kind will be folded or
+unfolded if possible.
+
 Sorting~
 You can sort the tags in the Tagbar window in two ways: by name or by file
 order. Sorting them by name simply displays the tags in their alphabetical
@@ -266,9 +270,11 @@ COMMANDS                                                     *tagbar-commands*
 :TagbarClose                                                    *:TagbarClose*
     Close the Tagbar window if it is open.
 
-:TagbarToggle                                                  *:TagbarToggle*
-:Tagbar
+:TagbarToggle [{flags}]                                        *:TagbarToggle*
+:Tagbar [{flags}]
     Open the Tagbar window if it is closed, or close it if it is open.
+    Additional behaviour can be specified with the same optional {flags}
+    argument as :TagbarOpen.
 
 :TagbarOpenAutoClose                                    *:TagbarOpenAutoClose*
     Open the Tagbar window, jump to it and close it on tag selection. This is
@@ -289,9 +295,9 @@ COMMANDS                                                     *tagbar-commands*
     Open the parent folds of the current tag in the file window as much as
     needed for the tag to be visible in the Tagbar window.
 
-:TagbarCurrentTag [{flags}]                                *:TagbarCurrentTag*
-    Echo the current tag in the command line. For {flags} see
-    |tagbar-statusline|.
+:TagbarCurrentTag [{flags} [{search-method}]]              *:TagbarCurrentTag*
+    Echo the current tag in the command line. For {flags} and {search-method}
+    see |tagbar-statusline|.
 
 :TagbarGetTypeConfig {filetype}                         *:TagbarGetTypeConfig*
     Paste the Tagbar configuration of the vim filetype {filetype} at the
@@ -324,6 +330,20 @@ COMMANDS                                                     *tagbar-commands*
     the same behavior as the |p| key mapping.
 
     This command will call the |tagbar#jump()| function.
+
+:TagbarJumpPrev                                             *:TagbarJumpPrev*
+    Jump to the previous tag under the cursor. This works in the file window.
+    This will search for the previous {'nearest-stl'} type tag starting at the
+    line just before the current line and do a backwards search.
+
+    This command will call the |tagbar#jumpToNearbyTag(-1)| function.
+
+:TagbarJumpNext                                             *:TagbarJumpNext*
+    Jump to the next tag under the cursor. This works in the file window.
+    This will search for the next {'nearest-stl'} type tag starting at the
+    line just after the current line and do a forward search.
+
+    This command will call the |tagbar#jumpToNearbyTag(1)| function.
 
 ------------------------------------------------------------------------------
 FUNCTIONS                                                   *tagbar-functions*
@@ -374,66 +394,105 @@ FUNCTIONS                                                   *tagbar-functions*
 
     This is the function called when using the |:TagbarJump| command.
 
+*tagbar#jumpToNearbyTag()*
+    This function will jump to the next tag or previous tag starting a search
+    from the line under the cursor. This works when in the file window instead
+    of inside the tagbar window like the |tagbar#jump()| function.
+
+    The direction of search must be provided. If the [direction] is greater
+    than 0, then it will do a forward search. If the [direction] is less
+    than 0, then it will do a backward search.
+
+    Can also optionally provide a [search_method] which is used in the
+    |tagbar#GetTagNearLine()| function call and behaves the same way. This
+    will default to *'nearest-stl'* if not specified.
+
+    Can optionally provide a flags field [flags] to control the nearby tag
+    jumping. The flags should be a string of characters with the following
+    meanings:
+        's' - use the |g:tagbar_scroll_off| setting when jumping
+
+    Full syntax:
+        tagbar#jumpToNearbyTag(direction [, {search-method} [, {flags}]])
+
+    Examples:
+>
+    " These keymaps will jump to the next/prev tag that can be scoped. Ex:
+    " function calls, class definitions, etc.
+    nnoremap t] :call tagbar#jumpToNearbyTag(1)
+    nnoremap t[ :call tagbar#jumpToNearbyTag(-1)
+
+    " These keymaps will jump to the next/prev tag regardless of type. Ex:
+    " function calls, class definitions, variable definitions, typedefs, etc.
+    nnoremap t] :call tagbar#jumpToNearbyTag(1, 'nearest')
+    nnoremap t[ :call tagbar#jumpToNearbyTag(-1, 'nearest')
+
+    " These keymaps will jump to the next/prev tag regardless of type, and
+    " will also use the jump_offset configuration to position the cursor
+    nnoremap t] :call tagbar#jumpToNearbyTag(1, 'nearest', 's')
+    nnoremap t[ :call tagbar#jumpToNearbyTag(-1, 'nearest', 's')
+<
+
 ------------------------------------------------------------------------------
 KEY MAPPINGS                                                     *tagbar-keys*
 
 The following mappings are valid in the Tagbar window:
 
 <F1>/?        Display key mapping help.
-                Map option: tagbar_map_help
-<CR>/<Enter>  Jump to the tag under the cursor. Doesn't work for pseudo-tags
-              or generic headers.
-                Map option: tagbar_map_jump
+                Map option: |tagbar_map_help|
+<CR>/<Enter>  Jump to the tag under the cursor. Doesn't work for pseudo-tags.
+              If on generic header, it will fold/unfold that header.
+                Map option: |tagbar_map_jump|
 p             Jump to the tag under the cursor, but stay in the Tagbar window.
-                Map option: tagbar_map_preview
+                Map option: |tagbar_map_preview|
 P             Open the tag in a |preview-window|.
-                Map option: tagbar_map_previewwin
+                Map option: |tagbar_map_previewwin|
 <LeftMouse>   When on a fold icon, open or close the fold depending on the
               current state.
 <2-LeftMouse> Same as <CR>. See |g:tagbar_singleclick| if you want to use a
               single- instead of a double-click.
 <C-N>         Go to the next top-level tag.
-                Map option: tagbar_map_nexttag
+                Map option: |tagbar_map_nexttag|
 <C-P>         Go to the previous top-level tag.
-                Map option: tagbar_map_prevtag
+                Map option: |tagbar_map_prevtag|
 <Space>       Display the prototype of the current tag (i.e. the line defining
               it) in the command line.
-                Map option: tagbar_map_showproto
+                Map option: |tagbar_map_showproto|
 v             Hide tags that are declared non-public. Tags without any
               visibility information will still be shown.
-                Map option: tagbar_map_hidenonpublic
+                Map option: |tagbar_map_hidenonpublic|
 +/zo          Open the fold under the cursor.
-                Map option: tagbar_map_openfold
+                Map option: |tagbar_map_openfold|
 -/zc          Close the fold under the cursor or the current one if there is
               no fold under the cursor.
-                Map option: tagbar_map_closefold
+                Map option: |tagbar_map_closefold|
 o/za          Toggle the fold under the cursor or the current one if there is
               no fold under the cursor.
-                Map option: tagbar_map_togglefold
+                Map option: |tagbar_map_togglefold|
 */zR          Open all folds by setting foldlevel to 99.
-                Map option: tagbar_map_openallfolds
+                Map option: |tagbar_map_openallfolds|
 =/zM          Close all folds by setting foldlevel to 0.
-                Map option: tagbar_map_closeallfolds
+                Map option: |tagbar_map_closeallfolds|
 zr            Increase the fold level of the buffer by 1. Opens all folds one
               level.
-                Map option: tagbar_map_incrementfolds
+                Map option: |tagbar_map_incrementfolds|
 zm            Decrease the fold level of the buffer by 1. Closes all folds one
               level.
-                Map option: tagbar_map_decrementfolds
+                Map option: |tagbar_map_decrementfolds|
 zj            Go to the start of the next fold, like the standard Vim |zj|.
-                Map option: tagbar_map_nextfold
+                Map option: |tagbar_map_nextfold|
 zk            Go to the end of the previous fold, like the standard Vim |zk|.
-                Map option: tagbar_map_prevfold
+                Map option: |tagbar_map_prevfold|
 s             Toggle sort order between name and file order.
-                Map option: tagbar_map_togglesort
+                Map option: |tagbar_map_togglesort|
 c             Toggle the |g:tagbar_autoclose| option.
-                Map option: tagbar_map_toggleautoclose
+                Map option: |tagbar_map_toggleautoclose|
 t             Toggle the pause (like :TagbarTogglePause)
-                Map option: tagbar_map_togglepause
+                Map option: |tagbar_map_togglepause|
 x             Toggle zooming the window.
-                Map option: tagbar_map_zoomwin
+                Map option: |tagbar_map_zoomwin|
 q             Close the Tagbar window.
-                Map option: tagbar_map_close
+                Map option: |tagbar_map_close|
 
 These mappings can be redefined with the given map options. The argument can
 be either a string or a |List| of strings. In the latter case the
@@ -599,6 +658,23 @@ a key, see |tagbar-keys|.
 Example:
 >
         let g:tagbar_autoclose = 1
+<
+
+                                                    *g:tagbar_autoclose_netrw*
+g:tagbar_autoclose_netrw~
+Default: 0
+
+This option is used to control the behavior when tagbar is the last window
+open, but the netrw (or nerdtree) window is also open. If this value is set to
+1, that will indicate that vim should be closed if tagbar and netrw are the
+last windows open. If you set this to 0 and tagbar and the netrw (or nerdtree)
+windows are the only remaining windows, then it will still close the tagbar
+window, however it will leave vim open with the netrw (or nerdtree) window
+open.
+
+Example:
+>
+        let g:tagbar_autoclose_netrw = 1
 <
 
                                                           *g:tagbar_autofocus*
@@ -971,16 +1047,16 @@ default statusline:
 >
         function! TagbarStatusFunc(current, sort, fname, flags, ...) abort
             let colour = a:current ? '%#StatusLine#' : '%#StatusLineNC#'
-            let flagstr = join(flags, '')
+            let flagstr = join(a:flags, '')
             if flagstr != ''
                 let flagstr = '[' . flagstr . '] '
             endif
-            return colour . '[' . sort . '] ' . flagstr . fname
+            return colour . '[' . a:sort . '] ' . flagstr . a:fname
         endfunction
         let g:tagbar_status_func = 'TagbarStatusFunc'
 <
                                                      *g:tagbar_no_status_line*
-g:no_status_line~
+g:tagbar_no_status_line~
 Default: undefined
 
 This option will prevent any status line updates being done by Tagbar. Use
@@ -990,7 +1066,7 @@ called.
 
 Example:
 >
-       let g:no_status_line = 1
+       let g:tagbar_no_status_line = 1
 <
 
                                                            *g:tagbar_silent*
@@ -1013,7 +1089,7 @@ a temporary file and invoking ctags on that file. This greatly speeds up tag
 generation in the event of slow file systems such as network shares and
 enables tagbar to run even on netrw virtual files that ctags would otherwise
 not be able to find at all. However it does incure the cost of an extra write
-operation. Additionally not all sysems are able to let programs share access
+operation. Additionally not all systems are able to let programs share access
 to temporary file space (for example Snap packages cannot read from the host
 system's temp file space). This setting can disable the cache mechanism
 entriely forcing the tags to be generated from the existing copy of the file
@@ -1044,17 +1120,53 @@ Example:
 g:tagbar_wrap~
 Default: 0
 
-If set to non-zero, this will enable line wrapping on the tagbar window. This
-option will use the built-in |wrap| vim option on the tagbar window to
-enable line wrapping. This also will use the |breakindent| and
-|breakindentopt| options in vim to set the indentation of the wrapped lines.
+Possible Values:
+    0   Disable line wrapping.
+    1   Enable the |wrap| option and also enable the |linebreak| option to
+        split the lines on word boundaries. This will use the default
+        |breakat| setting in vim. Note: This can cause possible display issues
+        with tags that exceed the tagbar window width. A very long tag name
+        will cause the tag itself to wrap resulting in an empty line and
+        indentation of the tag (see example below).
+    2   Enable the |wrap| option but disable the |linebreak| option. This will
+        split the lines at the end of the tagbar window and can cause it to
+        wrap in the middle of a word. This should be used if there are tags
+        that are regularly longer than the tagbar window width.
+
+This also will use the |breakindent| and |breakindentopt| options in vim to
+set the indentation of the wrapped lines.
 
 Note: This requires VIM to be compiled with the |+linebreak| option for the
 wrap intentation to function.
 
-Example:
+Examples:
 >
+       " Wrap with linebreak - note the wrap works on word boundaries, but
+       " a very long tag name does cause an odd display issue.
        let g:tagbar_wrap = 1
+       +-------------------------------------------+
+       | ⯆ functions (106)                         |
+       |     s:add_tag_recursive(parent,taginfo,   |
+       |         pathlist) : function!             |
+       |     s:AutoUpdate(fname,force,...) :       |
+       |         function!                         |
+       |                                           |
+       |         s:SomeReallyLongTagNameThatWillExc|
+       |         eedWindowWidth : function!        |
+       +-------------------------------------------+
+
+       " Wrap without linbreak - note the display issue is gone for the
+       " really long tag name, but the other wraps will breakup words.
+       let g:tagbar_wrap = 2
+       +-------------------------------------------+
+       | ⯆ functions (106)                         |
+       |     s:add_tag_recursive(parent,taginfo,pat|
+       |         hlist) : function!                |
+       |     s:AutoUpdate(fname,force,...) : functi|
+       |         on!                               |
+       |     s:SomeReallyLongTagNameThatWillExceedW|
+       |         indowWidth : funciton!            |
+       +-------------------------------------------+
 <
                                                         *g:tagbar_no_autocmds*
 g:tagbar_no_autocmds~
@@ -1369,7 +1481,7 @@ IGNORING SPECIFIC FILES                                        *tagbar-ignore*
 You can ignore specific files by setting the |buffer-variable|
 "b:tagbar_ignore" to 1. This is best done with an |autocommand|:
 >
-    autocmd BufNewFile,BufReadPost foo.cpp let b:tagbar_ignore = 1
+    autocmd BufNewFile,BufReadPre foo.cpp let b:tagbar_ignore = 1
 <
 Note that autocommands are order-sensitive, so make sure that this autocommand
 gets defined before the ones that Tagbar defines so the variable will get
@@ -1397,6 +1509,7 @@ former allows simple regular expression-based parsing that is easy to get
 started with, but doesn't support scopes unless you instead want to write a
 C-based parser module for Exuberant Ctags. The regex approach is described in
 more detail below.
+
 Writing your own program is the approach used by for example jsctags and can
 be useful if your language can best be parsed by a program written in the
 language itself, or if you want to provide the program as part of a complete
@@ -1407,6 +1520,28 @@ Before writing your own extension have a look at the wiki
 (https://github.com/preservim/tagbar/wiki) or try googling for existing ones.
 If you do end up creating your own extension please consider adding it to the
 wiki so that others can benefit from it, too.
+
+In some cases there may be a definition for the filetype defined, but vim may
+not recognize the extension. For example, the BibLaTeX file format is defined
+separately from the BibTeX support for universal-ctags. So there are two defined
+language types in tagbar. However VIM does not have a specific extension that
+is recognized for the BibLaTeX filetype. In these cases it is necessary to add
+a custom filetype extension definition in your .vim configuration.
+
+For example:
+>
+        $ cat ~/.vim/filetype.vim
+        " custom filetypes
+
+        augroup filetypedetect
+            au! BufRead,BufNewFile *.biblatex setfiletype biblatex
+        augroup END
+        $
+<
+
+This will automatically detect the file extension of *.biblatex and define the
+filetype in VIM as a biblatex filetype so tagbar will correctly identify the
+filetype and use the correct definition.
 
 Every type definition in Tagbar is a dictionary with the following keys:
 
@@ -1542,6 +1677,47 @@ ctagsargs: The arguments to be passed to the filetype-specific ctags program
 
            If special escaping is required for different OS shell types or if
            in doubt, then it is recommended to define ctagsargs with a List.
+ regex:    A list of regular expression arguments that will be provided to
+           ctags via a '--regex-<lang>=<regex>' option. Multiple regular
+           expressions can be provded to allow adding support for multiple new
+           tag regular expressions. The regex statement should be formatted as
+           documented in the ctags documentation.
+            https://docs.ctags.io/en/latest/optlib.html#regex-option-argument-flags
+           When adding a regex statement, the corresponding tag kind label
+           will need to be defined in the |kinds| definition in the structure
+           as well. An example for a 'TODO' label for the c language would be
+           as follows (note: use of the '{_anonymous=..}' option is not
+           strictly necessary, but does give a unique tag name for each match):
+>
+               let g:tagbar_type_c = {
+                   \ 'ctagstype'    : 'c',
+                   \ 'regex'        : [
+                       \ '/(TODO).*//T,ToDo,ToDo Messages/{_anonymous=todo_}',
+                   \ ],
+                   \ 'kinds'        : [
+                       \ 'h:header files:1:0',
+                       \ 'd:macros:1:0',
+                       \ 'p:prototypes:1:0',
+                       \ 'g:enums:0:1',
+                       \ 'e:enumerators:0:0',
+                       \ 't:typedefs:0:0',
+                       \ 's:structs:0:1',
+                       \ 'm:members:1:0',
+                       \ 'v:variables:0:0',
+                       \ 'f:functions:0:1',
+                       \ 'T:todo:0:0',
+                   \ ],
+                   \ 'sro'          : '::',
+                   \ 'kind2scope'	: {
+                        \ 'g' : 'enum',
+                        \ 's' : 'struct',
+                   \ },
+                   \ 'scope2kind'	: {
+                        \ 'enum'   : 'g',
+                        \ 'struct' : 's',
+                   \ }
+                \ }
+<
 
 
 You then have to assign this dictionary to a variable in your vimrc with the
@@ -1873,6 +2049,16 @@ Known issues~
 
 ==============================================================================
 8. History                                                    *tagbar-history*
+
+Note: All tagged releases are an accomodation to distribution packagers. The
+upstream developers of this plugin recommend using a plugin manager and
+tracking HEAD in the default branch rather than tagged releases.
+
+3.1.1 (2022-11-04)
+    - Periodic rollup, see `git log v3.0.0..v3.1.1`
+
+3.1.0 (2022-11-04)
+    - Periodic rollup (inclomplete merge, suggest 3.1.1)
 
 3.0.0 (2021-01-21)
     - Massive rollup with years of small changes, see `git log v2.7..v3.0.0`

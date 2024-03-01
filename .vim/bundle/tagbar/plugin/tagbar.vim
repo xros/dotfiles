@@ -4,7 +4,7 @@
 " Author:      Jan Larres <jan@majutsushi.net>
 " Licence:     Vim licence
 " Website:     https://preservim.github.io/tagbar
-" Version:     3.0.0
+" Version:     3.1.1
 " Note:        This plugin was heavily inspired by the 'Taglist' plugin by
 "              Yegappan Lakshmanan and uses a small amount of code from it.
 "
@@ -85,6 +85,7 @@ function! s:setup_options() abort
     endif
     let options = [
         \ ['autoclose', 0],
+        \ ['autoclose_netrw', 0],
         \ ['autofocus', 0],
         \ ['autopreview', 0],
         \ ['autoshowtag', 0],
@@ -135,7 +136,7 @@ call s:setup_options()
 if !exists('g:tagbar_iconchars')
     if has('multi_byte') && has('unix') && &encoding ==# 'utf-8' &&
      \ (!exists('+termencoding') || empty(&termencoding) || &termencoding ==# 'utf-8')
-        let g:tagbar_iconchars = ['▶', '▼']
+        let g:tagbar_iconchars = ['▸', '▾']
     else
         let g:tagbar_iconchars = ['+', '-']
     endif
@@ -183,20 +184,22 @@ augroup TagbarSession
 augroup END
 
 " Commands {{{1
-command! -nargs=0 Tagbar              call tagbar#ToggleWindow()
-command! -nargs=0 TagbarToggle        call tagbar#ToggleWindow()
+command! -nargs=? Tagbar              call tagbar#ToggleWindow(<f-args>)
+command! -nargs=? TagbarToggle        call tagbar#ToggleWindow(<f-args>)
 command! -nargs=? TagbarOpen          call tagbar#OpenWindow(<f-args>)
 command! -nargs=0 TagbarOpenAutoClose call tagbar#OpenWindow('fcj')
 command! -nargs=0 TagbarClose         call tagbar#CloseWindow()
 command! -nargs=1 -bang TagbarSetFoldlevel  call tagbar#SetFoldLevel(<args>, <bang>0)
 command! -nargs=0 TagbarShowTag       call tagbar#highlighttag(1, 1)
-command! -nargs=? TagbarCurrentTag    echo tagbar#currenttag('%s', 'No current tag', <f-args>)
+command! -nargs=* TagbarCurrentTag    echo tagbar#currenttag('%s', 'No current tag', <f-args>)
 command! -nargs=1 TagbarGetTypeConfig call tagbar#gettypeconfig(<f-args>)
 command! -nargs=? TagbarDebug         call tagbar#debug#start_debug(<f-args>)
 command! -nargs=0 TagbarDebugEnd      call tagbar#debug#stop_debug()
 command! -nargs=0 TagbarTogglePause   call tagbar#toggle_pause()
 command! -nargs=0 TagbarForceUpdate   call tagbar#ForceUpdate()
 command! -nargs=0 TagbarJump   call tagbar#jump()
+command! -nargs=0 TagbarJumpPrev      call tagbar#jumpToNearbyTag(-1)
+command! -nargs=0 TagbarJumpNext      call tagbar#jumpToNearbyTag(1)
 
 
 " Modeline {{{1
