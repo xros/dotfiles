@@ -1,3 +1,5 @@
+# DEPRECATED in favor of [jc.nvim](https://github.com/artur-shaik/jc.nvim)
+
 # vim-javacomplete2
 
 Updated version of the original [javacomplete plugin](http://www.vim.org/scripts/script.php?script_id=1785) for vim.
@@ -309,6 +311,7 @@ There is autocompletion in command prompt that will try to help you. Your curren
 - Cheng Fang author of original javacomplete plugin;
 - Zhang Li author of vim-javacompleteex plugin;
 - http://github.com/javaparser/javaparser library.
+- [vimdoc](https://github.com/google/vimdoc) generate `:h javacomplete` file
 
 ## FeedBack
 
