@@ -3,7 +3,7 @@ Dot files
     Dot files for Bash, Tmux, Zsh, Vim, Elinks, Mutt, Gnupg, Python, Java, Rtorrent.
     A C/C++/Java/Python/HTML IDE for Vim is built in.
     With Machine Learning Settings for TensorFlow 1.4+ and Cuda 8.0+
-                          --- Created by Alexander Liu
+                          --- Created by Songhua Liu
 VIM Plugins including
 ---
 *   jedi
