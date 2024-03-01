@@ -52,7 +52,7 @@ endfunction
 function! s:conflict_marker()
   " Checks for git conflict markers
   let annotation = '\%([0-9A-Za-z_.:]\+\)\?'
-  if &ft is# 'rst'
+  if match(['rst', 'markdown', 'rmd'], &ft) >= 0
     " rst filetypes use '=======' as header
     let pattern = '^\%(\%(<\{7} '.annotation. '\)\|\%(>\{7\} '.annotation.'\)\)$'
   else
@@ -78,7 +78,8 @@ function! airline#extensions#whitespace#check()
     let check = 'trailing'
     if index(checks, check) > -1 && index(get(skip_check_ft, &ft, []), check) < 0
       try
-        let regexp = get(g:, 'airline#extensions#whitespace#trailing_regexp', '\s$')
+        let regexp = get(b:, 'airline_whitespace_trailing_regexp',
+              \ get(g:, 'airline#extensions#whitespace#trailing_regexp', '\s$'))
         let trailing = search(regexp, 'nw')
       catch
         call airline#util#warning(printf('Whitespace: error occurred evaluating "%s"', regexp))
@@ -183,6 +184,10 @@ function! airline#extensions#whitespace#init(...)
 endfunction
 
 function! s:ws_refresh()
+  if !exists('#airline')
+    " airline disabled
+    return
+  endif
   if get(b:, 'airline_ws_changedtick', 0) == b:changedtick
     return
   endif

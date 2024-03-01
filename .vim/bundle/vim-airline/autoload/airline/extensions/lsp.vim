@@ -71,14 +71,14 @@ function! airline#extensions#lsp#progress() abort
 
       " show only most new progress
       let s:lsp_progress = s:lsp_progress[0]
-      if s:lsp_progress['message'] !=# '' && s:lsp_progress['percentage'] !=# 100
+      if s:lsp_progress['message'] !=# ''
         let percent = ''
-        if s:lsp_progress['percentage'] >= 0
+        if has_key(s:lsp_progress, 'percentage') && s:lsp_progress['percentage'] >= 0
           let percent = ' ' . string(s:lsp_progress['percentage']) . '%'
         endif
         let s:title = s:lsp_progress['title']
         let message = airline#util#shorten(s:lsp_progress['message'] . percent, 91, 9)
-        return s:lsp_progress['server'] . ':' . s:title . ' ' . message
+        return s:lsp_progress['server'] . ': ' . s:title . ' ' . message
       endif
     endif
   endif
@@ -88,6 +88,10 @@ endfunction
 let s:timer = 0
 let s:ignore_time = 0
 function! airline#extensions#lsp#update() abort
+  if !exists('#airline')
+    " airline disabled
+    return
+  endif
   if reltimefloat(reltime()) - s:ignore_time >=
         \ get(g:, 'airline#extensions#lsp#progress_skip_time', 0.3)
         \ || len(s:lsp_progress) == 0

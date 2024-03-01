@@ -24,13 +24,16 @@ function! airline#extensions#tabline#ctrlspace#on()
 endfunction
 
 function! airline#extensions#tabline#ctrlspace#invalidate()
+  if !exists('#airline')
+    return
+  endif
   let s:current_bufnr = -1
   let s:current_tabnr = -1
 endfunction
 
 function! airline#extensions#tabline#ctrlspace#add_buffer_section(builder, cur_tab, cur_buf, pull_right)
   let pos_extension = (a:pull_right ? '_right' : '')
-  
+
   let buffer_list = []
   for bufferindex in sort(keys(ctrlspace#api#Buffers(a:cur_tab)), 'N')
     for buffer in ctrlspace#api#BufferList(a:cur_tab)

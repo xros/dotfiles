@@ -16,9 +16,11 @@ let s:focusgained_ignore_time = 0
 " TODO: Try to cache winwidth(0) function
 " e.g. store winwidth per window and access that, only update it, if the size
 " actually changed.
-function! airline#util#winwidth(...)
+function! airline#util#winwidth(...) abort
   let nr = get(a:000, 0, 0)
-  if get(g:, 'airline_statusline_ontop', 0)
+  " When statusline is on top, or using global statusline for Neovim
+  " always return the number of columns
+  if get(g:, 'airline_statusline_ontop', 0) || &laststatus > 2
     return &columns
   else
     return winwidth(nr)
@@ -135,14 +137,14 @@ endfunction
 
 function! airline#util#ignore_buf(name)
   let pat = '\c\v'. get(g:, 'airline#ignore_bufadd_pat', '').
-        \ get(g:, 'airline#extensions#tabline#ignore_bufadd_pat', 
+        \ get(g:, 'airline#extensions#tabline#ignore_bufadd_pat',
         \ '!|defx|gundo|nerd_tree|startify|tagbar|term://|undotree|vimfiler')
   return match(a:name, pat) > -1
 endfunction
 
 function! airline#util#has_fugitive()
   if !exists("s:has_fugitive")
-    let s:has_fugitive = exists('*fugitive#head') || exists('*FugitiveHead')
+    let s:has_fugitive = exists('*FugitiveHead')
   endif
   return s:has_fugitive
 endfunction
@@ -174,11 +176,20 @@ function! airline#util#has_custom_scm()
 endfunction
 
 function! airline#util#doautocmd(event)
-  exe printf("silent doautocmd %s User %s", s:nomodeline, a:event)
+  if !exists('#airline') && a:event !=? 'AirlineToggledOff'
+    " airline disabled
+    return
+  endif
+  try
+    exe printf("silent doautocmd %s User %s", s:nomodeline, a:event)
+  catch /^Vim\%((\a\+)\)\=:E48:/
+    " Catch: Sandbox mode
+    " no-op
+  endtry
 endfunction
 
 function! airline#util#themes(match)
-  let files = split(globpath(&rtp, 'autoload/airline/themes/'.a:match.'*.vim'), "\n")
+  let files = split(globpath(&rtp, 'autoload/airline/themes/'.a:match.'*.vim', 1), "\n")
   return sort(map(files, 'fnamemodify(v:val, ":t:r")') + ('random' =~ a:match ? ['random'] : []))
 endfunction
 
@@ -200,6 +211,15 @@ function! airline#util#ignore_next_focusgain()
   endif
 endfunction
 
+function! airline#util#is_popup_window(winnr)
+   " Keep the statusline active if it's a popup window
+   if exists('*win_gettype')
+     return win_gettype(a:winnr) ==# 'popup' || win_gettype(a:winnr) ==# 'autocmd'
+   else
+      return airline#util#getwinvar(a:winnr, '&buftype', '') ==# 'popup'
+  endif
+endfunction
+
 function! airline#util#try_focusgained()
   " Ignore lasts for at most one second and is cleared on the first
   " focusgained. We use ignore to prevent system() calls from triggering
@@ -208,5 +228,13 @@ function! airline#util#try_focusgained()
   let dt = localtime() - s:focusgained_ignore_time
   let s:focusgained_ignore_time = 0
   return dt >= 1
+endfunction
+
+function! airline#util#has_vim9_script()
+  " Returns true, if Vim is new enough to understand vim9 script
+  return (exists(":def") &&
+    \ exists("v:versionlong") &&
+    \ v:versionlong >= 8022844 &&
+    \ get(g:, "airline_experimental", 0))
 endfunction
 

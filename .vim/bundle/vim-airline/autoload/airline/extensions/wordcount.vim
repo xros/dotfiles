@@ -9,8 +9,18 @@ if exists('*wordcount')
     if get(g:, 'actual_curbuf', '') != bufnr('')
       return
     endif
-    let query = a:visual_mode_active ? 'visual_words' : 'words'
-    return get(wordcount(), query, 0)
+    if &filetype ==# 'tex' && exists('b:vimtex') && get(g:, 'airline#extensions#vimtex#wordcount', 0)
+      " We're in a TeX file and vimtex is a plugin, so use vimtex's wordcount...
+      if a:visual_mode_active
+        " not useful? 
+        return
+      else
+        return vimtex#misc#wordcount()
+      endif
+    else
+      let query = a:visual_mode_active ? 'visual_words' : 'words'
+      return get(wordcount(), query, 0)
+    endif
   endfunction
 else  " Pull wordcount from the g_ctrl-g stats
   function! s:get_wordcount(visual_mode_active)
@@ -86,8 +96,8 @@ endfunction
 " airline functions {{{1
 " default filetypes:
 function! airline#extensions#wordcount#apply(...)
-  let filetypes = get(g:, 'airline#extensions#wordcount#filetypes', 
-    \ ['asciidoc', 'help', 'mail', 'markdown', 'nroff', 'org', 'rst', 'plaintex', 'tex', 'text'])
+  let filetypes = get(g:, 'airline#extensions#wordcount#filetypes',
+    \ ['asciidoc', 'help', 'mail', 'markdown', 'rmd', 'nroff', 'org', 'rst', 'plaintex', 'tex', 'text'])
   " export current filetypes settings to global namespace
   let g:airline#extensions#wordcount#filetypes = filetypes
 
