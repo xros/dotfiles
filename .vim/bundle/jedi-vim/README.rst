@@ -73,9 +73,9 @@ Installation
 
 Requirements
 ------------
-You need a VIM version that was compiled with Python 2.7 or later
-(``+python`` or ``+python3``).  You can check this from within VIM using
-``:python3 import sys; print(sys.version)`` (use ``:python`` for Python 2).
+You need a VIM version that was compiled with Python 3 or later
+(``+python3``).  You can check this from within VIM using
+``:python3 import sys; print(sys.version)``.
 
 Manual installation
 -------------------
@@ -114,7 +114,7 @@ It is also available on
 `Ubuntu (≥14.04) <http://packages.ubuntu.com/vim-python-jedi>`__ as
 vim-python-jedi.
 On Fedora Linux, it is available as
-`vim-jedi <https://apps.fedoraproject.org/packages/vim-jedi>`__.
+`vim-jedi <https://packages.fedoraproject.org/pkgs/vim-jedi/vim-jedi/>`__.
 
 Please note that this version might be quite old compared to using jedi-vim
 from Git.
@@ -207,6 +207,7 @@ get more information. If you set them to ``""``, they are not assigned.
     let g:jedi#usages_command = "<leader>n"
     let g:jedi#completions_command = "<C-Space>"
     let g:jedi#rename_command = "<leader>r"
+    let g:jedi#rename_command_keep_name = "<leader>R"
 
 An example for setting up your project:
 
@@ -229,6 +230,12 @@ Finally, if you don't want completion, but all the other features, use:
 
 FAQ
 ===
+
+I want to use Jedi with a Python 2 Environment, but it's not listed under "Known environments"
+----------------------------------------------------------------------------------------------
+
+Starting with version 0.18.0 Jedi dropped support for Python 2.
+
 
 I don't want the docstring window to popup during completion
 ------------------------------------------------------------
