@@ -26,7 +26,7 @@ VIM Plugins including
 *   vim-fugitive
 *   vim-indent-guides
 *   vim-airline-themes
-*   vim-multiple-cursors
+*   vim-visual-multi
 *   vim-javacomplete2
 *   vim-python-pep8-indent
 *   Default Vim colorscheme is corporation. Also you can try this [**raincode**](https://github.com/xros/dotfiles/blob/master/.vim/colors/raincode.vim)
