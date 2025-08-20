@@ -374,6 +374,7 @@ its contents. >
   let g:airline_symbols.colnr = ' ㏇:'
   let g:airline_symbols.colnr = ' ℅:'
   let g:airline_symbols.crypt = '🔒'
+  let g:airline_symbols.executable = '⚙'
   let g:airline_symbols.linenr = '☰'
   let g:airline_symbols.linenr = ' ␊:'
   let g:airline_symbols.linenr = ' ␤:'
@@ -427,7 +428,7 @@ window.
 >
   variable names                default contents
   ---------------------------------------------------------------------------
-  let g:airline_section_a       (mode, crypt, paste, spell, iminsert)
+  let g:airline_section_a       (mode, crypt, paste, spell, iminsert, executable)
   let g:airline_section_b       (hunks, branch)[*]
   let g:airline_section_c       (bufferline or filename, readonly)
   let g:airline_section_gutter  (csv)
@@ -998,8 +999,11 @@ vim-obsession <https://github.com/tpope/vim-obsession>
 * enable/disable vim-obsession integration >
   let g:airline#extensions#obsession#enabled = 1
 
-* set marked window indicator string >
+* set marked window indicator string when recording session>
   let g:airline#extensions#obsession#indicator_text = '$'
+
+* set marked window indicator string when recording session is paused>
+  let g:airline#extensions#obsession#indicator_text_paused = ''
 <
 -------------------------------------                    *airline-omnisharp*
 OmniSharp <https://github.com/OmniSharp/omnisharp-vim>
@@ -1207,7 +1211,7 @@ Note: Not displayed if the number of tabs is less than 1
   In default mode, when the variable is 1 Up to 10 mappings will be
   exposed. Note: As 10 and 1 have same prefix, we use 0 to replace 10. So,
   <leader>0 will jump to tenth buffer. Those mappings are not automatically
-  created, vim-airline just exposes those `<Plug>AirlineSeelctTab` keys
+  created, vim-airline just exposes those `<Plug>AirlineSelectTab` keys
   for you to map to a convenient key >
 
   let g:airline#extensions#tabline#buffer_idx_mode = 1
@@ -1775,7 +1779,11 @@ details on how to use it, see e.g. <https://github.com/ierton/xkb-switch>
    let g:XkbSwitchLib = '/usr/local/lib/libInputSourceSwitcher.dylib'
 <
   Linux with fcitx (Install https://github.com/fcitx/fcitx5):
-   Install https://github.com/lilydjwg/fcitx.vim) to get `FcitxCurrentIM()`
+   Install https://github.com/lilydjwg/fcitx.vim to get `FcitxCurrentIM()`
+    or https://github.com/black-desk/fcitx5-ui.nvim to get
+    `luaeval('require"fcitx5-ui".displayCurrentIM()')`
+    or https://github.com/Freed-Wu/ime.nvim to get
+    `luaeval('require"ime".current()')`
 
 -------------------------------------                     *airline-xtabline*
 xtabline <https://github.com/mg979/vim-xtabline>
@@ -1914,6 +1922,7 @@ The following list of parts are predefined by vim-airline.
 * `iminsert`     displays the current insert method
 * `paste`        displays the paste indicator
 * `crypt`        displays the crypted indicator
+* `exectuable`   displays the executable indicator
 * `spell`        displays the spell indicator
 * `filetype`     displays the file type
 * `readonly`     displays the read only indicator

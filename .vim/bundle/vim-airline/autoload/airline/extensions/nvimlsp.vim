@@ -15,7 +15,9 @@ function! s:airline_nvimlsp_count(cnt, symbol) abort
 endfunction
 
 function! airline#extensions#nvimlsp#get(type) abort
-  if luaeval('vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
+  if has('nvim-0.11') && luaeval('vim.tbl_isempty(vim.lsp.get_clients({ bufnr = 0 }))')
+    return ''
+  elseif !has('nvim-0.11') && luaeval('vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
     return ''
   endif
 
@@ -45,7 +47,7 @@ endfunction
 
 function! s:airline_nvimlsp_get_line_number(cnt, type) abort
   let severity = a:type == 'Warning' ? 'Warn' : a:type
-  let num = v:lua.vim.diagnostic.get(0, { 'severity': severity })[0].lnum
+  let num = v:lua.vim.diagnostic.get(0, { 'severity': severity })[0].lnum + 1
 
   let l:open_lnum_symbol  =
     \ get(g:, 'airline#extensions#nvimlsp#open_lnum_symbol', '(L')

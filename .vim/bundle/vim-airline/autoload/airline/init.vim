@@ -129,15 +129,21 @@ function! airline#init#bootstrap()
     call extend(g:airline_symbols, {
           \ 'readonly': "\ue0a2",
           \ 'whitespace': "\u2632",
-          \ 'maxlinenr': "\u2630 ",
+          \ 'maxlinenr': "\u2261 ",
           \ 'linenr': " \ue0a1:",
           \ 'colnr': " \u2105:",
           \ 'branch': "\ue0a0",
           \ 'notexists': "\u0246",
           \ 'dirty': "\u26a1",
           \ 'crypt': nr2char(0x1F512),
+          \ 'executable': "\u2699",
           \ }, 'keep')
     "  Note: If "\u2046" (Ɇ) does not show up, try to use "\u2204" (∄)
+    if exists("*setcellwidths")
+      " whitespace char 0x2632 changed to double-width in Unicode 16,
+      " mark it single width again
+      call setcellwidths([[0x2632, 0x2632, 1]])
+    endif
   elseif &encoding==?'utf-8' && !get(g:, "airline_symbols_ascii", 0)
     " Symbols for Unicode terminals
     call s:check_defined('g:airline_left_sep', "")
@@ -148,13 +154,14 @@ function! airline#init#bootstrap()
     call extend(g:airline_symbols, {
           \ 'readonly': "\u229D",
           \ 'whitespace': "\u2632",
-          \ 'maxlinenr': "\u2630",
+          \ 'maxlinenr': "\u2261",
           \ 'linenr': " \u33d1:",
           \ 'colnr': " \u2105:",
           \ 'branch': "\u16A0",
           \ 'notexists': "\u0246",
           \ 'crypt': nr2char(0x1F512),
           \ 'dirty': '!',
+          \ 'executable': "\u2699",
           \ }, 'keep')
   else
     " Symbols for ASCII terminals
@@ -172,6 +179,7 @@ function! airline#init#bootstrap()
           \ 'notexists': '?',
           \ 'crypt': 'cr',
           \ 'dirty': '!',
+          \ 'executable': 'x',
           \ }, 'keep')
   endif
 
@@ -184,6 +192,7 @@ function! airline#init#bootstrap()
   call airline#parts#define_function('crypt', 'airline#parts#crypt')
   call airline#parts#define_function('spell', 'airline#parts#spell')
   call airline#parts#define_function('filetype', 'airline#parts#filetype')
+  call airline#parts#define_function('executable', 'airline#parts#executable')
   call airline#parts#define('readonly', {
         \ 'function': 'airline#parts#readonly',
         \ 'accent': 'red',
@@ -195,7 +204,7 @@ function! airline#init#bootstrap()
   endif
   call airline#parts#define_raw('path', '%F%m')
   call airline#parts#define('linenr', {
-        \ 'raw': '%{g:airline_symbols.linenr}%l',
+        \ 'raw': '%{g:airline_symbols.linenr}%2l',
         \ 'accent': 'bold'})
   call airline#parts#define('maxlinenr', {
         \ 'raw': '/%L%{g:airline_symbols.maxlinenr}',
@@ -248,7 +257,7 @@ endfunction
 function! airline#init#sections()
   let spc = g:airline_symbols.space
   if !exists('g:airline_section_a')
-    let g:airline_section_a = airline#section#create_left(['mode', 'crypt', 'paste', 'keymap', 'spell', 'capslock', 'xkblayout', 'iminsert'])
+    let g:airline_section_a = airline#section#create_left(['mode', 'crypt', 'paste', 'keymap', 'spell', 'capslock', 'xkblayout', 'iminsert', 'executable'])
   endif
   if !exists('g:airline_section_b')
     if airline#util#winwidth() > 99
